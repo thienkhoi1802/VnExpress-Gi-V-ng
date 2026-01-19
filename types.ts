@@ -36,4 +36,4 @@ export interface HistoryPoint {
   [key: string]: string | number; 
 }
 
-export type TimeRange = '7d' | '30d' | '90d' | '365d';
+export type TimeRange = '1w' | '2w' | '3m' | '6m' | '1y' | 'all';
