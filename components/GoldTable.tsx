@@ -20,6 +20,7 @@ interface SortConfig {
 export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowClick }) => {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'asc' });
 
+  const updateTime = data[0]?.updatedAt.split(' ')[1] || 'Hôm nay';
   const todayStr = data[0]?.updatedAt.split(' ')[1] || 'Hôm nay';
   const parts = todayStr.split('/');
   const yesterdayStr = parts.length === 3 
@@ -36,7 +37,10 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
   };
 
   const sortedData = useMemo(() => {
-    const sortableItems = data.map(product => ({
+    // 1. Remove World Gold from Detailed Table (Requirement 1)
+    const filteredData = data.filter(p => p.group !== 'world');
+
+    const sortableItems = filteredData.map(product => ({
       ...product,
       spread: product.today.sell - product.today.buy,
       change30d: get30DayChange(product.id)
@@ -73,13 +77,13 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
     return (
       <div className="flex flex-col ml-1 -space-y-1.5 inline-flex align-middle opacity-50 hover:opacity-100">
         <ArrowUp 
-            size={8} 
-            className={`${isActive && sortConfig.direction === 'asc' ? 'text-blue-700 font-bold' : 'text-gray-400'}`} 
+            size={10} 
+            className={`${isActive && sortConfig.direction === 'asc' ? 'text-gray-900 font-bold' : 'text-gray-400'}`} 
             strokeWidth={isActive && sortConfig.direction === 'asc' ? 3 : 2}
         />
         <ArrowDown 
-            size={8} 
-            className={`${isActive && sortConfig.direction === 'desc' ? 'text-blue-700 font-bold' : 'text-gray-400'}`}
+            size={10} 
+            className={`${isActive && sortConfig.direction === 'desc' ? 'text-gray-900 font-bold' : 'text-gray-400'}`}
             strokeWidth={isActive && sortConfig.direction === 'desc' ? 3 : 2}
         />
       </div>
@@ -87,38 +91,49 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
   };
 
   const DiffBadge = ({ value }: { value: number }) => {
-    if (value === 0) return <span className="text-gray-300 text-[10px] ml-1">-</span>;
-    const color = value > 0 ? 'text-trend-up' : 'text-trend-down';
+    if (value === 0) return <span className="text-gray-400 text-xs ml-1 font-medium">-</span>;
+    // Darker colors for better contrast
+    const color = value > 0 ? 'text-[#007f3f]' : 'text-[#d60000]'; 
     return (
-        <span className={`inline-flex items-center text-[10px] font-bold ml-1 ${color}`}>
+        <span className={`inline-flex items-center text-xs font-bold ml-1 ${color}`}>
             {value > 0 ? '+' : ''}{Math.abs(value).toLocaleString('vi-VN')}
         </span>
     );
   };
 
   return (
-    <div className="bg-white border border-gray-200 shadow-sm flex flex-col font-sans">
-      <div className="w-full">
+    <div className="bg-white border border-gray-300 shadow-sm flex flex-col font-sans overflow-hidden rounded-sm">
+      {/* Header Section Inside Box - Matching GoldChart Style */}
+      <div className="px-4 py-4 sm:px-5 border-b border-gray-200 bg-white flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+              <h2 className="text-xl font-serif font-bold text-gray-900">Bảng giá chi tiết</h2>
+               <span className="text-sm text-gray-600 font-medium sm:border-l sm:border-gray-400 sm:pl-2 font-sans">
+                 Cập nhật: {updateTime}
+              </span>
+          </div>
+      </div>
+
+      <div className="w-full font-sans">
         <table className="w-full text-left border-collapse table-fixed md:table-auto">
           <thead>
             {/* Top Header Row: Hidden on Mobile */}
-            <tr className="hidden md:table-row bg-gray-100 border-b border-gray-200 text-[10px] uppercase text-gray-600 font-bold tracking-wider">
-              <th className="p-2 border-r border-gray-200"></th>
-              <th colSpan={3} className="p-2 text-center border-r border-gray-300 bg-[#e5e5e5] text-gray-900">
+            <tr className="hidden md:table-row bg-gray-100 border-b border-gray-300 text-sm text-gray-700 font-bold tracking-wider">
+              <th className="p-3 border-r border-gray-300"></th>
+              <th colSpan={3} className="p-3 text-center border-r border-gray-400 bg-[#e0e0e0] text-gray-900">
                 Hôm nay ({todayStr})
               </th>
-              <th colSpan={2} className="p-2 text-center border-r border-gray-200">
+              <th colSpan={2} className="p-3 text-center border-r border-gray-300">
                 Hôm qua ({yesterdayStr})
               </th>
-              <th colSpan={2} className="p-2 text-center">
+              <th colSpan={2} className="p-3 text-center">
                 Xu hướng
               </th>
             </tr>
             
             {/* Bottom Header Row: Columns */}
-            <tr className="bg-gray-50 border-b border-gray-200 text-[10px] uppercase text-gray-500 font-bold tracking-wider">
+            <tr className="bg-gray-50 border-b border-gray-300 text-sm text-gray-700 font-bold tracking-wider">
               <th 
-                className="p-2 cursor-pointer hover:bg-gray-100 border-r border-gray-200 w-[140px] sm:w-auto"
+                className="px-3 py-3 cursor-pointer hover:bg-gray-200 border-r border-gray-300 w-[150px] sm:w-auto"
                 onClick={() => requestSort('name')}
               >
                 <div className="flex items-center justify-between">
@@ -127,110 +142,110 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               </th>
               
               {/* Today Group */}
-              <th className="p-2 text-right cursor-pointer hover:bg-gray-100 border-r border-gray-200" onClick={() => requestSort('buy')}>
+              <th className="px-3 py-3 text-right cursor-pointer hover:bg-gray-200 border-r border-gray-300" onClick={() => requestSort('buy')}>
                 <div className="flex items-center justify-end gap-1">
-                    Giá Mua <SortIcon columnKey='buy' />
+                    Giá mua <SortIcon columnKey='buy' />
                 </div>
               </th>
-              <th className="p-2 text-right cursor-pointer hover:bg-gray-100 border-r border-gray-200" onClick={() => requestSort('sell')}>
+              <th className="px-3 py-3 text-right cursor-pointer hover:bg-gray-200 border-r border-gray-300" onClick={() => requestSort('sell')}>
                  <div className="flex items-center justify-end gap-1">
-                    Giá Bán <SortIcon columnKey='sell' />
+                    Giá bán <SortIcon columnKey='sell' />
                 </div>
               </th>
-              <th className="hidden md:table-cell p-2 text-center cursor-pointer hover:bg-gray-100 border-r border-gray-200 w-[90px]" onClick={() => requestSort('spread')}>
+              <th className="hidden md:table-cell px-3 py-3 text-center cursor-pointer hover:bg-gray-200 border-r border-gray-300 w-[100px]" onClick={() => requestSort('spread')}>
                  <div className="flex items-center justify-center gap-1">
                     Chênh lệch <SortIcon columnKey='spread' />
                 </div>
               </th>
 
               {/* Yesterday Group - Hidden on Mobile */}
-              <th className="hidden md:table-cell p-2 text-right text-gray-400 font-medium border-r border-gray-100">Giá Mua</th>
-              <th className="hidden md:table-cell p-2 text-right text-gray-400 font-medium border-r border-gray-200">Giá Bán</th>
+              <th className="hidden md:table-cell px-3 py-3 text-right text-gray-500 font-medium border-r border-gray-200">Giá mua</th>
+              <th className="hidden md:table-cell px-3 py-3 text-right text-gray-500 font-medium border-r border-gray-300">Giá bán</th>
 
               {/* Trend Group */}
-              <th className="p-2 text-right cursor-pointer hover:bg-gray-100 border-r border-gray-100 w-[90px]" onClick={() => requestSort('change30d')}>
+              <th className="px-3 py-3 text-right cursor-pointer hover:bg-gray-200 border-r border-gray-200 w-[110px]" onClick={() => requestSort('change30d')}>
                  <div className="flex items-center justify-end gap-1">
-                    % 30 Ngày <SortIcon columnKey='change30d' />
+                    % 30 ngày <SortIcon columnKey='change30d' />
                 </div>
               </th>
-              <th className="hidden md:table-cell p-2 text-center w-[100px]">Biểu đồ</th>
+              <th className="hidden md:table-cell px-3 py-3 text-center w-[110px]">Biểu đồ</th>
             </tr>
           </thead>
           
-          <tbody className="text-sm">
+          <tbody className="text-base">
             {sortedData.map((product, index) => (
               <tr 
                 key={product.id} 
                 onClick={() => onRowClick(product)}
-                className={`border-b border-gray-100 hover:bg-[#fcf0f4] transition-colors cursor-pointer group ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}
+                className={`border-b border-gray-200 hover:bg-[#ffeef2] transition-colors cursor-pointer group ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
               >
                 {/* Column 1: Name */}
-                <td className="p-2 align-middle border-r border-gray-100">
-                  <div className="font-bold text-gray-900 text-[13px] sm:text-sm leading-tight">{product.name}</div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 hidden sm:block">{product.unit}</div>
+                {/* Taller Rows: py-3 */}
+                <td className="px-3 py-3 align-middle border-r border-gray-200">
+                  <div className="font-bold text-gray-900 text-sm sm:text-base leading-snug">{product.name}</div>
                   
-                  {/* Mobile-only Spread display */}
-                  <div className="md:hidden text-[10px] text-gray-400 mt-1 font-medium">
+                  {/* Mobile-only Spread display - Larger font */}
+                  <div className="md:hidden text-xs text-gray-500 mt-1 font-medium">
                      CL: {product.spread.toLocaleString('vi-VN', { maximumFractionDigits: 2 })}
                   </div>
                 </td>
 
                 {/* TODAY Buy */}
-                <td className="p-2 text-right group-hover:bg-transparent border-r border-gray-100 align-middle">
-                  <div className="font-semibold text-gray-700 tabular-nums">
+                <td className="px-3 py-3 text-right group-hover:bg-transparent border-r border-gray-200 align-middle">
+                  <div className="font-bold text-gray-700 tabular-nums">
                     {product.today.buy.toLocaleString('vi-VN')}
                   </div>
                   <DiffBadge value={product.changeBuy} />
                   
                   {/* Mobile Yesterday Data */}
-                  <div className="md:hidden mt-1 text-[10px] text-gray-400 tabular-nums border-t border-gray-200 pt-0.5">
+                  <div className="md:hidden mt-1 text-xs text-gray-500 tabular-nums border-t border-gray-300 pt-1">
                      {product.yesterday.buy.toLocaleString('vi-VN')}
                   </div>
                 </td>
 
-                {/* TODAY Sell */}
-                <td className="p-2 text-right group-hover:bg-transparent border-r border-gray-100 md:border-r-gray-100 align-middle">
-                  <div className="font-bold text-gray-900 tabular-nums text-[14px] sm:text-[15px]">
+                {/* TODAY Sell - Emphasized */}
+                <td className="px-3 py-3 text-right group-hover:bg-transparent border-r border-gray-200 md:border-r-gray-200 align-middle">
+                  <div className="font-black text-gray-900 tabular-nums text-lg">
                     {product.today.sell.toLocaleString('vi-VN')}
                   </div>
                   <DiffBadge value={product.changeSell} />
 
                    {/* Mobile Yesterday Data */}
-                   <div className="md:hidden mt-1 text-[10px] text-gray-400 tabular-nums border-t border-gray-200 pt-0.5">
+                   <div className="md:hidden mt-1 text-xs text-gray-500 tabular-nums border-t border-gray-300 pt-1">
                      {product.yesterday.sell.toLocaleString('vi-VN')}
                   </div>
                 </td>
 
-                {/* Spread (Desktop) */}
-                <td className="hidden md:table-cell p-2 text-center group-hover:bg-transparent border-r border-gray-100 align-middle">
-                    <span className="inline-block text-xs font-bold text-gray-500 tabular-nums bg-gray-50 border border-gray-200 px-1.5 py-0.5 shadow-sm">
+                {/* Spread (Desktop) - Boxed for contrast */}
+                <td className="hidden md:table-cell px-3 py-3 text-center group-hover:bg-transparent border-r border-gray-200 align-middle">
+                    <span className="inline-block text-sm font-bold text-gray-600 tabular-nums bg-gray-100 border border-gray-300 px-2 py-1 rounded shadow-sm">
                         {product.spread.toLocaleString('vi-VN', { maximumFractionDigits: 2 })}
                     </span>
                 </td>
 
                 {/* YESTERDAY Buy (Desktop) */}
-                <td className="hidden md:table-cell p-2 text-right text-gray-500 tabular-nums border-r border-gray-100 text-[13px] align-middle">
+                <td className="hidden md:table-cell px-3 py-3 text-right text-gray-600 tabular-nums border-r border-gray-200 text-sm align-middle">
                    {product.yesterday.buy.toLocaleString('vi-VN')}
                 </td>
                 {/* YESTERDAY Sell (Desktop) */}
-                <td className="hidden md:table-cell p-2 text-right text-gray-500 tabular-nums border-r border-gray-100 text-[13px] align-middle">
+                <td className="hidden md:table-cell px-3 py-3 text-right text-gray-600 tabular-nums border-r border-gray-200 text-sm align-middle">
                    {product.yesterday.sell.toLocaleString('vi-VN')}
                 </td>
 
                 {/* TREND % */}
-                <td className="p-2 text-right border-r border-gray-100 align-middle">
-                     <span className={`text-[11px] sm:text-xs font-bold tabular-nums block ${product.change30d >= 0 ? 'text-trend-up' : 'text-trend-down'}`}>
+                <td className="px-3 py-3 text-right border-r border-gray-200 align-middle">
+                     <span className={`text-sm font-bold tabular-nums block ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
                         {product.change30d > 0 ? '+' : ''}{product.change30d.toFixed(2)}%
                     </span>
                     {/* Mobile Chart Hint */}
                     <div className="md:hidden mt-1 flex justify-end">
-                       <BarChart2 size={12} className="text-gray-400" />
+                       <BarChart2 size={16} className="text-gray-400" />
                     </div>
                 </td>
 
                 {/* Chart (Desktop) */}
-                <td className="hidden md:table-cell p-2 w-[100px] relative align-middle">
-                    <div className="w-[80px] h-[28px] opacity-60 group-hover:opacity-20 transition-opacity">
+                <td className="hidden md:table-cell px-3 py-3 w-[100px] relative align-middle">
+                    <div className="w-[80px] h-[32px] opacity-70 group-hover:opacity-30 transition-opacity">
                         <Sparkline 
                             data={historyData} 
                             dataKey={product.id} 
@@ -238,8 +253,8 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                         />
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="bg-white border border-gray-300 text-gray-600 shadow-sm p-1.5 hover:bg-[#9f224e] hover:text-white hover:border-[#9f224e] transition-all" title="Xem biểu đồ">
-                            <BarChart2 size={16} />
+                        <button className="bg-white border border-gray-400 text-gray-700 shadow p-2 hover:bg-[#9f224e] hover:text-white hover:border-[#9f224e] transition-all rounded" title="Xem biểu đồ">
+                            <BarChart2 size={18} />
                         </button>
                     </div>
                 </td>
@@ -249,20 +264,24 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
         </table>
       </div>
 
-      <div className="bg-[#f7f7f7] p-2 sm:p-3 border-t border-gray-200 text-[10px] text-gray-500 flex flex-wrap gap-x-4 gap-y-2 items-center">
-        <div className="flex items-center gap-1">
-            <Info size={12} />
-            <span className="font-bold">Ghi chú:</span>
+      <div className="bg-[#f0f0f0] p-3 sm:p-4 border-t border-gray-300 text-sm text-gray-600 flex flex-wrap gap-x-6 gap-y-3 items-center font-sans">
+        <div className="flex items-center gap-2">
+            <Info size={16} />
+            <span className="font-bold text-gray-900">Ghi chú:</span>
         </div>
-        <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-600"></span>
+        
+        <div className="font-medium text-gray-800">Đơn vị: Triệu đồng/lượng</div>
+        <div className="hidden sm:block w-px h-4 bg-gray-400"></div>
+
+        <div className="flex items-center gap-2">
+            <span className="w-3 h-3 bg-green-700 border border-green-800"></span>
             <span>Tăng</span>
         </div>
-        <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-600"></span>
+        <div className="flex items-center gap-2">
+            <span className="w-3 h-3 bg-red-700 border border-red-800"></span>
             <span>Giảm</span>
         </div>
-        <div className="ml-auto italic hidden sm:block">
+        <div className="ml-auto italic hidden sm:block font-medium">
             Tự động cập nhật 15p/lần
         </div>
       </div>

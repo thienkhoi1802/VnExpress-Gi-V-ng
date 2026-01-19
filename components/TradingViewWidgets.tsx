@@ -6,7 +6,12 @@ export const AdvancedRealTimeChart = memo(() => {
   useEffect(() => {
     if (!container.current) return;
     
-    container.current.innerHTML = '<div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>';
+    container.current.innerHTML = '';
+    const widgetDiv = document.createElement('div');
+    widgetDiv.className = 'tradingview-widget-container__widget';
+    widgetDiv.style.height = '100%';
+    widgetDiv.style.width = '100%';
+    container.current.appendChild(widgetDiv);
 
     const script = document.createElement('script');
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
@@ -30,6 +35,12 @@ export const AdvancedRealTimeChart = memo(() => {
       "support_host": "https://www.tradingview.com"
     });
     container.current.appendChild(script);
+
+    return () => {
+      if (container.current) {
+        container.current.innerHTML = '';
+      }
+    };
   }, []);
 
   return <div className="tradingview-widget-container" ref={container} style={{ height: '480px', width: '100%' }}></div>;
@@ -41,8 +52,12 @@ export const TechnicalAnalysisWidget = memo(() => {
   useEffect(() => {
     if (!container.current) return;
     
-    // Standardize structure for consistency
-    container.current.innerHTML = '<div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>';
+    container.current.innerHTML = '';
+    const widgetDiv = document.createElement('div');
+    widgetDiv.className = 'tradingview-widget-container__widget';
+    widgetDiv.style.height = '100%';
+    widgetDiv.style.width = '100%';
+    container.current.appendChild(widgetDiv);
 
     const script = document.createElement('script');
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
@@ -60,9 +75,15 @@ export const TechnicalAnalysisWidget = memo(() => {
       "colorTheme": "light"
     });
     container.current.appendChild(script);
+
+    return () => {
+      if (container.current) {
+        container.current.innerHTML = '';
+      }
+    };
   }, []);
 
-  return <div className="tradingview-widget-container" ref={container} style={{ height: '350px', width: '100%' }}></div>;
+  return <div className="tradingview-widget-container" ref={container} style={{ height: '300px', width: '100%' }}></div>;
 });
 
 export const MiniChartWidget = memo(({ symbol, name }: { symbol: string, name: string }) => {
@@ -71,7 +92,12 @@ export const MiniChartWidget = memo(({ symbol, name }: { symbol: string, name: s
   useEffect(() => {
     if (!container.current) return;
     
-    container.current.innerHTML = '<div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>';
+    container.current.innerHTML = '';
+    const widgetDiv = document.createElement('div');
+    widgetDiv.className = 'tradingview-widget-container__widget';
+    widgetDiv.style.height = '100%';
+    widgetDiv.style.width = '100%';
+    container.current.appendChild(widgetDiv);
 
     const script = document.createElement('script');
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
@@ -89,7 +115,13 @@ export const MiniChartWidget = memo(({ symbol, name }: { symbol: string, name: s
       "largeChartUrl": ""
     });
     container.current.appendChild(script);
+
+    return () => {
+      if (container.current) {
+        container.current.innerHTML = '';
+      }
+    };
   }, [symbol]);
 
-  return <div className="tradingview-widget-container" ref={container} style={{ height: '200px', width: '100%' }}></div>;
+  return <div className="tradingview-widget-container" ref={container} style={{ height: '100%', width: '100%' }}></div>;
 });

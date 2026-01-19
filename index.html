@@ -5,34 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Giá Vàng Trực Tuyến - VnExpress Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              /* Standard Arial for Body text */
+              sans: ['Arial', 'Helvetica', 'sans-serif'],
+              /* Merriweather strictly for Titles */
               serif: ['Merriweather', 'serif'],
             },
             colors: {
               vne: {
-                red: '#9f224e', /* VnExpress Brand Color */
+                red: '#9f224e',
                 gray: '#757575',
                 bg: '#f7f7f7',
                 border: '#e5e5e5',
+                text: '#222222', 
               },
               gold: {
                 50: '#fffcf5',
                 100: '#fef5e0',
                 400: '#fabd42',
-                500: '#b48e3d', /* Muted elegant gold */
+                500: '#b48e3d',
                 600: '#9f7d32',
               },
               trend: {
-                up: '#0f7d4b', // Darker Green for news readability
-                down: '#bd0000', // Deep Red
-                flat: '#757575', // Neutral Gray
+                up: '#0f7d4b', 
+                down: '#bd0000',
+                flat: '#757575',
               }
+            },
+            fontSize: {
+              /* SENIOR FRIENDLY SIZES (Upscaled) */
+              'xs': ['13px', { lineHeight: '18px' }], /* Was 12px */
+              'sm': ['15px', { lineHeight: '22px' }], /* Was 14px */
+              'base': ['17px', { lineHeight: '26px' }], /* Was 16px */
+              'lg': ['19px', { lineHeight: '28px' }],
+              'xl': ['22px', { lineHeight: '30px' }],
+              '2xl': ['26px', { lineHeight: '34px' }],
+              '3xl': ['32px', { lineHeight: '1' }],
+              '4xl': ['40px', { lineHeight: '1' }],
             },
             boxShadow: {
               'news': '0 2px 8px rgba(0,0,0,0.06)',
@@ -58,6 +72,11 @@
 
       .tabular-nums {
         font-variant-numeric: tabular-nums;
+      }
+      
+      /* Increase visual weight for seniors */
+      strong, b {
+        font-weight: 700;
       }
     </style>
   <script type="importmap">

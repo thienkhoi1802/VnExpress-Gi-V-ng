@@ -86,9 +86,6 @@ const App: React.FC = () => {
 
             {/* Detailed Table */}
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
-               <div className="mb-2">
-                  <h2 className="font-serif text-lg font-bold text-gray-900">Bảng giá chi tiết</h2>
-               </div>
                <GoldTable 
                   data={data} 
                   historyData={historyData} 

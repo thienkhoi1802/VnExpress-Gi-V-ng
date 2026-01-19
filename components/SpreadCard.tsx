@@ -19,12 +19,12 @@ export const SpreadCard: React.FC<Props> = ({ data }) => {
   const diff = sjc.today.sell - worldPriceInVndTael;
 
   return (
-    <div className="bg-orange-50 border border-orange-100 rounded-lg p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+    <div className="bg-orange-50 border border-orange-100 p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
       
       {/* Dòng 1: Tiêu đề + Giá trị */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5 text-orange-800 shrink-0">
-          <div className="bg-white p-1 rounded-full shadow-sm">
+          <div className="bg-white p-1 shadow-sm">
              <TrendingUp size={14} className="text-orange-600" />
           </div>
           <span className="text-[11px] font-bold uppercase tracking-tight">Chênh lệch SJC / Thế giới:</span>

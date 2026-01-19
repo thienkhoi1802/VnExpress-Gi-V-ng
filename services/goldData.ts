@@ -170,18 +170,29 @@ export const getHistoryData = (): HistoryPoint[] => {
       // Volatility: 0.5%
       const noise = getRandomChange(currentPrices[p.id], 0.01);
       
-      let newPrice = currentPrices[p.id] + trend + noise;
+      let newSellPrice = currentPrices[p.id] + trend + noise;
       
       // Ensure we don't drift too far from today's actual price as we get closer
       if (i < 5) {
         // Smoothly interpolate to today's price in the last few days
-        const diff = p.today.sell - newPrice;
-        newPrice += diff / (i + 1);
+        const diff = p.today.sell - newSellPrice;
+        newSellPrice += diff / (i + 1);
       }
+      
+      // Calculate Buy price based on current spread ratio (roughly constant spread for mock)
+      const currentSpread = p.today.sell - p.today.buy;
+      const newBuyPrice = newSellPrice - currentSpread;
 
-      currentPrices[p.id] = newPrice;
-      // Round for display
-      dataPoint[p.id] = parseFloat(newPrice.toFixed(p.group === 'world' ? 1 : 2));
+      currentPrices[p.id] = newSellPrice;
+      
+      const fixedDigits = p.group === 'world' ? 1 : 2;
+      
+      // Legacy key support for sparklines (sell price)
+      dataPoint[p.id] = parseFloat(newSellPrice.toFixed(fixedDigits));
+      
+      // NEW KEYS for Chart (Explicit Buy and Sell)
+      dataPoint[`${p.id}_sell`] = parseFloat(newSellPrice.toFixed(fixedDigits));
+      dataPoint[`${p.id}_buy`] = parseFloat(newBuyPrice.toFixed(fixedDigits));
     });
 
     history.push(dataPoint);
