@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Giá Vàng Trực Tuyến - VnExpress Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Merriweather', 'serif'],
+            },
+            colors: {
+              vne: {
+                red: '#9f224e', /* VnExpress Brand Color */
+                gray: '#757575',
+                bg: '#f7f7f7',
+                border: '#e5e5e5',
+              },
+              gold: {
+                50: '#fffcf5',
+                100: '#fef5e0',
+                400: '#fabd42',
+                500: '#b48e3d', /* Muted elegant gold */
+                600: '#9f7d32',
+              },
+              trend: {
+                up: '#0f7d4b', // Darker Green for news readability
+                down: '#bd0000', // Deep Red
+                flat: '#757575', // Neutral Gray
+              }
+            },
+            boxShadow: {
+              'news': '0 2px 8px rgba(0,0,0,0.06)',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        background-color: #fcfcfc;
+        color: #222;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@0.460.0?external=react&dev",
+    "react": "https://esm.sh/react@18.3.1?dev",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime?dev",
+    "react-dom": "https://esm.sh/react-dom@18.3.1?dev",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?dev",
+    "recharts": "https://esm.sh/recharts@2.15.0?external=react,react-dom&dev",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
