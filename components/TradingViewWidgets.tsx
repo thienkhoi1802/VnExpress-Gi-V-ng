@@ -83,7 +83,7 @@ export const TechnicalAnalysisWidget = memo(() => {
     };
   }, []);
 
-  return <div className="tradingview-widget-container" ref={container} style={{ height: '300px', width: '100%' }}></div>;
+  return <div className="tradingview-widget-container" ref={container} style={{ height: '100%', width: '100%' }}></div>;
 });
 
 export const MiniChartWidget = memo(({ symbol, name }: { symbol: string, name: string }) => {

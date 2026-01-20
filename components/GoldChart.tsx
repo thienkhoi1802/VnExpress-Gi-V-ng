@@ -26,7 +26,6 @@ const TIME_RANGES: { key: TimeRange; label: string }[] = [
 ];
 
 // Updated Order: SJC | Jewelry | World
-// World Gold color changed from Blue to Dark Gray/Neutral to comply with "No Blue" rule.
 const CATEGORIES_CONFIG = [
   { key: 'sjc', label: 'Vàng SJC', productId: 'sjc_1l', color: '#16a34a' }, // Green
   { key: 'jewelry', label: 'Nữ Trang', productId: 'jewelry_9999', color: '#db2777' }, // Pink
@@ -61,6 +60,23 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     }));
   }, [products]);
 
+  // FIX: Reset or Update active keys when the incoming products change (e.g. Modal Open)
+  // We use the ID of the first product to detect if we switched contexts/products
+  const primaryProductId = products[0]?.id;
+
+  useEffect(() => {
+    if (categories.length > 0 && products.length <= 5) {
+        const defaultKey = categories[0].key;
+        setActiveKeys((prev) => {
+            // Only update if the current active key is different to prevent infinite loops
+            if (prev.length === 1 && prev[0] === defaultKey) {
+                return prev;
+            }
+            return [defaultKey];
+        });
+    }
+  }, [primaryProductId, products.length]); // Intentionally omit 'categories' to prevent loop from new references
+
   // Handler for Multi-select Toggle
   const toggleCategory = (key: string) => {
     setActiveKeys(prev => {
@@ -72,13 +88,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
         return [...prev, key];
     });
   };
-
-  // Ensure at least one category is active on mount/change
-  useEffect(() => {
-    if (activeKeys.length === 0 && categories.length > 0) {
-        setActiveKeys([categories[0].key]);
-    }
-  }, [categories]);
 
   // Helper to get product info for the Header (Use the first active one)
   const primaryActiveKey = activeKeys[0];
