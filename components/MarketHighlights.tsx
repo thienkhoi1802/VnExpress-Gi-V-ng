@@ -108,11 +108,11 @@ const MainCard = ({ product, worldProduct, label, onProductClick }: {
       onClick={() => onProductClick(product)}
       className="bg-white border border-gray-300 hover:border-[#9f224e] hover:shadow-md transition-all cursor-pointer group relative flex flex-col h-full shadow-sm rounded-sm overflow-hidden"
     >
-      <div className="px-3 sm:px-4 py-2 flex justify-between items-center border-b border-gray-200 bg-gray-50/50">
-          <h3 className="font-bold tracking-tight text-gray-900 text-[15px] sm:text-lg leading-tight font-serif truncate">
+      <div className="px-3 sm:px-4 py-2.5 flex justify-between items-center border-b border-gray-200 bg-gray-50/50">
+          <h3 className="font-bold tracking-tight text-gray-900 text-[20px] sm:text-[22px] leading-tight font-serif truncate">
               {label}
           </h3>
-          <span className="text-[10px] sm:text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
+          <span className="text-[11px] sm:text-[12px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
       </div>
 
       <div className="px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-2 gap-1 sm:gap-4 flex-grow items-start font-sans">
