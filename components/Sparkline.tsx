@@ -10,9 +10,9 @@ interface SparklineProps {
 }
 
 export const Sparkline: React.FC<SparklineProps> = ({ data, dataKey, trend = 'flat' }) => {
-  // Get last 7 days for the sparkline
+  // SEO Requirement: Hiển thị xu hướng trong 30 ngày (1 tháng)
   const chartData = useMemo(() => {
-    return data.slice(-7);
+    return data.slice(-30);
   }, [data]);
 
   const strokeColor = trend === 'up' ? '#16a34a' : trend === 'down' ? '#dc2626' : '#9ca3af';

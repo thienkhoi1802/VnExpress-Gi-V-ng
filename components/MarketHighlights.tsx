@@ -83,7 +83,8 @@ const WorldStrip = ({
                         </div>
                     </div>
 
-                    <div className="w-[70px] h-[32px] sm:hidden shrink-0 pl-3 flex items-center justify-center border-l border-gray-100 ml-2">
+                    {/* Biểu đồ nhỏ Mobile với diện tích lớn hơn (110px) */}
+                    <div className="w-[110px] h-[36px] sm:hidden shrink-0 pl-3 flex items-center justify-center border-l border-gray-100 ml-2">
                         <Sparkline 
                             data={historyData} 
                             dataKey={product.id} 
@@ -93,7 +94,7 @@ const WorldStrip = ({
                 </div>
 
                 <div className="flex items-center justify-between sm:justify-end border-t border-gray-100 sm:border-t-0 pt-2 sm:pt-0 mt-1">
-                    <span className="sm:hidden text-xs text-gray-500 font-medium font-sans lowercase">xem biểu đồ &amp; phân tích</span>
+                    <span className="sm:hidden text-xs text-gray-500 font-medium font-sans lowercase text-[11px]">xem biểu đồ &amp; phân tích</span>
                     <span className="flex items-center gap-1 text-sm font-bold text-[#9f224e] group-hover:underline decoration-[#9f224e]/30 underline-offset-2 font-sans whitespace-nowrap">
                         Chi tiết <ChevronRight size={18} strokeWidth={2.5} />
                     </span>
@@ -180,7 +181,8 @@ const MainCard = ({
               </div>
           </div>
 
-          <div className="w-[70px] h-[50px] sm:hidden shrink-0 pr-3 flex items-center justify-center border-l border-gray-100 ml-1">
+          {/* Biểu đồ Sparkline diện tích lớn hơn trên Mobile (110px) */}
+          <div className="w-[110px] h-[60px] sm:hidden shrink-0 pr-3 flex items-center justify-center border-l border-gray-100 ml-1 py-2">
               <Sparkline 
                 data={historyData} 
                 dataKey={product.id} 
