@@ -211,9 +211,9 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                     <button
                         key={range.key}
                         onClick={() => setTimeRange(range.key)}
-                        className={`px-2 py-1 text-xs font-medium transition-all whitespace-nowrap font-sans ${
+                        className={`px-3 py-1.5 text-xs font-medium transition-all whitespace-nowrap font-sans ${
                             timeRange === range.key 
-                            ? 'bg-white text-[#9f224e] shadow-sm font-bold' 
+                            ? 'bg-[#9f224e] text-white shadow-md font-bold' 
                             : 'text-gray-500 hover:text-gray-800'
                         }`}
                     >

@@ -115,33 +115,35 @@ const MainCard = ({ product, worldProduct, label, onProductClick }: {
           <span className="text-[10px] sm:text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
       </div>
 
-      <div className="px-2 sm:px-4 py-4 sm:py-8 grid grid-cols-2 gap-1 sm:gap-4 flex-grow items-start font-sans">
+      <div className="px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-2 gap-1 sm:gap-4 flex-grow items-start font-sans">
           <div className="flex flex-col border-r border-gray-100 pr-1 sm:pr-2 min-w-0">
-              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1 sm:mb-2">Bán ra</span>
-              <div className="flex items-end flex-wrap sm:flex-nowrap">
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[28px] sm:text-[44px] shrink-0">
+              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1">Bán ra</span>
+              <div className="flex flex-col items-start">
+                  <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[28px] sm:text-[44px]">
                     {product.today.sell.toLocaleString('vi-VN')}
                   </span>
-                  <div className="flex flex-col ml-1 sm:ml-2 pb-0.5 sm:pb-1.5 shrink-0">
-                    <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                        {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                        <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                    </div>
+                  <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black mt-1.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
+                      {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
+                      <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                      <span className="text-[11px] sm:text-[13px] font-bold ml-1 opacity-90">
+                          ({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)
+                      </span>
                   </div>
               </div>
           </div>
 
           <div className="flex flex-col pl-1 sm:pl-2 min-w-0">
-              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1 sm:mb-2">Mua vào</span>
-              <div className="flex items-end flex-wrap sm:flex-nowrap">
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[28px] sm:text-[44px] shrink-0">
+              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1">Mua vào</span>
+              <div className="flex flex-col items-start">
+                  <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[28px] sm:text-[44px]">
                     {product.today.buy.toLocaleString('vi-VN')}
                   </span>
-                  <div className="flex flex-col ml-1 sm:ml-2 pb-0.5 sm:pb-1.5 shrink-0">
-                    <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                        {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                        <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                    </div>
+                  <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black mt-1.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
+                      {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
+                      <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                      <span className="text-[11px] sm:text-[13px] font-bold ml-1 opacity-90">
+                          ({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)
+                      </span>
                   </div>
               </div>
           </div>
@@ -273,7 +275,7 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
 
                          {/* Giá Mua (Secondary - Smaller & Lighter) */}
                          <div className="flex items-center justify-between py-2 border-t border-gray-50">
-                             <span className="text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wide opacity-80">Giá mua</span>
+                             <span className="text-gray-400 text-[10px] sm:text-[10px] font-bold uppercase tracking-wide opacity-80">Giá mua</span>
                              <span className="text-xl sm:text-2xl font-semibold text-gray-400 tabular-nums">
                                 {ask.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                              </span>
@@ -350,6 +352,9 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                 <div className="bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden font-sans">
                     <div className="px-3 py-2 border-b border-gray-50 bg-white">
                         <h2 className="text-sm font-serif font-bold text-gray-900">Lịch sử giá vàng</h2>
+                        <div className="text-[11px] sm:text-xs text-gray-400 font-medium mt-0.5">
+                            Cập nhật: {world.updatedAt}
+                        </div>
                     </div>
                     <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                         <ChartImage src="https://www.kitco.com/chart-images/images/live/gold.gif" alt="Live 24hrs" />
