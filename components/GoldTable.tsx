@@ -113,14 +113,14 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
             Triệu / lượng
           </span>
         </div>
-        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-tight hidden sm:block">Click vào tiêu đề để sắp xếp</div>
+        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-tight hidden sm:block font-sans">Sắp xếp theo ý bạn</div>
       </div>
 
       <div className="w-full overflow-x-auto no-scrollbar">
         <table className="w-full text-left border-collapse min-w-[320px]">
           <thead>
             {/* Tầng 1: Tiêu đề chính */}
-            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[11px] sm:text-[13px] text-gray-500 font-bold uppercase tracking-wider">
+            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[12px] sm:text-[16px] text-gray-600 font-bold">
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('name')}
@@ -131,17 +131,17 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                  </div>
               </th>
               
-              <th colSpan={2} className="p-1 sm:p-2 text-center border-r border-gray-200 bg-white/50">
+              <th colSpan={2} className="p-1 sm:p-3 text-center border-r border-gray-200 bg-white/50">
                 <div className="flex flex-col items-center">
                     <span className="text-[#9f224e] font-black">Giá vàng hôm nay</span>
-                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 normal-case">({todayStr})</span>
+                    <span className="text-[10px] sm:text-[13px] font-medium text-gray-500 mt-0.5">({todayStr})</span>
                 </div>
               </th>
 
-              <th colSpan={2} className="hidden md:table-cell p-1 sm:p-2 text-center border-r border-gray-200">
+              <th colSpan={2} className="hidden md:table-cell p-1 sm:p-3 text-center border-r border-gray-200">
                 <div className="flex flex-col items-center">
-                    <span>Giá vàng hôm qua</span>
-                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 normal-case">({yesterdayStr})</span>
+                    <span className="text-gray-700">Giá vàng hôm qua</span>
+                    <span className="text-[10px] sm:text-[13px] font-medium text-gray-400 mt-0.5">({yesterdayStr})</span>
                 </div>
               </th>
 
@@ -155,18 +155,18 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                         <span className="text-gray-800">Xu hướng</span>
                         <ChevronsUpDown size={12} className={sortConfig.key === 'change30d' ? 'text-[#9f224e]' : 'opacity-30'} />
                     </div>
-                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 normal-case">(Trong 30 ngày)</span>
+                    <span className="text-[9px] sm:text-[12px] font-medium text-gray-400 mt-0.5">(Trong 30 ngày)</span>
                 </div>
               </th>
             </tr>
 
             {/* Tầng 2: Mua/Bán với Sorting */}
-            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[10px] sm:text-[12px] text-gray-600 font-bold uppercase">
-              <SortHeader label="Mua" sortKey="todayBuy" className="p-1.5 sm:p-2 border-r border-gray-100" />
-              <SortHeader label="Bán" sortKey="todaySell" className="p-1.5 sm:p-2 border-r border-gray-200" />
+            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[11px] sm:text-[14px] text-gray-500 font-bold">
+              <SortHeader label="Mua" sortKey="todayBuy" className="p-1.5 sm:p-2.5 border-r border-gray-100" />
+              <SortHeader label="Bán" sortKey="todaySell" className="p-1.5 sm:p-2.5 border-r border-gray-100" />
               
-              <SortHeader label="Mua" sortKey="yesterdayBuy" className="hidden md:table-cell p-1.5 sm:p-2 border-r border-gray-100" />
-              <SortHeader label="Bán" sortKey="yesterdaySell" className="hidden md:table-cell p-1.5 sm:p-2 border-r border-gray-200" />
+              <SortHeader label="Mua" sortKey="yesterdayBuy" className="hidden md:table-cell p-1.5 sm:p-2.5 border-r border-gray-100" />
+              <SortHeader label="Bán" sortKey="yesterdaySell" className="hidden md:table-cell p-1.5 sm:p-2.5 border-r border-gray-100" />
             </tr>
           </thead>
 
@@ -235,11 +235,11 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
       <div className="bg-white p-2.5 sm:p-4 border-t border-gray-100 font-sans">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-xs text-gray-500">
             <div className="flex items-center gap-3 sm:gap-6">
-                <div className="flex items-center gap-1 font-bold text-gray-800 uppercase tracking-tighter">
-                    <TrendingUp size={12} className="text-[#007f3f]" /> <span>TĂNG</span>
+                <div className="flex items-center gap-1 font-bold text-gray-700 tracking-tight">
+                    <TrendingUp size={12} className="text-[#007f3f]" /> <span>Tăng</span>
                 </div>
-                <div className="flex items-center gap-1 font-bold text-gray-800 uppercase tracking-tighter">
-                    <TrendingDown size={12} className="text-[#d60000]" /> <span>GIẢM</span>
+                <div className="flex items-center gap-1 font-bold text-gray-700 tracking-tight">
+                    <TrendingDown size={12} className="text-[#d60000]" /> <span>Giảm</span>
                 </div>
             </div>
             <div className="italic text-[9px] sm:text-[11px] text-gray-400 font-medium ml-auto">

@@ -32,7 +32,7 @@ const TrendInline = ({ value, percent }: { value: number, percent?: number }) =>
   const color = isUp ? 'text-[#0f7d4b]' : isDown ? 'text-[#bd0000]' : 'text-gray-500';
 
   return (
-    <div className={`flex items-center gap-1 text-[14px] sm:text-[17px] font-bold ${color} tabular-nums whitespace-nowrap`}>
+    <div className={`flex items-center gap-1 text-[13px] sm:text-[15px] font-bold ${color} tabular-nums whitespace-nowrap`}>
       <span>{isUp ? '+' : ''}{value.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
       {percent !== undefined && (
         <span>({isUp ? '+' : ''}{percent.toFixed(2)}%)</span>
@@ -179,16 +179,13 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
     if (!world) return null;
 
     const currentRate = selectedCurrency.rate;
-    const bid = world.today.buy * currentRate;
-    const ask = world.today.sell * currentRate;
+    const bid = world.today.buy * currentRate; // Labelled: Giá bán
+    const ask = world.today.sell * currentRate; // Labelled: Giá mua
     const change = world.changeSell * currentRate;
     const percent = world.percentSell;
 
     const high = (world.today.sell * 1.012) * currentRate;
     const low = (world.today.buy * 0.992) * currentRate;
-
-    const USD_VND_RATE = 25450;
-    const ounceInVnd = world.today.sell * USD_VND_RATE;
 
     const conversions = [
       { unit: 'Ounce', val: bid, change: change },
@@ -217,7 +214,7 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
     );
 
     return (
-        <div className="flex flex-col gap-4 sm:gap-5 animate-in fade-in slide-in-from-right-2 duration-300 pb-4">
+        <div className="flex flex-col gap-3 sm:gap-4 animate-in fade-in slide-in-from-right-2 duration-300 pb-4">
             {zoomedImage && (
               <div 
                 className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-10 animate-in fade-in duration-200"
@@ -230,24 +227,24 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
               </div>
             )}
 
-            <div className="bg-white border border-gray-200 shadow-sm flex flex-col font-sans rounded-none overflow-hidden p-3 sm:p-5">
+            <div className="bg-white border border-gray-200 shadow-sm flex flex-col font-sans rounded-none overflow-hidden p-3 sm:p-4">
                 <div className="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-                    <h2 className="text-lg sm:text-xl font-serif font-bold text-[#111] leading-tight">
+                    <h2 className="text-[15px] sm:text-lg font-serif font-bold text-[#111] leading-tight">
                         Giá vàng thế giới
                     </h2>
                     <div className="relative">
                         <button 
                             onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
-                            className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 px-2.5 py-1.5 text-xs font-bold text-gray-800 transition-colors rounded-sm shadow-sm"
+                            className="flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 px-2 py-1 text-xs font-bold text-gray-800 transition-colors rounded-sm shadow-sm"
                         >
-                            <span className="text-base">{selectedCurrency.flag}</span>
+                            <span className="text-sm">{selectedCurrency.flag}</span>
                             <span>{selectedCurrency.code}</span>
-                            <ChevronDown size={14} />
+                            <ChevronDown size={12} />
                         </button>
                         {isCurrencyOpen && (
-                          <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-gray-200 shadow-xl z-20 py-1 rounded-sm">
+                          <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 shadow-xl z-20 py-1 rounded-sm">
                             {CURRENCIES.map(curr => (
-                              <button key={curr.code} onClick={() => {setSelectedCurrency(curr); setIsCurrencyOpen(false)}} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold hover:bg-gray-50 text-left">
+                              <button key={curr.code} onClick={() => {setSelectedCurrency(curr); setIsCurrencyOpen(false)}} className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold hover:bg-gray-50 text-left">
                                 <span>{curr.flag}</span>
                                 <span>{curr.code}</span>
                                 {curr.code === selectedCurrency.code && <Check size={12} className="ml-auto text-vne-red"/>}
@@ -258,39 +255,41 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-4 sm:gap-5">
-                    {/* Main Pricing Info - Compacted */}
-                    <div className="space-y-2 sm:space-y-3">
-                         <div className="flex flex-col gap-0.5">
-                            <span className="text-gray-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Bid</span>
-                            <div className="flex flex-col">
-                                <span className="text-[36px] sm:text-[52px] font-bold text-[#333] leading-none tabular-nums tracking-tighter">
+                <div className="flex flex-col gap-3 sm:gap-5">
+                    {/* Main Pricing Info - Compacted & Optimized per request */}
+                    <div className="space-y-3 sm:space-y-4">
+                         {/* Giá Bán (Primary - Balanced Size & Bold) */}
+                         <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-gray-400 text-[11px] sm:text-xs font-bold uppercase tracking-widest shrink-0">Giá bán</span>
+                            <div className="flex flex-col items-end">
+                                <span className="text-[30px] sm:text-[42px] font-black text-[#111] leading-none tabular-nums tracking-tighter">
                                     {bid.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </span>
-                                <div className="mt-1">
+                                <div className="mt-1.5">
                                     <TrendInline value={change} percent={percent} />
                                 </div>
                             </div>
                          </div>
 
-                         <div className="flex items-center justify-between py-2 sm:py-3 border-t border-gray-50">
-                             <span className="text-gray-500 text-xs sm:text-base font-medium">Ask</span>
-                             <span className="text-base sm:text-xl font-bold text-[#444] tabular-nums">
+                         {/* Giá Mua (Secondary - Smaller & Lighter) */}
+                         <div className="flex items-center justify-between py-2 border-t border-gray-50">
+                             <span className="text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wide opacity-80">Giá mua</span>
+                             <span className="text-xl sm:text-2xl font-semibold text-gray-400 tabular-nums">
                                 {ask.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                              </span>
                          </div>
                     </div>
 
                     {/* Unit Conversion List - Tighter padding */}
-                    <div className="flex flex-col border-t border-gray-50 pt-4">
+                    <div className="flex flex-col border-t border-gray-50 pt-2">
                         {conversions.map((item, idx) => (
-                            <div key={idx} className="flex items-center justify-between py-1 sm:py-1.5 text-[13px] sm:text-base border-b border-gray-50/50 last:border-0">
+                            <div key={idx} className="flex items-center justify-between py-1.5 text-[12px] sm:text-[14px] border-b border-gray-50/50 last:border-0">
                                 <span className="font-bold text-gray-700">{item.unit}</span>
-                                <div className="flex items-center gap-4 sm:gap-10">
+                                <div className="flex items-center gap-3 sm:gap-8">
                                     <span className="font-medium text-gray-600 tabular-nums">
                                         {item.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
-                                    <span className={`font-bold tabular-nums min-w-[65px] text-right ${item.change >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>
+                                    <span className={`font-bold tabular-nums min-w-[60px] text-right ${item.change >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>
                                         {item.change >= 0 ? '+' : ''}{item.change.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
                                 </div>
@@ -299,60 +298,60 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                     </div>
 
                     {/* Day's Range Visualizer - Smaller font */}
-                    <div className="pt-3 space-y-2">
-                         <div className="flex justify-between text-[13px] sm:text-base font-bold text-gray-600 tabular-nums">
+                    <div className="pt-2 space-y-1.5">
+                         <div className="flex justify-between text-[11px] sm:text-[13px] font-bold text-gray-500 tabular-nums">
                             <span>{low.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
                             <span>{high.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
                          </div>
-                         <div className="relative h-1 w-full bg-gray-200">
+                         <div className="relative h-1 w-full bg-gray-100 rounded-full">
                              <div 
-                                className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-[#111] border-2 border-white rounded-full shadow-sm"
+                                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-[#111] border-2 border-white rounded-full shadow-sm"
                                 style={{ left: `${((bid - low) / (high - low)) * 100}%` }}
                              ></div>
                          </div>
-                         <div className="text-center text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                         <div className="text-center text-[9px] text-gray-400 font-bold uppercase tracking-widest">
                              Day's Range
                          </div>
                     </div>
 
                     {/* Vietnamese Caption Texts - Compact */}
-                    <div className="mt-2 bg-[#f0f9ff] border border-blue-100 p-3 rounded-sm space-y-0.5">
-                        <p className="text-[13px] sm:text-[15px] text-[#1e293b] leading-normal font-sans text-left">
+                    <div className="mt-1 bg-[#f0f9ff] border border-blue-50 p-3 rounded-sm space-y-0.5">
+                        <p className="text-[13px] sm:text-[14px] text-[#1e293b] leading-normal font-sans text-left">
                             Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">117.795.325 VNĐ/Ounce</span>
                         </p>
-                        <p className="text-[12px] sm:text-[14px] text-[#475569] font-sans text-left">
+                        <p className="text-[12px] sm:text-[13px] text-[#475569] font-sans text-left">
                             Giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
                         </p>
                     </div>
 
                     <div className="flex items-center justify-start gap-1 text-[9px] text-gray-400 font-bold uppercase tracking-wide opacity-50">
-                         <Clock size={11} /> Cập nhật: {world.updatedAt} • Nguồn: Kitco, TradingView
+                         <Clock size={10} /> {world.updatedAt} • Kitco, TradingView
                     </div>
                 </div>
             </div>
 
             {/* TradingView & Technical Analysis */}
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-4">
                 <div className="bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col rounded-sm">
-                    <div className="px-3 py-3 border-b border-gray-50 bg-white">
-                        <h2 className="text-base font-serif font-bold text-gray-900">Biểu đồ trực tuyến (XAU/USD)</h2>
+                    <div className="px-3 py-2 border-b border-gray-50 bg-white">
+                        <h2 className="text-sm font-serif font-bold text-gray-900">Biểu đồ trực tuyến (XAU/USD)</h2>
                     </div>
                     <div className="border-b border-gray-100"><AdvancedRealTimeChart /></div>
                 </div>
 
                 <div className="bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col rounded-sm">
-                    <div className="px-3 py-3 border-b border-gray-50 bg-white">
-                        <h2 className="text-base font-serif font-bold text-gray-900">Phân tích kỹ thuật</h2>
+                    <div className="px-3 py-2 border-b border-gray-50 bg-white">
+                        <h2 className="text-sm font-serif font-bold text-gray-900">Phân tích kỹ thuật</h2>
                     </div>
-                    <div className="h-[400px] sm:h-[450px]"><TechnicalAnalysisWidget /></div>
+                    <div className="h-[380px] sm:h-[420px]"><TechnicalAnalysisWidget /></div>
                 </div>
 
                 {/* Historical Charts with Zoom */}
                 <div className="bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden font-sans">
-                    <div className="px-3 py-3 border-b border-gray-50 bg-white">
-                        <h2 className="text-base font-serif font-bold text-gray-900">Lịch sử giá vàng</h2>
+                    <div className="px-3 py-2 border-b border-gray-50 bg-white">
+                        <h2 className="text-sm font-serif font-bold text-gray-900">Lịch sử giá vàng</h2>
                     </div>
-                    <div className="p-3 sm:p-5 space-y-4 sm:space-y-5">
+                    <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                         <ChartImage src="https://www.kitco.com/chart-images/images/live/gold.gif" alt="Live 24hrs" />
                         <ChartImage src="https://www.kitco.com/chart-images/images/live/nygold.gif" alt="Live New York" />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
@@ -363,7 +362,6 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                              <ChartImage alt="5 Năm" src="https://www.kitco.com/chart-images/LFgif/AU1825nyb.gif" />
                              <ChartImage alt="10 Năm" src="https://www.kitco.com/chart-images/LFgif/AU3650nyb.gif" />
                         </div>
-                        <p className="text-[9px] text-gray-400 text-center uppercase font-bold tracking-widest pt-2 opacity-50">Data provided by Kitco.com (Refresh 1h)</p>
                     </div>
                 </div>
             </div>
