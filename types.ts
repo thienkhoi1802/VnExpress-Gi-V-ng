@@ -26,7 +26,6 @@ export interface ComputedGoldProduct extends GoldProduct {
   percentSell: number;
   trendBuy: Trend;
   trendSell: Trend;
-  spread: number; // Difference between Buy and Sell
 }
 
 // Map key is product ID, value is price
@@ -36,4 +35,4 @@ export interface HistoryPoint {
   [key: string]: string | number; 
 }
 
-export type TimeRange = '1w' | '2w' | '3m' | '6m' | '1y' | 'all';
+export type TimeRange = '1w' | '1m' | '6m' | '1y' | 'all';

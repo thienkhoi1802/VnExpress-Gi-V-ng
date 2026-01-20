@@ -18,7 +18,7 @@ export const Sparkline: React.FC<SparklineProps> = ({ data, dataKey, trend = 'fl
   const strokeColor = trend === 'up' ? '#16a34a' : trend === 'down' ? '#dc2626' : '#9ca3af';
 
   return (
-    <div className="h-[35px] w-full" style={{ minWidth: '80px' }}>
+    <div className="h-full w-full" style={{ minWidth: '40px' }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData}>
           <YAxis domain={['dataMin', 'dataMax']} hide={true} />

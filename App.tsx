@@ -14,18 +14,14 @@ const App: React.FC = () => {
   const [historyData, setHistoryData] = useState<HistoryPoint[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<ComputedGoldProduct | null>(null);
   
-  // Lift state up to control global view
   const [activeTab, setActiveTab] = useState<'vn' | 'world'>('vn');
 
   useEffect(() => {
-    // Initial fetch
     setHistoryData(getHistoryData());
 
-    // Auto-update every 5 minutes (5 * 60 * 1000 ms)
     const intervalId = setInterval(() => {
       const freshData = getGoldData();
       setData(freshData);
-      // We don't update historyData here as it's historical, but in a real app we might append points
     }, 5 * 60 * 1000);
 
     return () => clearInterval(intervalId);
@@ -35,16 +31,13 @@ const App: React.FC = () => {
     setSelectedProduct(product);
   };
 
-  // Find key products for Sticky Bar
   const sjc = data.find(p => p.group === 'sjc');
   const world = data.find(p => p.group === 'world');
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] font-sans text-[#111]">
-      {/* Sticky Mini Bar */}
+    <div className="min-h-screen bg-[#f8f9fa] font-sans text-[#111] overflow-x-hidden">
       <StickyMiniBar sjc={sjc} world={world} updatedAt={data[0]?.updatedAt} />
 
-      {/* Header Section */}
       <header className="bg-white border-b border-[#e5e5e5] py-3">
         <div className="max-w-[760px] mx-auto px-3 sm:px-4">
           <div className="flex items-center justify-between mb-2">
@@ -69,10 +62,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content Container (Fixed 760px) */}
-      <main className="max-w-[760px] mx-auto px-3 sm:px-4 py-4 space-y-6">
-        
-        {/* Market Highlights (Tabs inside) */}
+      <main className="max-w-[760px] mx-auto px-3 sm:px-4 py-4 space-y-6 overflow-hidden">
         <section>
           <MarketHighlights 
             data={data} 
@@ -82,10 +72,8 @@ const App: React.FC = () => {
           />
         </section>
 
-        {/* CONDITIONALLY RENDER DOMESTIC SECTIONS ONLY IF TAB IS 'VN' */}
         {activeTab === 'vn' && (
           <>
-            {/* Chart Overview */}
             <section className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <GoldChart 
                 products={data} 
@@ -93,7 +81,6 @@ const App: React.FC = () => {
               />
             </section>
 
-            {/* Detailed Table */}
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
                <GoldTable 
                   data={data} 
@@ -102,16 +89,13 @@ const App: React.FC = () => {
                />
             </section>
 
-            {/* Calculator */}
             <section className="animate-in fade-in slide-in-from-bottom-6 duration-500 delay-100">
                <Calculator products={data} />
             </section>
           </>
         )}
-
       </main>
 
-      {/* Modal */}
       <ChartModal 
         product={selectedProduct}
         worldProduct={world}

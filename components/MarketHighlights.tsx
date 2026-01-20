@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ComputedGoldProduct } from '../types';
-import { ArrowUp, ArrowDown, Minus, BarChart2, Globe, ChevronRight, ChevronDown, Check, Activity, TrendingUp, Info, TrendingDown, History } from 'lucide-react';
+import { ArrowUp, ArrowDown, Minus, Globe, ChevronRight, ChevronDown, Check, TrendingUp, Info, TrendingDown, X, ZoomIn } from 'lucide-react';
 import { AdvancedRealTimeChart, TechnicalAnalysisWidget } from './TradingViewWidgets';
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
   setActiveTab: (tab: 'vn' | 'world') => void;
 }
 
-// Exchange rates mock
 const CURRENCIES = [
   { code: 'USD', symbol: '$', rate: 1, flag: '🇺🇸' },
   { code: 'EUR', symbol: '€', rate: 0.92, flag: '🇪🇺' },
@@ -20,15 +19,6 @@ const CURRENCIES = [
   { code: 'CAD', symbol: 'C$', rate: 1.35, flag: '🇨🇦' },
 ];
 
-const HISTORY_CHARTS = [
-    { title: '30 Ngày', src: 'https://www.kitco.com/chart-images/LFgif/AU0030lnb.gif' },
-    { title: '60 Ngày', src: 'https://www.kitco.com/chart-images/LFgif/AU0060lnb.gif' },
-    { title: '6 Tháng', src: 'https://www.kitco.com/chart-images/LFgif/AU0182nyb.gif' },
-    { title: '1 Năm', src: 'https://www.kitco.com/chart-images/LFgif/AU0365nyb.gif' },
-    { title: '5 Năm', src: 'https://www.kitco.com/chart-images/LFgif/AU1825nyb.gif' },
-    { title: '10 Năm', src: 'https://www.kitco.com/chart-images/LFgif/AU3650nyb.gif' },
-];
-
 const VietnamFlag = () => (
   <svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-sm ring-1 ring-black/5">
     <rect width="24" height="16" fill="#DA251D"/>
@@ -36,20 +26,16 @@ const VietnamFlag = () => (
   </svg>
 );
 
-const TrendInline = ({ value, percent }: { value: number, percent: number }) => {
+const TrendInline = ({ value }: { value: number }) => {
   const isUp = value > 0;
   const isDown = value < 0;
-  const color = isUp ? 'text-[#007f3f]' : isDown ? 'text-[#d60000]' : 'text-gray-600';
+  const color = isUp ? 'text-trend-up' : isDown ? 'text-trend-down' : 'text-gray-500';
   const Icon = isUp ? ArrowUp : isDown ? ArrowDown : Minus;
 
   return (
-    <div className={`flex items-center gap-1 text-sm font-bold ${color} tabular-nums mt-1`}>
-      <Icon size={16} strokeWidth={3} />
-      {percent !== 0 ? (
-          <span className="whitespace-nowrap">{Math.abs(percent).toFixed(1)}% <span className="text-[11px] font-normal text-gray-500 ml-0.5 font-sans hidden sm:inline">vs hôm qua</span></span>
-      ) : (
-          <span className="text-[11px] font-normal text-gray-500 font-sans">0%</span>
-      )}
+    <div className={`flex items-center gap-0.5 text-[12px] sm:text-[16px] font-black ${color} tabular-nums whitespace-nowrap`}>
+      <Icon size={12} className="sm:w-[14px]" strokeWidth={4} />
+      <span>{value !== 0 ? Math.abs(value).toLocaleString('vi-VN', { minimumFractionDigits: 1 }) : '0'}</span>
     </div>
   );
 };
@@ -64,16 +50,15 @@ const WorldStrip = ({ product, setActiveTab }: { product?: ComputedGoldProduct, 
             className="bg-white border border-gray-300 shadow-sm p-3 sm:px-4 sm:py-4 cursor-pointer hover:border-[#9f224e] hover:shadow-md transition-all group rounded-sm"
         >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 flex-1">
                     <div className="flex items-center gap-2">
-                         <Globe size={18} className="text-[#9f224e] sm:hidden" />
                          <h3 className="text-base font-bold text-[#9f224e] font-serif shrink-0">
                             Vàng thế giới
                         </h3>
                     </div>
                     <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
                     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                         <span className="text-2xl sm:text-3xl font-black text-gray-900 tabular-nums font-sans tracking-tight">
+                         <span className="text-xl sm:text-2xl font-black text-gray-900 tabular-nums font-sans tracking-tight">
                             {product.today.sell.toLocaleString()}
                             <span className="text-sm font-bold text-gray-600 ml-1">USD</span>
                          </span>
@@ -85,8 +70,8 @@ const WorldStrip = ({ product, setActiveTab }: { product?: ComputedGoldProduct, 
                          </span>
                     </div>
                 </div>
-                <div className="flex items-center justify-between sm:justify-end border-t border-gray-100 sm:border-t-0 pt-2 sm:pt-0 mt-1 sm:mt-0">
-                    <span className="sm:hidden text-xs text-gray-500 font-medium font-sans">Xem biểu đồ & phân tích</span>
+                <div className="flex items-center justify-between sm:justify-end border-t border-gray-100 sm:border-t-0 pt-2 sm:pt-0 mt-1">
+                    <span className="sm:hidden text-xs text-gray-500 font-medium font-sans lowercase">xem biểu đồ & phân tích</span>
                     <span className="flex items-center gap-1 text-sm font-bold text-[#9f224e] group-hover:underline decoration-[#9f224e]/30 underline-offset-2 font-sans whitespace-nowrap">
                         Chi tiết <ChevronRight size={18} strokeWidth={2.5} />
                     </span>
@@ -96,11 +81,10 @@ const WorldStrip = ({ product, setActiveTab }: { product?: ComputedGoldProduct, 
     )
 }
 
-const MainCard = ({ product, worldProduct, label, highlight = false, onProductClick }: { 
+const MainCard = ({ product, worldProduct, label, onProductClick }: { 
     product?: ComputedGoldProduct,
     worldProduct?: ComputedGoldProduct,
     label: string, 
-    highlight?: boolean, 
     onProductClick: (p: ComputedGoldProduct) => void,
 }) => {
   if (!product) return null;
@@ -114,62 +98,58 @@ const MainCard = ({ product, worldProduct, label, highlight = false, onProductCl
      diffTextValue = `${diff > 0 ? '+' : ''}${diff.toLocaleString('vi-VN', {maximumFractionDigits: 2})}`;
   }
 
+  const labelStyle = "text-gray-500 text-[13px] sm:text-[15px] font-normal tracking-tight";
+  const valueStyle = "font-bold text-gray-900 tabular-nums text-[14px] sm:text-[18px]";
+  const unitStyle = "text-[11px] font-bold text-gray-500 ml-1";
+
   return (
     <div 
       onClick={() => onProductClick(product)}
       className="bg-white border border-gray-300 hover:border-[#9f224e] hover:shadow-md transition-all cursor-pointer group relative flex flex-col h-full shadow-sm rounded-sm overflow-hidden"
     >
-      {/* 1. Header Area */}
-      <div className="px-3 sm:px-4 py-3 flex justify-between items-center border-b border-gray-200 bg-gray-50/50">
-          <h3 className="font-bold tracking-tight text-gray-900 text-base sm:text-lg leading-tight font-serif truncate mr-2">
+      <div className="px-3 sm:px-4 py-2 flex justify-between items-center border-b border-gray-200 bg-gray-50/50">
+          <h3 className="font-bold tracking-tight text-gray-900 text-[15px] sm:text-lg leading-tight font-serif truncate">
               {label}
           </h3>
-          <div className="text-gray-400 group-hover:text-[#9f224e] transition-colors">
-              <BarChart2 size={20} />
+          <span className="text-[10px] sm:text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
+      </div>
+
+      <div className="px-2 sm:px-4 py-4 sm:py-8 grid grid-cols-2 gap-1 sm:gap-4 flex-grow items-start font-sans">
+          <div className="flex flex-col border-r border-gray-100 pr-1 sm:pr-2 min-w-0">
+              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1 sm:mb-2">Bán ra</span>
+              <div className="flex items-end flex-wrap sm:flex-nowrap">
+                  <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[28px] sm:text-[44px] shrink-0">
+                    {product.today.sell.toLocaleString('vi-VN')}
+                  </span>
+                  <div className="flex flex-col ml-1 sm:ml-2 pb-0.5 sm:pb-1.5 shrink-0">
+                      <TrendInline value={product.changeSell} />
+                  </div>
+              </div>
+          </div>
+
+          <div className="flex flex-col pl-1 sm:pl-2 min-w-0">
+              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1 sm:mb-2">Mua vào</span>
+              <div className="flex items-end flex-wrap sm:flex-nowrap">
+                  <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[28px] sm:text-[44px] shrink-0">
+                    {product.today.buy.toLocaleString('vi-VN')}
+                  </span>
+                  <div className="flex flex-col ml-1 sm:ml-2 pb-0.5 sm:pb-1.5 shrink-0">
+                      <TrendInline value={product.changeBuy} />
+                  </div>
+              </div>
           </div>
       </div>
 
-      {/* 2. Prices Area - Balanced Font Sizes */}
-      <div className="px-3 sm:px-4 py-5 grid grid-cols-2 gap-2 sm:gap-4 flex-grow items-start font-sans">
-          {/* Left Col: Sell Price - RED */}
-          <div className="flex flex-col border-r border-gray-100 pr-2">
-              <span className="text-[11px] sm:text-xs text-gray-500 font-bold mb-1.5 uppercase">Bán ra</span>
-              <span className="font-black tabular-nums leading-none tracking-tight text-[#bd0000] text-2xl sm:text-3xl">
-                  {product.today.sell.toLocaleString('vi-VN')}
-              </span>
-              <TrendInline value={product.changeSell} percent={product.percentSell} />
-          </div>
-
-          {/* Right Col: Buy Price - BLACK */}
-          <div className="flex flex-col pl-2">
-              <span className="text-[11px] sm:text-xs text-gray-500 font-bold mb-1.5 uppercase">Mua vào</span>
-              <span className="font-black tabular-nums leading-none tracking-tight text-gray-900 text-2xl sm:text-3xl">
-                  {product.today.buy.toLocaleString('vi-VN')}
-              </span>
-              <TrendInline value={product.changeBuy} percent={product.percentBuy} />
-          </div>
-      </div>
-
-      {/* 3. Footer: Full Labels with Minimum 14px Font Size */}
-      <div className="bg-[#f9f9f9] border-t border-gray-200 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-sm sm:text-base font-sans font-medium text-gray-600">
-           <div className="flex items-center gap-1.5">
-               <span className="whitespace-nowrap text-gray-500">Chênh lệch mua / bán:</span>
-               <span className="font-bold text-gray-900 tabular-nums">
-                  {product.spread.toLocaleString('vi-VN', { maximumFractionDigits: 2 })}
-               </span>
-           </div>
-
-           {diffTextValue && <div className="hidden sm:block h-4 w-px bg-gray-300 mx-2 shrink-0"></div>}
-
-           {diffTextValue && (
-               <div className="flex items-center gap-1.5">
-                    <span className="whitespace-nowrap text-gray-500">Lệch so với thế giới:</span>
-                    <span className="font-bold text-gray-900 tabular-nums">
-                        {diffTextValue} <span className="text-xs font-normal text-gray-400 ml-0.5">tr</span>
-                    </span>
-               </div>
-           )}
-      </div>
+      {diffTextValue && (
+        <div className="bg-white border-t border-gray-100 px-3 sm:px-4 py-2 sm:py-3 flex flex-col gap-1.5 font-sans">
+             <div className="flex items-center justify-between">
+                  <span className={labelStyle}>Chênh lệch so với thế giới:</span>
+                  <span className={valueStyle}>
+                      {diffTextValue} <span className={unitStyle}>Triệu</span>
+                  </span>
+             </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -177,6 +157,12 @@ const MainCard = ({ product, worldProduct, label, highlight = false, onProductCl
 export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, activeTab, setActiveTab }) => {
   const [selectedCurrency, setSelectedCurrency] = useState(CURRENCIES[0]);
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+
+  const hourlyVersion = useMemo(() => {
+    const d = new Date();
+    return d.toISOString().slice(0, 13).replace(/[-T]/g, '');
+  }, []);
 
   const sjc = data.find(p => p.group === 'sjc');
   const jewelry = data.find(p => p.group === 'jewelry'); 
@@ -186,55 +172,89 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
     if (!world) return null;
 
     const displaySell = world.today.sell * selectedCurrency.rate;
-    const displayBuy = world.today.buy * selectedCurrency.rate;
-    const displayChange = world.changeSell * selectedCurrency.rate;
-    const displayHigh = displaySell + (15 * selectedCurrency.rate);
-    const displayLow = displaySell - (10 * selectedCurrency.rate);
-
     const isUp = world.percentSell >= 0;
     const trendText = isUp ? 'tăng' : 'giảm';
-    const TrendIcon = isUp ? TrendingUp : TrendingDown;
     const trendColor = isUp ? 'text-[#0f7d4b]' : 'text-[#bd0000]'; 
     
     const USD_VND_RATE = 25450;
     const ounceInVnd = world.today.sell * USD_VND_RATE;
 
+    const ChartImage = ({ src, alt }: { src: string, alt: string }) => (
+      <div 
+        className="border border-gray-200 p-1 bg-white relative group cursor-zoom-in hover:border-[#9f224e] transition-colors"
+        onClick={() => setZoomedImage(src)}
+      >
+        <img 
+          src={src} 
+          alt={alt} 
+          className="w-full h-auto block" 
+          loading="lazy" 
+        />
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-black/60 text-white p-1 rounded-sm transition-opacity">
+           <ZoomIn size={16} />
+        </div>
+      </div>
+    );
+
     return (
         <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-2 duration-300 pb-4">
+            {/* Image Zoom Lightbox Overlay */}
+            {zoomedImage && (
+              <div 
+                className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-10 animate-in fade-in duration-200"
+                onClick={() => setZoomedImage(null)}
+              >
+                <button 
+                  className="absolute top-4 right-4 text-white hover:text-gray-300 p-2 z-[101]"
+                  onClick={() => setZoomedImage(null)}
+                >
+                  <X size={32} />
+                </button>
+                <img 
+                  src={zoomedImage} 
+                  alt="Zoomed Chart" 
+                  className="max-w-full max-h-full object-contain shadow-2xl animate-in zoom-in-95 duration-200"
+                />
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm font-sans">
+                  Click bất kỳ đâu để đóng
+                </div>
+              </div>
+            )}
+
             <div className="bg-white border border-gray-300 overflow-hidden shadow-sm flex flex-col font-sans rounded-sm">
-                <div className="px-4 sm:px-5 py-4 flex justify-between items-start border-b border-gray-200 bg-gray-50">
-                    <div className="pr-2">
-                        <h2 className="text-gray-900 text-lg sm:text-xl font-bold font-serif flex items-center gap-2">
-                            <Globe size={24} className="text-[#9f224e]"/> Vàng thế giới
+                <div className="px-3 sm:px-4 py-3 sm:py-4 flex justify-between items-start border-b border-gray-100 bg-white">
+                    <div className="flex items-baseline gap-2 overflow-hidden pr-2">
+                        <h2 className="text-lg font-serif font-bold text-gray-900 shrink-0">
+                            Giá vàng thế giới
                         </h2>
-                        <p className="text-xs sm:text-sm text-gray-600 mt-1 font-sans">Dữ liệu thời gian thực (XAU/USD)</p>
+                        <span className="text-[11px] sm:text-xs text-gray-500 font-medium border-l border-gray-300 pl-2 font-sans truncate">Dữ liệu XAU/USD</span>
                     </div>
                     
                     <div className="relative font-sans shrink-0">
                         <button 
                             onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
-                            className="flex items-center gap-2 bg-white hover:bg-gray-100 border border-gray-300 px-3 py-2 text-sm sm:text-base font-bold text-gray-800 transition-colors shadow-sm rounded"
+                            className="flex items-center gap-2 bg-white hover:bg-gray-100 border border-gray-300 px-3 py-1.5 text-[13px] sm:text-sm font-bold text-gray-800 transition-colors shadow-sm rounded-sm"
                         >
-                            <span className="text-lg">{selectedCurrency.flag}</span>
+                            <span className="text-base sm:text-lg">{selectedCurrency.flag}</span>
                             <span>{selectedCurrency.code}</span>
-                            <ChevronDown size={16} className={`transition-transform ${isCurrencyOpen ? 'rotate-180' : ''}`}/>
+                            <ChevronDown size={14} className={`transition-transform ${isCurrencyOpen ? 'rotate-180' : ''}`}/>
                         </button>
                         
                         {isCurrencyOpen && (
                             <>
                             <div className="fixed inset-0 z-10" onClick={() => setIsCurrencyOpen(false)}></div>
-                            <div className="absolute right-0 top-full mt-1 w-40 sm:w-48 bg-white border border-gray-300 shadow-xl z-20 py-1 overflow-hidden rounded">
+                            <div className="absolute right-0 top-full mt-1 w-36 sm:w-48 bg-white border border-gray-300 shadow-xl z-20 py-1 overflow-hidden rounded-sm">
                                 {CURRENCIES.map((curr) => (
                                     <button
                                         key={curr.code}
                                         onClick={() => { setSelectedCurrency(curr); setIsCurrencyOpen(false); }}
-                                        className="w-full flex items-center justify-between px-4 py-3 text-sm sm:text-base hover:bg-gray-100 text-left font-sans"
+                                        className="w-full flex items-center justify-between px-3 py-2 text-sm sm:text-base hover:bg-gray-100 text-left font-sans"
                                     >
                                         <div className="flex items-center gap-3">
                                             <span className="text-lg">{curr.flag}</span>
                                             <span className="font-bold text-gray-800">{curr.code}</span>
                                         </div>
-                                        {curr.code === selectedCurrency.code && <Check size={18} className="text-[#9f224e]"/>}
+                                        {curr.code === selectedCurrency.code && <Check size={16} className="text-[#9f224e]"/>}
                                     </button>
                                 ))}
                             </div>
@@ -244,52 +264,36 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                 </div>
 
                 <div className="p-4 sm:p-6 pb-2 font-sans">
-                    <div className="flex flex-col md:flex-row items-start md:items-end gap-6 mb-6">
+                    <div className="flex flex-col md:flex-row items-start md:items-end gap-5 sm:gap-6 mb-6">
                         <div>
-                             <div className="inline-block bg-[#e0e0e0] text-gray-700 text-[10px] sm:text-xs font-bold px-2 py-1 mb-2 rounded uppercase font-sans">Giá bán (Ask)</div>
+                             <div className="inline-block bg-[#f3f4f6] text-gray-600 text-[11px] sm:text-xs font-bold px-2 py-0.5 mb-2 rounded uppercase font-sans border border-gray-200">Giá bán (Ask)</div>
                              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-                                 <span className="text-5xl sm:text-6xl font-black text-[#222] tabular-nums tracking-tighter leading-none font-sans">
-                                    {selectedCurrency.symbol}{displaySell.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})}
+                                 <span className="text-[34px] sm:text-[42px] font-black text-[#222] tabular-nums tracking-tighter leading-none font-sans">
+                                    <span className="text-[20px] sm:text-[28px] mr-1 opacity-60 font-bold">{selectedCurrency.symbol}</span>
+                                    {displaySell.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1})}
                                  </span>
-                                 <div className="flex flex-row md:flex-col items-baseline md:items-start gap-2 md:gap-0">
-                                     <span className={`flex items-center text-lg font-bold ${trendColor} font-sans`}>
-                                        {isUp ? <ArrowUp size={20} strokeWidth={3}/> : <ArrowDown size={20} strokeWidth={3}/>}
-                                        {Math.abs(displayChange).toFixed(1)} {selectedCurrency.symbol}
+                                 <div className="flex flex-row md:flex-col items-baseline md:items-start gap-1 md:gap-0">
+                                     <span className={`flex items-center text-base sm:text-lg font-bold ${trendColor} font-sans`}>
+                                        {isUp ? <ArrowUp size={16} strokeWidth={3}/> : <ArrowDown size={16} strokeWidth={3}/>}
+                                        {Math.abs(world.changeSell).toFixed(1)}
                                      </span>
-                                     <span className={`text-sm font-semibold ${trendColor} font-sans`}>
+                                     <span className={`text-[11px] sm:text-sm font-semibold ${trendColor} font-sans`}>
                                         ({Math.abs(world.percentSell).toFixed(2)}%)
                                      </span>
                                  </div>
                              </div>
                         </div>
-
-                        <div className="flex flex-wrap gap-2 sm:gap-4 ml-0 md:ml-auto w-full md:w-auto">
-                            <div className="border border-gray-300 p-3 sm:p-4 flex-1 min-w-[140px] rounded bg-gray-50">
-                                <div className="text-[10px] text-gray-500 font-bold mb-1 uppercase font-sans">Giá mua (Bid)</div>
-                                <div className="text-xl sm:text-2xl font-bold text-gray-900 font-sans tabular-nums">{selectedCurrency.symbol}{displayBuy.toLocaleString(undefined, {maximumFractionDigits: 1})}</div>
-                            </div>
-                            <div className="border border-gray-300 p-3 sm:p-4 flex-1 min-w-[140px] rounded bg-gray-50">
-                                <div className="text-[10px] text-gray-500 font-bold mb-1 uppercase font-sans">Cao / Thấp</div>
-                                <div className="text-lg sm:text-lg font-bold text-gray-900 whitespace-nowrap font-sans tabular-nums">
-                                    <span className="text-[#0f7d4b]">{Math.round(displayHigh)}</span> <span className="text-gray-400">/</span> <span className="text-[#bd0000]">{Math.round(displayLow)}</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <div className="bg-[#f0f9ff] border border-blue-100 p-4 sm:p-5 mb-6 relative rounded">
+                    <div className="bg-[#f0f9ff] border border-blue-100 p-3.5 sm:p-5 mb-6 relative rounded">
                         <div className="flex items-start gap-3 sm:gap-4">
-                             <div className="mt-1">
-                                <TrendIcon size={24} className={trendColor} />
-                             </div>
                              <div className="flex-1">
-                                <p className="text-sm sm:text-base text-gray-900 leading-normal font-medium font-sans">
-                                    Giá vàng thế giới <span className={trendColor}>{trendText} {Math.abs(world.percentSell).toFixed(2)}%</span> trong 24 giờ qua, 
-                                    tương ứng với {trendText} <span className={trendColor}>{Math.abs(displayChange).toFixed(2)} {selectedCurrency.code}/Ounce</span>.
+                                <p className="text-[13px] sm:text-base text-gray-800 leading-normal font-medium font-sans">
+                                    Giá vàng thế giới <span className={trendColor}>{trendText} {Math.abs(world.percentSell).toFixed(2)}%</span> trong 24 giờ qua.
                                 </p>
-                                <div className="mt-3 pt-3 border-t border-blue-200 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-700 font-sans">
-                                    <Info size={16} className="text-blue-500" />
-                                    <span>1 Ounce = <span className="font-bold text-[#222] text-sm sm:text-base">{ounceInVnd.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VNĐ</span></span>
+                                <div className="mt-2.5 pt-2.5 border-t border-blue-100 flex flex-wrap items-center gap-2 text-[12px] sm:text-sm text-gray-600 font-sans">
+                                    <Info size={14} className="text-blue-500" />
+                                    <span>Quy đổi: <span className="font-bold text-gray-900">{ounceInVnd.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VNĐ/Ounce</span></span>
                                 </div>
                              </div>
                         </div>
@@ -302,9 +306,9 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
             </div>
 
             <div className="bg-white border border-gray-300 overflow-hidden shadow-sm flex flex-col font-sans rounded-sm">
-                <div className="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2 font-serif">
-                        <Activity size={20} className="text-[#9f224e]"/> Phân tích kỹ thuật (XAU/USD)
+                <div className="px-3 sm:px-4 py-3 sm:py-4 border-b border-gray-100 bg-white">
+                    <h2 className="text-lg font-serif font-bold text-gray-900">
+                        Phân tích kỹ thuật (XAU/USD)
                     </h2>
                 </div>
                 <div className="p-0 sm:p-0 border-b border-gray-200">
@@ -312,85 +316,37 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                          <TechnicalAnalysisWidget />
                      </div>
                 </div>
-                <div className="p-3 bg-gray-50 text-[11px] text-gray-500 text-center font-sans">
-                    Dữ liệu được cung cấp bởi TradingView
-                </div>
             </div>
 
             <div className="bg-white border border-gray-300 shadow-sm rounded-sm overflow-hidden font-sans">
-                <div className="px-5 py-4 border-b border-gray-200">
-                    <h2 className="text-lg sm:text-xl font-bold text-[#bd0000] font-serif">
-                        Giá vàng Kitco hôm nay
+                <div className="px-3 sm:px-4 py-3 sm:py-4 border-b border-gray-100 bg-white">
+                    <h2 className="text-lg font-serif font-bold text-gray-900">
+                        Lịch sử biến động
                     </h2>
                 </div>
                 
                 <div className="p-4 sm:p-5 font-sans">
-                    <div className="text-sm text-gray-600 mb-4 font-medium">
-                        Cập nhật lúc {world.updatedAt}
-                    </div>
-                    <div className="flex flex-col gap-4 mb-5">
-                        <div className="bg-black border border-gray-400 p-1">
-                            <img 
-                                id="chart_live_gold"
-                                src={`https://www.kitco.com/chart-images/images/live/gold.gif?t=${Date.now()}`}
-                                alt="Live 24hrs gold chart"
-                                className="w-full h-auto block"
-                            />
-                        </div>
-                        <div className="bg-black border border-gray-400 p-1">
-                            <img 
-                                id="chart_ny_gold"
-                                src={`https://www.kitco.com/chart-images/images/live/nygold.gif?t=${Date.now()}`}
-                                alt="Live New York gold Chart"
-                                className="w-full h-auto block"
-                            />
+                    <div className="flex flex-col gap-6">
+                        <ChartImage 
+                          src={`https://www.kitco.com/chart-images/images/live/gold.gif?v=${hourlyVersion}`} 
+                          alt="Live 24hrs gold chart" 
+                        />
+                        <ChartImage 
+                          src={`https://www.kitco.com/chart-images/images/live/nygold.gif?v=${hourlyVersion}`} 
+                          alt="Live New York gold Chart" 
+                        />
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-[15px]">
+                             <ChartImage alt="30 Ngày" src={`https://www.kitco.com/chart-images/LFgif/AU0030lnb.gif?v=${hourlyVersion}`} />
+                             <ChartImage alt="60 Ngày" src={`https://www.kitco.com/chart-images/LFgif/AU0060lnb.gif?v=${hourlyVersion}`} />
+                             <ChartImage alt="6 Tháng" src={`https://www.kitco.com/chart-images/LFgif/AU0182nyb.gif?v=${hourlyVersion}`} />
+                             <ChartImage alt="1 Năm" src={`https://www.kitco.com/chart-images/LFgif/AU0365nyb.gif?v=${hourlyVersion}`} />
+                             <ChartImage alt="5 Năm" src={`https://www.kitco.com/chart-images/LFgif/AU1825nyb.gif?v=${hourlyVersion}`} />
+                             <ChartImage alt="10 Năm" src={`https://www.kitco.com/chart-images/LFgif/AU3650nyb.gif?v=${hourlyVersion}`} />
                         </div>
                     </div>
-                    <div className="bg-gray-50 border border-gray-200 rounded p-4 text-[13px] sm:text-sm text-gray-800 space-y-4 leading-relaxed mb-6">
-                        <div className="flex flex-wrap gap-4 sm:gap-6 border-b border-gray-200 pb-3 font-sans">
-                            <div className="flex items-center gap-2">
-                                <span className="w-4 h-4 bg-[#00ff00] rounded-sm shadow-sm ring-1 ring-black/10"></span>
-                                <span className="font-bold text-xs uppercase">Giá hiện tại</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-4 h-4 bg-[#ff0000] rounded-sm shadow-sm ring-1 ring-black/10"></span>
-                                <span className="font-bold text-xs uppercase">Giá hôm qua</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-4 h-4 bg-[#00ccff] rounded-sm shadow-sm ring-1 ring-black/10"></span>
-                                <span className="font-bold text-xs uppercase">Giá hôm kia</span>
-                            </div>
-                        </div>
-                        <div className="space-y-3 text-gray-700 font-sans">
-                            <p>
-                                Giá kết thúc ngày hôm trước là giá khởi đầu ngày hôm sau. 
-                                Hai trục thời gian ở dưới cùng, một theo giờ New York, một theo giờ chuẩn GMT.
-                            </p>
-                            <p>
-                                Các thanh trên các trục thời gian tương ứng với thời gian giao dịch của các sàn chính là New York, London và HongKong.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-gray-200">
-                        <h3 className="font-bold text-gray-900 mb-4 font-serif text-base flex items-center gap-2">
-                            <History size={18} className="text-[#9f224e]" />
-                            Lịch sử biến động
-                        </h3>
-                        <div className="flex flex-wrap gap-[15px] justify-between">
-                            {HISTORY_CHARTS.map((chart) => (
-                                <img 
-                                    key={chart.title}
-                                    className="w-[calc(50%_-_(15px_/2))] min-w-[305px] border border-gray-300" 
-                                    alt={`Live gold chart ${chart.title}`} 
-                                    src={`${chart.src}?t=${Date.now()}`}
-                                    loading="lazy"
-                                />
-                            ))}
-                        </div>
-                        <div className="mt-4 text-[11px] text-gray-500 italic text-center font-sans">
-                            Nguồn dữ liệu biểu đồ: Kitco.com
-                        </div>
+                    <div className="mt-6 text-[11px] text-gray-500 text-center font-sans font-bold uppercase tracking-wide">
+                        Nguồn dữ liệu biểu đồ: Kitco.com (Cập nhật 1 tiếng/lần)
                     </div>
                 </div>
             </div>
@@ -430,18 +386,16 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
             </button>
         </div>
 
-        <div className="p-3 sm:p-5 bg-white">
+        <div className="p-2 sm:p-5 bg-white">
             {activeTab === 'vn' ? (
                 <div className="animate-in fade-in slide-in-from-left-2 duration-300">
-                    <div className="flex flex-col gap-4">
-                        {/* Balanced Grid: md:grid-cols-2 */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="flex flex-col gap-3 sm:gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                              <div className="col-span-1">
                                  <MainCard 
                                     product={sjc} 
                                     worldProduct={world}
-                                    label="Vàng SJC" 
-                                    highlight={true} 
+                                    label="Vàng miếng SJC" 
                                     onProductClick={onProductClick} 
                                 />
                              </div>
@@ -449,8 +403,7 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                                  <MainCard 
                                     product={jewelry} 
                                     worldProduct={world}
-                                    label="Nữ trang" 
-                                    highlight={true} 
+                                    label="Vàng nhẫn" 
                                     onProductClick={onProductClick} 
                                 />
                              </div>

@@ -18,18 +18,17 @@ interface GoldChartProps {
 
 const TIME_RANGES: { key: TimeRange; label: string }[] = [
   { key: '1w', label: '1 tuần' },
-  { key: '2w', label: '2 tuần' },
-  { key: '3m', label: '3 tháng' },
+  { key: '1m', label: '1 tháng' },
   { key: '6m', label: '6 tháng' },
   { key: '1y', label: '1 năm' },
   { key: 'all', label: 'toàn bộ' },
 ];
 
-// Updated Order: SJC | Jewelry | World
+// Updated Labels: SJC | Nữ trang | Thế giới
 const CATEGORIES_CONFIG = [
   { key: 'sjc', label: 'Vàng SJC', productId: 'sjc_1l', color: '#16a34a' }, // Green
-  { key: 'jewelry', label: 'Nữ Trang', productId: 'jewelry_9999', color: '#db2777' }, // Pink
-  { key: 'world', label: 'Giá vàng thế giới', productId: 'world_gold', color: '#374151' }, // Dark Gray
+  { key: 'jewelry', label: 'Nữ trang', productId: 'jewelry_9999', color: '#db2777' }, // Pink
+  { key: 'world', label: 'Thế giới', productId: 'world_gold', color: '#374151' }, // Dark Gray
 ];
 
 export const GoldChart: React.FC<GoldChartProps> = ({ 
@@ -37,7 +36,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   historyData,
   title
 }) => {
-  const [timeRange, setTimeRange] = useState<TimeRange>('3m');
+  const [timeRange, setTimeRange] = useState<TimeRange>('1m');
   
   // State for Categories: Array of strings for multi-select. Default: ['sjc']
   const [activeKeys, setActiveKeys] = useState<string[]>(['sjc']);
@@ -55,21 +54,19 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     // If Modal (single or few products), map them dynamically
     return products.map((p, idx) => ({
         key: p.id,
-        label: p.name,
+        label: p.id === 'world_gold' ? 'Thế giới' : p.name,
         productId: p.id,
         color: p.group === 'world' ? '#374151' : (idx === 0 ? '#be123c' : '#16a34a')
     }));
   }, [products]);
 
   // FIX: Reset or Update active keys when the incoming products change (e.g. Modal Open)
-  // We use the ID of the first product to detect if we switched contexts/products
   const primaryProductId = products[0]?.id;
 
   useEffect(() => {
     if (categories.length > 0 && products.length <= 5) {
         const defaultKey = categories[0].key;
         setActiveKeys((prev) => {
-            // Only update if the current active key is different to prevent infinite loops
             if (prev.length === 1 && prev[0] === defaultKey) {
                 return prev;
             }
@@ -82,7 +79,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   const toggleCategory = (key: string) => {
     setActiveKeys(prev => {
         if (prev.includes(key)) {
-            // Prevent unchecking the last item (always keep at least one chart)
+            // Prevent unchecking the last item
             if (prev.length === 1) return prev;
             return prev.filter(k => k !== key);
         }
@@ -90,7 +87,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     });
   };
 
-  // Helper to get product info for the Header (Use the first active one)
   const primaryActiveKey = activeKeys[0];
   const primaryCategory = categories.find(c => c.key === primaryActiveKey);
   const primaryProduct = products.find(p => p.id === primaryCategory?.productId);
@@ -104,8 +100,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     let count = total;
     switch (timeRange) {
         case '1w': count = 7; break;
-        case '2w': count = 14; break;
-        case '3m': count = 90; break;
+        case '1m': count = 30; break;
         case '6m': count = 180; break;
         case '1y': count = 365; break;
         case 'all': count = total; break;
@@ -113,10 +108,9 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     return historyData.slice(-count);
   }, [historyData, timeRange]);
 
-  // Check if "World" is active to determine if we need the Right Y-Axis
   const isWorldActive = activeKeys.some(k => k === 'world' || k === 'world_gold');
 
-  // Manual Domain Calculation to remove empty space
+  // Manual Domain Calculation
   const calculateDomain = (isUsd: boolean) => {
     let min = Infinity;
     let max = -Infinity;
@@ -150,12 +144,8 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     });
 
     if (min === Infinity || max === -Infinity) return ['auto', 'auto'];
-
-    // Add small padding (2% of range)
     const padding = (max - min) * 0.02;
-    // If range is 0 (flat line), add explicit buffer
     if (padding === 0) return [min - 1, max + 1];
-
     return [min - padding, max + padding];
   };
 
@@ -221,7 +211,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                     <button
                         key={range.key}
                         onClick={() => setTimeRange(range.key)}
-                        className={`px-2 py-1 text-[10px] font-medium transition-all whitespace-nowrap font-sans ${
+                        className={`px-2 py-1 text-xs font-medium transition-all whitespace-nowrap font-sans ${
                             timeRange === range.key 
                             ? 'bg-white text-[#9f224e] shadow-sm font-bold' 
                             : 'text-gray-500 hover:text-gray-800'
@@ -234,31 +224,31 @@ export const GoldChart: React.FC<GoldChartProps> = ({
         </div>
       </div>
 
-      {/* Categories / Filters (Multi-select) */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      {/* Categories / Filters - Optimized for Mobile 1 line */}
+      <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1 sm:gap-2 mb-4">
          {categories.map((cat) => { 
            const isActive = activeKeys.includes(cat.key);
            return (
              <button
                key={cat.key}
                onClick={() => toggleCategory(cat.key)}
-               className={`flex items-center gap-2 px-3 py-1.5 text-xs font-bold transition-all border select-none font-sans ${
+               className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-1 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold transition-all border select-none font-sans overflow-hidden ${
                  isActive 
                    ? 'bg-white text-gray-900 border-gray-300 shadow-sm ring-1 ring-gray-100' 
                    : 'bg-transparent border-transparent text-gray-400 hover:text-gray-600 hover:bg-gray-50'
                }`}
              >
                <span 
-                  className={`w-2.5 h-2.5 transition-colors`}
+                  className={`w-2 h-2 sm:w-2.5 sm:h-2.5 transition-colors shrink-0`}
                   style={{ backgroundColor: isActive ? cat.color : '#d1d5db' }}
                ></span>
-               {cat.label}
+               <span className="truncate">{cat.label}</span>
              </button>
            )
          })}
       </div>
 
-      {/* Chart Area - Reduced Height */}
+      {/* Chart Area */}
       <div className="relative h-[240px] w-full text-[10px]">
          {filteredData.length > 0 ? (
            <ResponsiveContainer width="100%" height="100%">
@@ -272,7 +262,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 tick={{ fill: '#64748b', fontSize: 10, dy: 10, fontFamily: 'Arial' }}
               />
               
-              {/* Left Axis: For VND Products (Use tight manual domain) */}
               <YAxis 
                 yAxisId="vnd"
                 domain={vndDomain} 
@@ -283,7 +272,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 width={35}
               />
 
-              {/* Right Axis: For World Price (Use tight manual domain) */}
               <YAxis 
                 yAxisId="usd"
                 orientation="right"
@@ -298,7 +286,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
 
               <Tooltip content={<CustomTooltip />} />
               
-              {/* Render Lines for Active Categories */}
               {categories.map(cat => {
                   if (!activeKeys.includes(cat.key)) return null;
                   const isWorld = cat.key === 'world' || cat.key === 'world_gold';
@@ -328,7 +315,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                                   stroke={cat.color}
                                   strokeWidth={2}
                                   strokeOpacity={0.4}
-                                  strokeDasharray="3 3" // Dashed for Buy
+                                  strokeDasharray="3 3"
                                   dot={false}
                                   activeDot={{ r: 4, strokeWidth: 2, stroke: '#fff', fill: cat.color }}
                                   isAnimationActive={true}
@@ -346,7 +333,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
          )}
       </div>
 
-      {/* Bottom Toggles (Centered) - Compact */}
+      {/* Bottom Toggles */}
       <div className="mt-2 flex items-center justify-center gap-8 border-t border-gray-50 pt-3 pb-1 select-none">
             <button 
                 onClick={() => setShowSell(!showSell)}
