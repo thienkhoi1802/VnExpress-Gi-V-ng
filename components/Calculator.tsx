@@ -22,7 +22,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
       let amountInLuong = amount;
       if (unit === 'chi') amountInLuong = amount / 10;
       else if (unit === 'phan') amountInLuong = amount / 100;
-      setResult(amountInLuong * product.today.sell * 1_000_000);
+      setResult(amountInLuong * product.today.sell * 1000000);
     }
   }, [amount, unit, selectedProduct, products]);
 

@@ -66,6 +66,7 @@ const App: React.FC = () => {
         <section>
           <MarketHighlights 
             data={data} 
+            historyData={historyData}
             onProductClick={handleProductClick} 
             activeTab={activeTab}
             setActiveTab={setActiveTab}

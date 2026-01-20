@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { ComputedGoldProduct } from '../types';
+import { ComputedGoldProduct, HistoryPoint } from '../types';
 import { ArrowUp, ArrowDown, Minus, Globe, ChevronRight, ChevronDown, Check, X, ZoomIn, Clock } from 'lucide-react';
 import { AdvancedRealTimeChart, TechnicalAnalysisWidget } from './TradingViewWidgets';
+import { Sparkline } from './Sparkline';
 
 interface Props {
   data: ComputedGoldProduct[];
+  historyData: HistoryPoint[];
   onProductClick: (p: ComputedGoldProduct) => void;
   activeTab: 'vn' | 'world';
   setActiveTab: (tab: 'vn' | 'world') => void;
@@ -22,7 +24,7 @@ const CURRENCIES = [
 const VietnamFlag = () => (
   <svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-sm ring-1 ring-black/5">
     <rect width="24" height="16" fill="#DA251D"/>
-    <path d="M12 2.1L13.9056 6.24166L18.3511 6.56492L14.9458 9.5209L16.0249 13.885L12 11.475L7.9751 13.885L9.05423 9.5209L5.64886 6.56492L10.0944 6.24166L12 2.1Z" fill="#FFEB3B"/>
+    <path d="M12 2.1L13.9056 6.24166L18.3511 6.56492L14.9458 9.5209L16.0249 13.885L12 11.475L7.9751 13.885L12 11.475L7.9751 13.885L9.05423 9.5209L5.64886 6.56492L10.0944 6.24166L12 2.1Z" fill="#FFEB3B"/>
   </svg>
 );
 
@@ -41,7 +43,15 @@ const TrendInline = ({ value, percent }: { value: number, percent?: number }) =>
   );
 };
 
-const WorldStrip = ({ product, setActiveTab }: { product?: ComputedGoldProduct, setActiveTab: (tab: 'vn' | 'world') => void }) => {
+const WorldStrip = ({ 
+  product, 
+  historyData, 
+  setActiveTab 
+}: { 
+  product?: ComputedGoldProduct, 
+  historyData: HistoryPoint[],
+  setActiveTab: (tab: 'vn' | 'world') => void 
+}) => {
     if (!product) return null;
     const isUp = product.percentSell >= 0;
 
@@ -51,28 +61,39 @@ const WorldStrip = ({ product, setActiveTab }: { product?: ComputedGoldProduct, 
             className="bg-white border border-gray-300 shadow-sm p-3 sm:px-4 sm:py-4 cursor-pointer hover:border-[#9f224e] hover:shadow-md transition-all group rounded-sm"
         >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 flex-1">
-                    <div className="flex items-center gap-2">
-                         <h3 className="text-base font-bold text-[#9f224e] font-serif shrink-0">
-                            Vàng thế giới
-                        </h3>
-                    </div>
-                    <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                         <span className="text-xl sm:text-2xl font-black text-gray-900 tabular-nums font-sans tracking-tight">
-                            {product.today.sell.toLocaleString()}
-                            <span className="text-sm font-bold text-gray-600 ml-1">USD</span>
-                         </span>
-                         <span className={`text-sm sm:text-base font-bold ${isUp ? 'text-trend-up' : 'text-trend-down'} tabular-nums flex items-center gap-0.5 font-sans`}>
-                            {isUp ? '+' : ''}{product.changeSell} 
-                            <span className="text-gray-500 font-medium ml-1">
-                                ({Math.abs(product.percentSell).toFixed(2)}%)
+                <div className="flex flex-row items-center justify-between sm:justify-start gap-1 sm:gap-4 flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                             <h3 className="text-base font-bold text-[#9f224e] font-serif shrink-0">
+                                Vàng thế giới
+                            </h3>
+                        </div>
+                        <div className="h-5 w-px bg-gray-300 hidden sm:block"></div>
+                        <div className="flex flex-wrap items-baseline gap-x-2 sm:gap-x-3">
+                            <span className="text-xl sm:text-2xl font-black text-gray-900 tabular-nums font-sans tracking-tight">
+                                {product.today.sell.toLocaleString()}
+                                <span className="text-sm font-bold text-gray-600 ml-1">USD</span>
                             </span>
-                         </span>
+                            <span className={`text-sm sm:text-base font-bold ${isUp ? 'text-trend-up' : 'text-trend-down'} tabular-nums flex items-center gap-0.5 font-sans`}>
+                                {isUp ? '+' : ''}{product.changeSell} 
+                                <span className="text-gray-500 font-medium ml-1">
+                                    ({Math.abs(product.percentSell).toFixed(2)}%)
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="w-[70px] h-[32px] sm:hidden shrink-0 pl-3 flex items-center justify-center border-l border-gray-100 ml-2">
+                        <Sparkline 
+                            data={historyData} 
+                            dataKey={product.id} 
+                            trend={isUp ? 'up' : 'down'} 
+                        />
                     </div>
                 </div>
+
                 <div className="flex items-center justify-between sm:justify-end border-t border-gray-100 sm:border-t-0 pt-2 sm:pt-0 mt-1">
-                    <span className="sm:hidden text-xs text-gray-500 font-medium font-sans lowercase">xem biểu đồ & phân tích</span>
+                    <span className="sm:hidden text-xs text-gray-500 font-medium font-sans lowercase">xem biểu đồ &amp; phân tích</span>
                     <span className="flex items-center gap-1 text-sm font-bold text-[#9f224e] group-hover:underline decoration-[#9f224e]/30 underline-offset-2 font-sans whitespace-nowrap">
                         Chi tiết <ChevronRight size={18} strokeWidth={2.5} />
                     </span>
@@ -82,9 +103,16 @@ const WorldStrip = ({ product, setActiveTab }: { product?: ComputedGoldProduct, 
     )
 }
 
-const MainCard = ({ product, worldProduct, label, onProductClick }: { 
+const MainCard = ({ 
+    product, 
+    worldProduct, 
+    historyData,
+    label, 
+    onProductClick 
+}: { 
     product?: ComputedGoldProduct,
     worldProduct?: ComputedGoldProduct,
+    historyData: HistoryPoint[],
     label: string, 
     onProductClick: (p: ComputedGoldProduct) => void,
 }) => {
@@ -103,6 +131,8 @@ const MainCard = ({ product, worldProduct, label, onProductClick }: {
   const valueStyle = "font-bold text-gray-900 tabular-nums text-[14px] sm:text-[18px]";
   const unitStyle = "text-[11px] font-bold text-gray-500 ml-1";
 
+  const isUp = product.percentSell >= 0;
+
   return (
     <div 
       onClick={() => onProductClick(product)}
@@ -115,37 +145,47 @@ const MainCard = ({ product, worldProduct, label, onProductClick }: {
           <span className="text-[11px] sm:text-[12px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
       </div>
 
-      <div className="px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-2 gap-1 sm:gap-4 flex-grow items-start font-sans">
-          <div className="flex flex-col border-r border-gray-100 pr-1 sm:pr-2 min-w-0">
-              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1">Bán ra</span>
-              <div className="flex flex-col items-start">
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[28px] sm:text-[44px]">
-                    {product.today.sell.toLocaleString('vi-VN')}
-                  </span>
-                  <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black mt-1.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                      {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                      <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                      <span className="text-[11px] sm:text-[13px] font-bold ml-1 opacity-90">
-                          ({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)
+      <div className="flex items-center">
+          <div className="flex-grow px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-2 gap-1 sm:gap-4 items-start font-sans">
+              <div className="flex flex-col border-r border-gray-100 pr-1 sm:pr-2 min-w-0">
+                  <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1">Bán ra</span>
+                  <div className="flex flex-col items-start">
+                      <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[28px] sm:text-[44px]">
+                        {product.today.sell.toLocaleString('vi-VN')}
                       </span>
+                      <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black mt-1.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
+                          {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
+                          <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                          <span className="text-[11px] sm:text-[13px] font-bold ml-1 opacity-90">
+                              ({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)
+                          </span>
+                      </div>
+                  </div>
+              </div>
+
+              <div className="flex flex-col pl-1 sm:pl-2 min-w-0">
+                  <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1">Mua vào</span>
+                  <div className="flex flex-col items-start">
+                      <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[28px] sm:text-[44px]">
+                        {product.today.buy.toLocaleString('vi-VN')}
+                      </span>
+                      <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black mt-1.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
+                          {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
+                          <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                          <span className="text-[11px] sm:text-[13px] font-bold ml-1 opacity-90">
+                              ({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)
+                          </span>
+                      </div>
                   </div>
               </div>
           </div>
 
-          <div className="flex flex-col pl-1 sm:pl-2 min-w-0">
-              <span className="text-[11px] sm:text-[13px] text-gray-400 font-bold uppercase tracking-wider mb-1">Mua vào</span>
-              <div className="flex flex-col items-start">
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[28px] sm:text-[44px]">
-                    {product.today.buy.toLocaleString('vi-VN')}
-                  </span>
-                  <div className={`flex items-center gap-0.5 text-[14px] sm:text-[16px] font-black mt-1.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                      {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                      <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                      <span className="text-[11px] sm:text-[13px] font-bold ml-1 opacity-90">
-                          ({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)
-                      </span>
-                  </div>
-              </div>
+          <div className="w-[70px] h-[50px] sm:hidden shrink-0 pr-3 flex items-center justify-center border-l border-gray-100 ml-1">
+              <Sparkline 
+                data={historyData} 
+                dataKey={product.id} 
+                trend={isUp ? 'up' : 'down'} 
+              />
           </div>
       </div>
 
@@ -163,7 +203,13 @@ const MainCard = ({ product, worldProduct, label, onProductClick }: {
   );
 };
 
-export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, activeTab, setActiveTab }) => {
+export const MarketHighlights: React.FC<Props> = ({ 
+    data, 
+    historyData,
+    onProductClick, 
+    activeTab, 
+    setActiveTab 
+}) => {
   const [selectedCurrency, setSelectedCurrency] = useState(CURRENCIES[0]);
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
@@ -181,8 +227,8 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
     if (!world) return null;
 
     const currentRate = selectedCurrency.rate;
-    const bid = world.today.buy * currentRate; // Labelled: Giá bán
-    const ask = world.today.sell * currentRate; // Labelled: Giá mua
+    const bid = world.today.buy * currentRate; 
+    const ask = world.today.sell * currentRate; 
     const change = world.changeSell * currentRate;
     const percent = world.percentSell;
 
@@ -258,9 +304,7 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                 </div>
 
                 <div className="flex flex-col gap-3 sm:gap-5">
-                    {/* Main Pricing Info - Compacted & Optimized per request */}
                     <div className="space-y-3 sm:space-y-4">
-                         {/* Giá Bán (Primary - Balanced Size & Bold) */}
                          <div className="flex items-baseline justify-between gap-4">
                             <span className="text-gray-400 text-[11px] sm:text-xs font-bold uppercase tracking-widest shrink-0">Giá bán</span>
                             <div className="flex flex-col items-end">
@@ -273,7 +317,6 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                             </div>
                          </div>
 
-                         {/* Giá Mua (Secondary - Smaller & Lighter) */}
                          <div className="flex items-center justify-between py-2 border-t border-gray-50">
                              <span className="text-gray-400 text-[10px] sm:text-[10px] font-bold uppercase tracking-wide opacity-80">Giá mua</span>
                              <span className="text-xl sm:text-2xl font-semibold text-gray-400 tabular-nums">
@@ -282,7 +325,6 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                          </div>
                     </div>
 
-                    {/* Unit Conversion List - Tighter padding */}
                     <div className="flex flex-col border-t border-gray-50 pt-2">
                         {conversions.map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between py-1.5 text-[12px] sm:text-[14px] border-b border-gray-50/50 last:border-0">
@@ -299,7 +341,6 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                         ))}
                     </div>
 
-                    {/* Day's Range Visualizer - Smaller font */}
                     <div className="pt-2 space-y-1.5">
                          <div className="flex justify-between text-[11px] sm:text-[13px] font-bold text-gray-500 tabular-nums">
                             <span>{low.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
@@ -312,11 +353,10 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                              ></div>
                          </div>
                          <div className="text-center text-[9px] text-gray-400 font-bold uppercase tracking-widest">
-                             Day's Range
+                             Day&apos;s Range
                          </div>
                     </div>
 
-                    {/* Vietnamese Caption Texts - Combined into one line at 18px */}
                     <div className="mt-1 bg-[#f0f9ff] border border-blue-50 p-4 rounded-sm">
                         <p className="text-[18px] text-[#1e293b] leading-snug font-sans text-left">
                             Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">117.795.325 VNĐ/Ounce</span>, giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
@@ -329,7 +369,6 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                 </div>
             </div>
 
-            {/* TradingView & Technical Analysis */}
             <div className="space-y-4">
                 <div className="bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col rounded-sm">
                     <div className="px-3 py-2 border-b border-gray-50 bg-white">
@@ -345,7 +384,6 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                     <div className="h-[380px] sm:h-[420px]"><TechnicalAnalysisWidget /></div>
                 </div>
 
-                {/* Historical Charts with Zoom */}
                 <div className="bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden font-sans">
                     <div className="px-3 py-2 border-b border-gray-50 bg-white">
                         <h2 className="text-sm font-serif font-bold text-gray-900">Lịch sử giá vàng</h2>
@@ -396,10 +434,26 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
             {activeTab === 'vn' ? (
                 <div className="animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col gap-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <MainCard product={sjc} worldProduct={world} label="Vàng miếng SJC" onProductClick={onProductClick} />
-                        <MainCard product={jewelry} worldProduct={world} label="Vàng nhẫn" onProductClick={onProductClick} />
+                        <MainCard 
+                            product={sjc} 
+                            worldProduct={world} 
+                            historyData={historyData}
+                            label="Vàng miếng SJC" 
+                            onProductClick={onProductClick} 
+                        />
+                        <MainCard 
+                            product={jewelry} 
+                            worldProduct={world} 
+                            historyData={historyData}
+                            label="Vàng nhẫn" 
+                            onProductClick={onProductClick} 
+                        />
                     </div>
-                    <WorldStrip product={world} setActiveTab={setActiveTab} />
+                    <WorldStrip 
+                        product={world} 
+                        historyData={historyData}
+                        setActiveTab={setActiveTab} 
+                    />
                 </div>
             ) : (
                 <WorldDetailTab />
