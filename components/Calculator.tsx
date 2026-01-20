@@ -45,16 +45,16 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-end">
         
-        {/* Quantity Group: Compressed Width (col-span-2) */}
+        {/* Quantity Group */}
         <div className="md:col-span-2">
-          <label className="block text-xs font-bold text-gray-600 mb-2">Số lượng</label>
-          <div className="flex h-12 border border-gray-400 bg-white group hover:border-[#9f224e] transition-colors shadow-sm rounded-sm overflow-hidden">
+          <label className="block text-[11px] font-bold text-gray-600 mb-2">Số lượng</label>
+          <div className="flex h-10 border border-gray-400 bg-white group hover:border-[#9f224e] transition-colors shadow-sm rounded-sm overflow-hidden">
              <button 
                onClick={handleDecrement}
-               className="w-10 sm:w-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 border-r border-gray-300 transition-colors active:bg-gray-300"
+               className="w-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 border-r border-gray-300 transition-colors active:bg-gray-300"
                aria-label="Giảm"
              >
-               <Minus size={18} strokeWidth={2.5} />
+               <Minus size={14} strokeWidth={3} />
              </button>
              <input 
               type="number" 
@@ -62,22 +62,22 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
               step="0.1"
               value={amount}
               onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-              className="w-full text-center font-bold text-gray-900 outline-none h-full bg-white text-base sm:text-lg"
+              className="w-full text-center font-bold text-gray-900 outline-none h-full bg-white text-sm sm:text-base tabular-nums"
             />
             <button 
                onClick={handleIncrement}
-               className="w-10 sm:w-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 border-l border-gray-300 transition-colors active:bg-gray-300"
+               className="w-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 border-l border-gray-300 transition-colors active:bg-gray-300"
                aria-label="Tăng"
              >
-               <Plus size={18} strokeWidth={2.5} />
+               <Plus size={14} strokeWidth={3} />
              </button>
           </div>
         </div>
 
-        {/* Unit Select: Reduced Width (col-span-2) to give space to Result */}
+        {/* Unit Select */}
         <div className="md:col-span-2">
-          <label className="block text-xs font-bold text-gray-600 mb-2">Đơn vị</label>
-          <div className="h-12 border border-gray-400 bg-white hover:border-[#9f224e] transition-colors relative shadow-sm rounded-sm">
+          <label className="block text-[11px] font-bold text-gray-600 mb-2">Đơn vị</label>
+          <div className="h-10 border border-gray-400 bg-white hover:border-[#9f224e] transition-colors relative shadow-sm rounded-sm">
              <select 
                 value={unit}
                 onChange={(e) => setUnit(e.target.value as Unit)}
@@ -88,39 +88,39 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                 <option value="phan">Phân</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-600">
-              <ChevronDown size={18} />
+              <ChevronDown size={16} />
             </div>
           </div>
         </div>
 
-        {/* Product Select: Standard Width (col-span-3) */}
+        {/* Product Select */}
         <div className="md:col-span-3">
-            <label className="block text-xs font-bold text-gray-600 mb-2">Loại vàng</label>
-            <div className="h-12 border border-gray-400 bg-white hover:border-[#9f224e] transition-colors relative shadow-sm rounded-sm">
+            <label className="block text-[11px] font-bold text-gray-600 mb-2">Loại vàng</label>
+            <div className="h-10 border border-gray-400 bg-white hover:border-[#9f224e] transition-colors relative shadow-sm rounded-sm">
                 <select 
                     value={selectedProduct}
                     onChange={(e) => setSelectedProduct(e.target.value)}
-                    className="w-full h-full p-2 bg-transparent text-sm sm:text-base font-bold text-gray-900 outline-none appearance-none cursor-pointer pl-3 truncate pr-8"
+                    className="w-full h-full p-2 bg-transparent text-sm font-bold text-gray-900 outline-none appearance-none cursor-pointer pl-3 truncate pr-8"
                 >
                     {vndProducts.map(p => (
                     <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-600">
-                   <ChevronDown size={18} />
+                   <ChevronDown size={16} />
                 </div>
             </div>
         </div>
 
-        {/* Result Display: Maximized Width (col-span-5) */}
+        {/* Result Display: Centered and resized font */}
         <div className="md:col-span-5">
-             <label className="block text-xs font-bold text-gray-600 mb-2 text-left">Thành tiền ước tính</label>
-             <div className="h-12 flex items-center justify-end px-3 sm:px-4 bg-[#9f224e] border border-[#9f224e] text-white overflow-hidden shadow-md rounded-sm">
-                <div className="flex items-baseline truncate w-full justify-end">
-                    <span className="text-xl sm:text-2xl font-bold tabular-nums tracking-tighter truncate">
+             <label className="block text-[11px] font-bold text-gray-600 mb-2 text-left">Thành tiền ước tính</label>
+             <div className="h-10 flex items-center justify-center px-3 bg-[#9f224e] border border-[#9f224e] text-white overflow-hidden shadow-md rounded-sm">
+                <div className="flex items-baseline truncate w-full justify-center">
+                    <span className="text-lg sm:text-xl font-bold tabular-nums tracking-tight truncate">
                         {result.toLocaleString('vi-VN')}
                     </span>
-                    <span className="text-xs sm:text-sm font-medium text-white/90 ml-1.5 underline decoration-dotted underline-offset-2 shrink-0">VNĐ</span>
+                    <span className="text-[10px] sm:text-xs font-medium text-white/90 ml-1 underline decoration-dotted underline-offset-2 shrink-0">VNĐ</span>
                 </div>
              </div>
         </div>

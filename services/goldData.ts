@@ -105,6 +105,12 @@ const RAW_DATA: GoldProduct[] = [
 ];
 
 export const getGoldData = (): ComputedGoldProduct[] => {
+  // Dynamic timestamp for auto-update simulation
+  const now = new Date();
+  const timeString = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  const dateString = now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const updatedString = `${timeString} ${dateString}`;
+
   return RAW_DATA.map(product => {
     const changeBuy = product.today.buy - product.yesterday.buy;
     const changeSell = product.today.sell - product.yesterday.sell;
@@ -121,6 +127,7 @@ export const getGoldData = (): ComputedGoldProduct[] => {
 
     return {
       ...product,
+      updatedAt: updatedString, // Always return fresh timestamp
       changeBuy,
       changeSell,
       percentBuy,

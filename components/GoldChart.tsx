@@ -34,7 +34,8 @@ const CATEGORIES_CONFIG = [
 
 export const GoldChart: React.FC<GoldChartProps> = ({ 
   products, 
-  historyData, 
+  historyData,
+  title
 }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>('3m');
   
@@ -75,7 +76,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
             return [defaultKey];
         });
     }
-  }, [primaryProductId, products.length]); // Intentionally omit 'categories' to prevent loop from new references
+  }, [primaryProductId, products.length]); 
 
   // Handler for Multi-select Toggle
   const toggleCategory = (key: string) => {
@@ -97,6 +98,8 @@ export const GoldChart: React.FC<GoldChartProps> = ({
 
   // Filter Data by TimeRange
   const filteredData = useMemo(() => {
+    if (!historyData || historyData.length === 0) return [];
+    
     const total = historyData.length;
     let count = total;
     switch (timeRange) {
@@ -118,6 +121,8 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     let min = Infinity;
     let max = -Infinity;
     
+    if (filteredData.length === 0) return ['auto', 'auto'];
+
     const targetKeys = activeKeys.filter(k => {
         const isWorldKey = k === 'world' || k === 'world_gold';
         return isUsd ? isWorldKey : !isWorldKey;
@@ -201,7 +206,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
         <div>
            <div className="flex flex-wrap items-baseline gap-2 mb-1">
               <h2 className="text-lg font-serif font-bold text-gray-900">
-                Biểu đồ giá vàng
+                {title || 'Biểu đồ giá vàng'}
               </h2>
               <span className="text-xs text-gray-500 font-medium border-l border-gray-300 pl-2 font-sans">
                 Cập nhật: {updateTime}
@@ -255,84 +260,90 @@ export const GoldChart: React.FC<GoldChartProps> = ({
 
       {/* Chart Area - Reduced Height */}
       <div className="relative h-[240px] w-full text-[10px]">
-         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={filteredData} margin={{ top: 5, right: 0, bottom: 0, left: -10 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-            <XAxis 
-              dataKey="date" 
-              tickLine={false}
-              axisLine={false}
-              minTickGap={40}
-              tick={{ fill: '#64748b', fontSize: 10, dy: 10, fontFamily: 'Arial' }}
-            />
-            
-            {/* Left Axis: For VND Products (Use tight manual domain) */}
-            <YAxis 
-              yAxisId="vnd"
-              domain={vndDomain} 
-              tickLine={false}
-              axisLine={false}
-              tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'Arial' }}
-              tickFormatter={(val) => Math.round(val).toLocaleString()}
-              width={35}
-            />
+         {filteredData.length > 0 ? (
+           <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={filteredData} margin={{ top: 5, right: 0, bottom: 0, left: -10 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <XAxis 
+                dataKey="date" 
+                tickLine={false}
+                axisLine={false}
+                minTickGap={40}
+                tick={{ fill: '#64748b', fontSize: 10, dy: 10, fontFamily: 'Arial' }}
+              />
+              
+              {/* Left Axis: For VND Products (Use tight manual domain) */}
+              <YAxis 
+                yAxisId="vnd"
+                domain={vndDomain} 
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'Arial' }}
+                tickFormatter={(val) => Math.round(val).toLocaleString()}
+                width={35}
+              />
 
-            {/* Right Axis: For World Price (Use tight manual domain) */}
-            <YAxis 
-              yAxisId="usd"
-              orientation="right"
-              domain={usdDomain}
-              tickLine={false}
-              axisLine={false}
-              hide={!isWorldActive}
-              tick={{ fill: '#374151', fontSize: 10, fontWeight: 'bold', fontFamily: 'Arial' }}
-              tickFormatter={(val) => Math.round(val).toLocaleString()}
-              width={40}
-            />
+              {/* Right Axis: For World Price (Use tight manual domain) */}
+              <YAxis 
+                yAxisId="usd"
+                orientation="right"
+                domain={usdDomain}
+                tickLine={false}
+                axisLine={false}
+                hide={!isWorldActive}
+                tick={{ fill: '#374151', fontSize: 10, fontWeight: 'bold', fontFamily: 'Arial' }}
+                tickFormatter={(val) => Math.round(val).toLocaleString()}
+                width={40}
+              />
 
-            <Tooltip content={<CustomTooltip />} />
-            
-            {/* Render Lines for Active Categories */}
-            {categories.map(cat => {
-                if (!activeKeys.includes(cat.key)) return null;
-                const isWorld = cat.key === 'world' || cat.key === 'world_gold';
-                const yAxisId = isWorld ? 'usd' : 'vnd';
+              <Tooltip content={<CustomTooltip />} />
+              
+              {/* Render Lines for Active Categories */}
+              {categories.map(cat => {
+                  if (!activeKeys.includes(cat.key)) return null;
+                  const isWorld = cat.key === 'world' || cat.key === 'world_gold';
+                  const yAxisId = isWorld ? 'usd' : 'vnd';
 
-                return (
-                    <React.Fragment key={cat.key}>
-                        {showSell && (
-                            <Line
-                                yAxisId={yAxisId}
-                                type="monotone"
-                                dataKey={`${cat.productId}_sell`}
-                                name={`${cat.label} (Bán)`}
-                                stroke={cat.color}
-                                strokeWidth={2}
-                                dot={false}
-                                activeDot={{ r: 4, strokeWidth: 2, stroke: '#fff', fill: cat.color }}
-                                isAnimationActive={true}
-                            />
-                        )}
-                        {showBuy && (
-                            <Line
-                                yAxisId={yAxisId}
-                                type="monotone"
-                                dataKey={`${cat.productId}_buy`}
-                                name={`${cat.label} (Mua)`}
-                                stroke={cat.color}
-                                strokeWidth={2}
-                                strokeOpacity={0.4}
-                                strokeDasharray="3 3" // Dashed for Buy
-                                dot={false}
-                                activeDot={{ r: 4, strokeWidth: 2, stroke: '#fff', fill: cat.color }}
-                                isAnimationActive={true}
-                            />
-                        )}
-                    </React.Fragment>
-                )
-            })}
-          </LineChart>
-        </ResponsiveContainer>
+                  return (
+                      <React.Fragment key={cat.key}>
+                          {showSell && (
+                              <Line
+                                  yAxisId={yAxisId}
+                                  type="monotone"
+                                  dataKey={`${cat.productId}_sell`}
+                                  name={`${cat.label} (Bán)`}
+                                  stroke={cat.color}
+                                  strokeWidth={2}
+                                  dot={false}
+                                  activeDot={{ r: 4, strokeWidth: 2, stroke: '#fff', fill: cat.color }}
+                                  isAnimationActive={true}
+                              />
+                          )}
+                          {showBuy && (
+                              <Line
+                                  yAxisId={yAxisId}
+                                  type="monotone"
+                                  dataKey={`${cat.productId}_buy`}
+                                  name={`${cat.label} (Mua)`}
+                                  stroke={cat.color}
+                                  strokeWidth={2}
+                                  strokeOpacity={0.4}
+                                  strokeDasharray="3 3" // Dashed for Buy
+                                  dot={false}
+                                  activeDot={{ r: 4, strokeWidth: 2, stroke: '#fff', fill: cat.color }}
+                                  isAnimationActive={true}
+                              />
+                          )}
+                      </React.Fragment>
+                  )
+              })}
+            </LineChart>
+          </ResponsiveContainer>
+         ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                Đang tải dữ liệu biểu đồ...
+            </div>
+         )}
       </div>
 
       {/* Bottom Toggles (Centered) - Compact */}

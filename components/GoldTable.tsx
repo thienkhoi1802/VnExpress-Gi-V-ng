@@ -102,7 +102,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
 
   return (
     <div className="bg-white border border-gray-300 shadow-sm flex flex-col font-sans overflow-x-auto rounded-sm">
-      {/* Header Section Inside Box - Matching GoldChart Style */}
+      {/* Header Section Inside Box */}
       <div className="px-3 sm:px-5 py-4 border-b border-gray-200 bg-white flex items-center justify-between sticky left-0">
           <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
               <h2 className="text-lg sm:text-xl font-serif font-bold text-gray-900">Bảng giá chi tiết</h2>
@@ -125,7 +125,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 Hôm qua ({yesterdayStr})
               </th>
               <th colSpan={2} className="p-3 text-center">
-                Xu hướng
+                Xu hướng trong 30 ngày
               </th>
             </tr>
             
@@ -165,7 +165,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               {/* Trend Group */}
               <th className="px-1 sm:px-3 py-2 sm:py-3 text-right cursor-pointer hover:bg-gray-200 border-r border-gray-200 w-[50px] md:w-[75px]" onClick={() => requestSort('change30d')}>
                  <div className="flex items-center justify-end gap-1">
-                    <span className="sm:hidden">+/-</span><span className="hidden sm:inline">% 30N</span> <SortIcon columnKey='change30d' />
+                    <span className="sm:hidden">+/-</span><span className="hidden sm:inline">%</span> <SortIcon columnKey='change30d' />
                 </div>
               </th>
               <th className="hidden md:table-cell px-2 py-3 text-center w-[85px]">Biểu đồ</th>
@@ -181,7 +181,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               >
                 {/* Column 1: Name */}
                 <td className="px-2 sm:px-3 py-2 sm:py-3 align-middle border-r border-gray-200">
-                  <div className="font-bold text-gray-900 text-[12px] sm:text-base leading-snug break-words md:whitespace-nowrap">
+                  <div className="font-bold text-gray-900 text-[12px] sm:text-base leading-snug break-words md:whitespace-nowrap font-sans">
                     {product.name}
                   </div>
                 </td>
@@ -189,8 +189,8 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 {/* TODAY Buy: Stacked (Price Top, Trend Bottom) */}
                 <td className="px-1 sm:px-3 py-2 sm:py-3 text-right group-hover:bg-transparent border-r border-gray-200 align-middle">
                   <div className="flex flex-col items-end">
-                      {/* Buy Price: Dark Blue/Gray */}
-                      <div className="font-bold text-[#1e3a8a] tabular-nums text-[13px] sm:text-[17px] tracking-tight leading-none">
+                      {/* Buy Price: Black (Synchronized with upper section) */}
+                      <div className="font-bold text-gray-900 tabular-nums text-[13px] sm:text-[17px] tracking-tight leading-none font-sans">
                         {product.today.buy.toLocaleString('vi-VN')}
                       </div>
                       <div className="flex justify-end">
@@ -202,8 +202,8 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 {/* TODAY Sell: Stacked (Price Top, Trend Bottom) */}
                 <td className="px-1 sm:px-3 py-2 sm:py-3 text-right group-hover:bg-transparent border-r border-gray-200 md:border-r-gray-200 align-middle">
                   <div className="flex flex-col items-end">
-                      {/* Sell Price: Red - Same size as Buy */}
-                      <div className="font-black text-[#bd0000] tabular-nums text-[13px] sm:text-[17px] tracking-tight leading-none">
+                      {/* Sell Price: Red (Synchronized with upper section) */}
+                      <div className="font-black text-[#bd0000] tabular-nums text-[13px] sm:text-[17px] tracking-tight leading-none font-sans">
                         {product.today.sell.toLocaleString('vi-VN')}
                       </div>
                       <div className="flex justify-end">
@@ -214,22 +214,22 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
 
                 {/* Spread (Desktop) */}
                 <td className="hidden md:table-cell px-1 py-3 text-center group-hover:bg-transparent border-r border-gray-200 align-middle">
-                    <span className="inline-block text-sm font-bold text-gray-600 tabular-nums bg-gray-100 border border-gray-300 px-1.5 py-0.5 rounded shadow-sm">
+                    <span className="inline-block text-sm font-bold text-gray-600 tabular-nums bg-gray-100 border border-gray-300 px-1.5 py-0.5 rounded shadow-sm font-sans">
                         {product.spread.toLocaleString('vi-VN', { maximumFractionDigits: 2 })}
                     </span>
                 </td>
 
                 {/* YESTERDAY Data (Desktop) */}
-                <td className="hidden md:table-cell px-1.5 py-3 text-right text-gray-600 tabular-nums border-r border-gray-200 text-sm align-middle">
+                <td className="hidden md:table-cell px-1.5 py-3 text-right text-gray-600 tabular-nums border-r border-gray-200 text-sm align-middle font-sans">
                    {product.yesterday.buy.toLocaleString('vi-VN')}
                 </td>
-                <td className="hidden md:table-cell px-1.5 py-3 text-right text-gray-600 tabular-nums border-r border-gray-200 text-sm align-middle">
+                <td className="hidden md:table-cell px-1.5 py-3 text-right text-gray-600 tabular-nums border-r border-gray-200 text-sm align-middle font-sans">
                    {product.yesterday.sell.toLocaleString('vi-VN')}
                 </td>
 
                 {/* TREND % */}
                 <td className="px-1 sm:px-3 py-2 sm:py-3 text-right border-r border-gray-200 align-middle">
-                     <span className={`text-[11px] sm:text-sm font-bold tabular-nums block whitespace-nowrap ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
+                     <span className={`text-[11px] sm:text-sm font-bold tabular-nums block whitespace-nowrap font-sans ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
                         {product.change30d > 0 ? '+' : ''}{product.change30d.toFixed(1)}%
                     </span>
                 </td>

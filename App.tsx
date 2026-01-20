@@ -10,7 +10,7 @@ import { ComputedGoldProduct, HistoryPoint } from './types';
 import { Menu } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [data] = useState(getGoldData());
+  const [data, setData] = useState<ComputedGoldProduct[]>(getGoldData());
   const [historyData, setHistoryData] = useState<HistoryPoint[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<ComputedGoldProduct | null>(null);
   
@@ -18,8 +18,17 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'vn' | 'world'>('vn');
 
   useEffect(() => {
-    const history = getHistoryData();
-    setHistoryData(history);
+    // Initial fetch
+    setHistoryData(getHistoryData());
+
+    // Auto-update every 5 minutes (5 * 60 * 1000 ms)
+    const intervalId = setInterval(() => {
+      const freshData = getGoldData();
+      setData(freshData);
+      // We don't update historyData here as it's historical, but in a real app we might append points
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleProductClick = (product: ComputedGoldProduct) => {
