@@ -93,9 +93,9 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
   const SortHeader = ({ label, sortKey, className = "" }: { label: string, sortKey: SortKey, className?: string }) => (
     <th 
       onClick={() => handleSort(sortKey)}
-      className={`cursor-pointer group select-none hover:bg-gray-100/80 transition-colors ${className}`}
+      className={`cursor-pointer group select-none hover:bg-gray-100/80 transition-colors text-right ${className}`}
     >
-      <div className="flex items-center justify-center gap-1">
+      <div className="flex items-center justify-end gap-1">
         <span>{label}</span>
         <ChevronsUpDown size={12} className={`shrink-0 transition-opacity ${sortConfig.key === sortKey ? 'opacity-100 text-[#9f224e]' : 'opacity-30 group-hover:opacity-60'}`} />
       </div>
@@ -168,7 +168,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               </th>
             </tr>
 
-            {/* Tầng 2: Mua/Bán */}
+            {/* Tầng 2: Mua/Bán - Đã điều chỉnh căn phải justify-end */}
             <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[13px] sm:text-[14px] text-gray-500 font-bold">
               <SortHeader label="Mua" sortKey="todayBuy" className="p-1.5 sm:p-2.5 border-r border-gray-100" />
               <SortHeader label="Bán" sortKey="todaySell" className="p-1.5 sm:p-2.5 border-r border-gray-100" />

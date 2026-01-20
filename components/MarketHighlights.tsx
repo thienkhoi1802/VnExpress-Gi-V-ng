@@ -316,12 +316,12 @@ export const MarketHighlights: React.FC<Props> = ({ data, onProductClick, active
                          </div>
                     </div>
 
-                    {/* Vietnamese Caption Texts - Compact */}
-                    <div className="mt-1 bg-[#f0f9ff] border border-blue-50 p-3 rounded-sm space-y-0.5">
-                        <p className="text-[13px] sm:text-[14px] text-[#1e293b] leading-normal font-sans text-left">
+                    {/* Vietnamese Caption Texts - Adjusted to 18px for better balance */}
+                    <div className="mt-1 bg-[#f0f9ff] border border-blue-50 p-4 rounded-sm space-y-2">
+                        <p className="text-[18px] text-[#1e293b] leading-snug font-sans text-left">
                             Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">117.795.325 VNĐ/Ounce</span>
                         </p>
-                        <p className="text-[12px] sm:text-[13px] text-[#475569] font-sans text-left">
+                        <p className="text-[18px] text-[#475569] leading-snug font-sans text-left">
                             Giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
                         </p>
                     </div>
