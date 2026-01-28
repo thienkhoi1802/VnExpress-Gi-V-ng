@@ -84,41 +84,47 @@ const DomesticItem = ({
           <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
       </div>
 
-      {/* MOBILE LAYOUT: Flex Row with 60% for Prices (Stacked) and 40% for Chart */}
-      <div className="sm:hidden px-3 pb-3 flex items-stretch font-sans">
-          <div className="w-[60%] flex flex-col gap-3 pr-3 border-r border-gray-100">
-             {/* Sell */}
-             <div>
-                <span className="text-[10px] text-gray-500 font-bold uppercase block mb-0.5">Bán ra</span>
-                <span className="font-black text-vne-green text-[32px] leading-none tracking-tight tabular-nums block">
-                    {product.today.sell.toLocaleString('vi-VN')}
-                </span>
-                <div className={`flex items-center gap-1 text-[11px] font-bold mt-0.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+      {/* MOBILE LAYOUT: Grid 3 columns - Sell | Buy | Chart */}
+      <div className="sm:hidden px-3 pb-3 grid grid-cols-12 gap-2 font-sans items-start">
+          {/* Sell (Bán ra) */}
+          <div className="col-span-4 flex flex-col border-r border-gray-100 pr-1">
+             <span className="text-[10px] text-gray-500 font-bold uppercase mb-1">Bán ra</span>
+             <span className="font-black text-vne-green text-[24px] leading-none tracking-tight tabular-nums">
+                {product.today.sell.toLocaleString('vi-VN')}
+             </span>
+             <div className={`flex flex-col gap-0 text-[11px] font-bold mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+                <div className="flex items-center gap-1">
                    {product.changeSell >= 0 ? <ArrowUp size={10}/> : <ArrowDown size={10}/>}
                    <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
-             </div>
-             {/* Buy */}
-             <div>
-                <span className="text-[10px] text-gray-500 font-bold uppercase block mb-0.5">Mua vào</span>
-                <span className="font-black text-gray-900 text-[32px] leading-none tracking-tight tabular-nums block">
-                    {product.today.buy.toLocaleString('vi-VN')}
-                </span>
-                <div className={`flex items-center gap-1 text-[11px] font-bold mt-0.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
-                   {product.changeBuy >= 0 ? <ArrowUp size={10}/> : <ArrowDown size={10}/>}
-                   <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                </div>
+                <span className="text-[10px] opacity-80 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
              </div>
           </div>
           
-          <div className="w-[40%] pl-3 flex items-center justify-center">
-             <div className="w-full h-[80px]">
+          {/* Buy (Mua vào) */}
+          <div className="col-span-4 flex flex-col border-r border-gray-100 px-1">
+             <span className="text-[10px] text-gray-500 font-bold uppercase mb-1">Mua vào</span>
+             <span className="font-black text-gray-900 text-[24px] leading-none tracking-tight tabular-nums">
+                {product.today.buy.toLocaleString('vi-VN')}
+             </span>
+             <div className={`flex flex-col gap-0 text-[11px] font-bold mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+                <div className="flex items-center gap-1">
+                   {product.changeBuy >= 0 ? <ArrowUp size={10}/> : <ArrowDown size={10}/>}
+                   <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                </div>
+                <span className="text-[10px] opacity-80 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
+             </div>
+          </div>
+          
+          {/* Chart */}
+          <div className="col-span-4 pl-1 h-[60px] flex items-center justify-center">
+            <div className="w-full h-[40px]">
                 <Sparkline 
                     data={historyData} 
                     dataKey={product.id} 
                     trend={product.changeSell >= 0 ? 'up' : 'down'}
                 />
-             </div>
+            </div>
           </div>
       </div>
 
@@ -234,9 +240,6 @@ const WorldItem = ({
                               LIVE
                           </div>
                       </div>
-                      <div className="flex items-center gap-0.5 text-[12px] font-bold text-[#9f224e]">
-                           Chi tiết <ChevronRight size={14} />
-                      </div>
                   </div>
 
                   {/* Content Row: 60% Price | 40% Chart */}
@@ -269,6 +272,11 @@ const WorldItem = ({
                            </div>
                       </div>
                   </div>
+
+                   <div className="flex items-center gap-0.5 text-[12px] font-bold text-[#9f224e] mt-2 ml-auto">
+                           xem biểu đồ & phân tích
+                           <span className="font-bold text-[#9f224e] ml-1">Chi tiết <ChevronRight size={10} className="inline" /></span>
+                   </div>
               </div>
           </div>
       )
