@@ -77,67 +77,105 @@ const DomesticItem = ({
       onClick={() => onProductClick(product)}
       className={`bg-white hover:bg-gray-50/80 transition-all cursor-pointer group relative flex flex-col h-full ${className}`}
     >
-      <div className="px-3 sm:px-5 py-2.5 flex justify-between items-center">
-          <h3 className="font-bold tracking-tight text-gray-900 text-[18px] sm:text-[20px] leading-tight font-serif truncate">
-              {label}
-          </h3>
-          <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
-      </div>
-
-      <div className="flex items-center px-3 sm:px-5 pb-1">
-          {/* Use gap-1 on mobile to fit the very large text */}
-          <div className="flex-grow grid grid-cols-2 gap-1 sm:gap-4 items-start font-sans">
-              <div className="flex flex-col border-r border-gray-100 pr-2 min-w-0">
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
-                  {/* Updated Font Size: Mobile 42px, Desktop 50px */}
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[42px] sm:text-[50px]">
-                    {product.today.sell.toLocaleString('vi-VN')}
-                  </span>
-                  <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                      {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                      <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                      <span className="text-[11px] font-bold ml-1 opacity-90">
-                          ({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)
-                      </span>
-                  </div>
-              </div>
-
-              <div className="flex flex-col pl-2 min-w-0">
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Mua vào</span>
-                  {/* Updated Font Size: Mobile 42px, Desktop 50px */}
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[42px] sm:text-[50px]">
-                    {product.today.buy.toLocaleString('vi-VN')}
-                  </span>
-                  <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                      {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                      <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                      <span className="text-[11px] font-bold ml-1 opacity-90">
-                          ({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)
-                      </span>
-                  </div>
-              </div>
-          </div>
-      </div>
-      
-      {/* Mobile Only: 30-Day Trend Chart */}
-      <div className="sm:hidden px-3 pb-0 h-[40px] w-full mt-2 mb-1">
-         <Sparkline 
-            data={historyData} 
-            dataKey={product.id} 
-            trend={product.changeSell >= 0 ? 'up' : 'down'}
-         />
-      </div>
-
-      {diffTextValue && (
-        <div className="px-3 sm:px-5 pb-3 pt-2">
-             <div className="flex items-center justify-between text-[13px] text-gray-500 font-sans border-t border-gray-50 pt-2">
-                  <span>Chênh lệch so với thế giới:</span>
-                  <span className="font-bold text-gray-900 tabular-nums">
-                      {diffTextValue} <span className="text-[11px] text-gray-500 font-bold">Triệu</span>
-                  </span>
-             </div>
+      {/* ================= DESKTOP LAYOUT (Unchanged) ================= */}
+      <div className="hidden sm:block">
+        <div className="px-5 py-2.5 flex justify-between items-center">
+            <h3 className="font-bold tracking-tight text-gray-900 text-[20px] leading-tight font-serif truncate">
+                {label}
+            </h3>
+            <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
         </div>
-      )}
+
+        <div className="flex items-center px-5 pb-1">
+            <div className="flex-grow grid grid-cols-2 gap-4 items-start font-sans">
+                <div className="flex flex-col border-r border-gray-100 pr-2 min-w-0">
+                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
+                    <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[50px]">
+                      {product.today.sell.toLocaleString('vi-VN')}
+                    </span>
+                    <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
+                        {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
+                        <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                        <span className="text-[11px] font-bold ml-1 opacity-90">
+                            ({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)
+                        </span>
+                    </div>
+                </div>
+
+                <div className="flex flex-col pl-2 min-w-0">
+                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Mua vào</span>
+                    <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[50px]">
+                      {product.today.buy.toLocaleString('vi-VN')}
+                    </span>
+                    <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
+                        {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
+                        <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                        <span className="text-[11px] font-bold ml-1 opacity-90">
+                            ({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      {/* ================= MOBILE LAYOUT (New: Horizontal Row) ================= */}
+      <div className="sm:hidden px-3 py-3 font-sans">
+        {/* Header Row */}
+        <div className="flex justify-between items-baseline mb-2">
+            <h3 className="font-bold tracking-tight text-gray-900 text-[18px] leading-tight font-serif truncate">
+                {label}
+            </h3>
+            <span className="text-[10px] text-gray-400 font-medium">Tr.đ/lượng</span>
+        </div>
+
+        {/* Data Row: Sell | Buy | Chart */}
+        <div className="grid grid-cols-[1fr_1fr_60px] gap-2 items-center">
+            
+            {/* Column 1: SELL (Bán ra) */}
+            <div className="flex flex-col border-r border-gray-100 pr-1">
+                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
+                <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[32px]">
+                   {product.today.sell.toLocaleString('vi-VN')}
+                </span>
+                <div className={`flex items-center gap-0.5 text-[11px] font-bold mt-0.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums`}>
+                    {product.changeSell >= 0 ? <ArrowUp size={10}/> : <ArrowDown size={10}/>}
+                    <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                    <span className="opacity-80 ml-0.5">({product.percentSell.toFixed(1)}%)</span>
+                </div>
+            </div>
+
+            {/* Column 2: BUY (Mua vào) */}
+            <div className="flex flex-col border-r border-gray-100 pr-1 pl-1">
+                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Mua vào</span>
+                <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[32px]">
+                   {product.today.buy.toLocaleString('vi-VN')}
+                </span>
+                <div className={`flex items-center gap-0.5 text-[11px] font-bold mt-0.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums`}>
+                     {product.changeBuy >= 0 ? <ArrowUp size={10}/> : <ArrowDown size={10}/>}
+                     <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                </div>
+            </div>
+
+            {/* Column 3: Sparkline */}
+            <div className="h-[40px] flex items-center justify-center">
+                 <Sparkline 
+                    data={historyData} 
+                    dataKey={product.id} 
+                    trend={product.changeSell >= 0 ? 'up' : 'down'}
+                 />
+            </div>
+        </div>
+
+        {diffTextValue && (
+            <div className="flex items-center justify-between text-[11px] text-gray-500 font-sans border-t border-gray-50 pt-2 mt-2">
+                 <span>Chênh lệch TG:</span>
+                 <span className="font-bold text-gray-900 tabular-nums">
+                     {diffTextValue} tr
+                 </span>
+            </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -163,7 +201,7 @@ const WorldItem = ({
               onClick={() => setActiveTab('world')}
               className={`bg-white cursor-pointer hover:bg-gray-50/80 transition-all group relative ${className}`}
           >
-              {/* DESKTOP VIEW */}
+              {/* ================= DESKTOP VIEW (Unchanged) ================= */}
               <div className="hidden sm:flex px-5 py-3 items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
@@ -194,10 +232,10 @@ const WorldItem = ({
                   </div>
               </div>
 
-              {/* MOBILE VIEW - Compact Stacked Layout */}
-              <div className="sm:hidden px-3 py-3 flex flex-col relative">
-                  {/* Header: Title Left, Link Right */}
-                  <div className="flex items-center justify-between mb-1">
+              {/* ================= MOBILE VIEW (New: Horizontal Row) ================= */}
+              <div className="sm:hidden px-3 py-3 flex flex-col relative font-sans">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                           <h3 className="text-[18px] font-bold text-[#9f224e] font-serif leading-tight">
                               Vàng thế giới
@@ -207,38 +245,40 @@ const WorldItem = ({
                               LIVE
                           </div>
                       </div>
-                      <div className="flex items-center gap-0.5 text-[12px] font-bold text-[#9f224e]">
-                           Chi tiết <ChevronRight size={14} />
+                      <div className="flex items-center gap-0.5 text-[11px] font-bold text-[#9f224e]">
+                           Chi tiết <ChevronRight size={12} />
                       </div>
                   </div>
 
-                  {/* Data: Price Left, Change Right */}
-                  <div className="flex items-end justify-between mt-1.5">
-                      <div className="flex items-baseline gap-1.5">
-                          {/* Maintained small font size (18px) for hierarchy */}
-                          <span className="text-[18px] font-black text-gray-900 tabular-nums font-sans leading-none tracking-tighter">
+                  {/* Data Row: Price | Change | Chart */}
+                  <div className="grid grid-cols-[1.4fr_0.8fr_60px] gap-2 items-center">
+                      {/* Price */}
+                      <div className="flex flex-col border-r border-gray-100 pr-1">
+                          <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Giá ngay (Spot)</span>
+                          <span className="text-[32px] font-black text-gray-900 tabular-nums leading-none tracking-tighter">
                               {product.today.sell.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
-                          <span className="text-[11px] font-bold text-gray-500 transform -translate-y-1">USD</span>
                       </div>
-                      
-                      <div className="flex flex-col items-end pb-1">
-                          <span className={`text-[16px] font-bold ${isUp ? 'text-trend-up' : 'text-trend-down'} tabular-nums flex items-center justify-end leading-none`}>
+
+                      {/* Change */}
+                      <div className="flex flex-col border-r border-gray-100 px-1 items-start">
+                          <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Thay đổi</span>
+                          <span className={`text-[16px] font-black ${isUp ? 'text-trend-up' : 'text-trend-down'} tabular-nums leading-none`}>
                               {isUp ? '+' : ''}{product.changeSell.toFixed(1)}
                           </span>
-                          <span className="text-[11px] font-bold text-gray-400 mt-0.5">
-                              ({Math.abs(product.percentSell).toFixed(2)}%)
+                          <span className="text-[11px] font-bold text-gray-500 mt-0.5">
+                              {Math.abs(product.percentSell).toFixed(2)}%
                           </span>
                       </div>
-                  </div>
-                  
-                  {/* Mobile Only: 30-Day Trend Chart */}
-                  <div className="h-[40px] w-full mt-2">
-                     <Sparkline 
-                        data={historyData} 
-                        dataKey={product.id} 
-                        trend={isUp ? 'up' : 'down'}
-                     />
+                      
+                      {/* Chart */}
+                      <div className="h-[40px] flex items-center justify-center">
+                         <Sparkline 
+                            data={historyData} 
+                            dataKey={product.id} 
+                            trend={isUp ? 'up' : 'down'}
+                         />
+                      </div>
                   </div>
               </div>
           </div>
