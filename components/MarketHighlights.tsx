@@ -81,44 +81,44 @@ const DomesticItem = ({
           <h3 className="font-bold tracking-tight text-gray-900 text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               {label}
           </h3>
-          <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap">Triệu/lượng</span>
+          <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">Triệu/lượng</span>
       </div>
 
       {/* MOBILE LAYOUT: Grid 3 columns - Sell | Buy | Chart */}
-      <div className="sm:hidden px-3 pb-3 grid grid-cols-12 gap-2 font-sans items-start">
-          {/* Sell (Bán ra) */}
+      <div className="sm:hidden px-3 pb-3 grid grid-cols-12 gap-1 font-sans items-start">
+          {/* Sell (Bán ra) - Increased font size */}
           <div className="col-span-4 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-1">Bán ra</span>
-             <span className="font-black text-vne-green text-[24px] leading-none tracking-tight tabular-nums">
+             <span className="font-black text-vne-green text-[32px] leading-none tracking-tighter tabular-nums">
                 {product.today.sell.toLocaleString('vi-VN')}
              </span>
-             <div className={`flex flex-col gap-0 text-[11px] font-bold mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-col gap-0 text-[12px] font-bold mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-1">
                    {product.changeSell >= 0 ? <ArrowUp size={10}/> : <ArrowDown size={10}/>}
                    <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
-                <span className="text-[10px] opacity-80 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
+                <span className="text-[11px] opacity-80 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
              </div>
           </div>
           
-          {/* Buy (Mua vào) */}
+          {/* Buy (Mua vào) - Increased font size */}
           <div className="col-span-4 flex flex-col border-r border-gray-100 px-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-1">Mua vào</span>
-             <span className="font-black text-gray-900 text-[24px] leading-none tracking-tight tabular-nums">
+             <span className="font-black text-gray-900 text-[32px] leading-none tracking-tighter tabular-nums">
                 {product.today.buy.toLocaleString('vi-VN')}
              </span>
-             <div className={`flex flex-col gap-0 text-[11px] font-bold mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-col gap-0 text-[12px] font-bold mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-1">
                    {product.changeBuy >= 0 ? <ArrowUp size={10}/> : <ArrowDown size={10}/>}
                    <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
-                <span className="text-[10px] opacity-80 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
+                <span className="text-[11px] opacity-80 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
              </div>
           </div>
           
           {/* Chart */}
-          <div className="col-span-4 pl-1 h-[60px] flex items-center justify-center">
-            <div className="w-full h-[40px]">
+          <div className="col-span-4 pl-1 h-[70px] flex items-center justify-center">
+            <div className="w-full h-[50px]">
                 <Sparkline 
                     data={historyData} 
                     dataKey={product.id} 
@@ -163,7 +163,7 @@ const DomesticItem = ({
 
       {diffTextValue && (
         <div className="px-3 sm:px-5 pb-3 pt-2">
-             <div className="flex items-center justify-between text-[13px] text-gray-500 font-sans border-t border-gray-50 pt-2">
+             <div className="flex items-center justify-between text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-2">
                   <span>Chênh lệch so với thế giới:</span>
                   <span className="font-bold text-gray-900 tabular-nums">
                       {diffTextValue} <span className="text-[11px] text-gray-500 font-bold">Triệu</span>
@@ -227,8 +227,8 @@ const WorldItem = ({
                   </div>
               </div>
 
-              {/* MOBILE VIEW - Updated Layout: Sell (60%) | Chart (40%) */}
-              <div className="sm:hidden px-3 py-3 flex flex-col relative font-sans">
+              {/* MOBILE VIEW - Reduced price font size to highlight domestic prices */}
+              <div className="sm:hidden px-3 py-3 flex flex-col relative font-sans border-t border-gray-100">
                   {/* Header */}
                   <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
@@ -246,7 +246,7 @@ const WorldItem = ({
                   <div className="flex items-stretch">
                       <div className="w-[60%] pr-3 border-r border-gray-100 flex flex-col justify-center">
                           <div className="flex items-baseline gap-1 mb-1">
-                              <span className="text-[32px] font-black text-gray-900 tabular-nums leading-none tracking-tighter">
+                              <span className="text-[28px] font-black text-gray-900 tabular-nums leading-none tracking-tighter">
                                   {product.today.sell.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </span>
                               <span className="text-[12px] font-bold text-gray-500">USD</span>
@@ -263,7 +263,7 @@ const WorldItem = ({
                       </div>
                       
                       <div className="w-[40%] pl-3 flex items-center justify-center">
-                           <div className="w-full h-[60px]">
+                           <div className="w-full h-[55px]">
                                <Sparkline 
                                   data={historyData} 
                                   dataKey={product.id} 
