@@ -86,7 +86,6 @@ const DomesticItem = ({
 
       {/* MOBILE LAYOUT: Grid 3 columns - Sell | Buy | Chart */}
       <div className="sm:hidden px-3 pb-3 grid grid-cols-12 gap-1 font-sans items-start">
-          {/* Sell (Bán ra) - Size 32px */}
           <div className="col-span-4 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-1">Bán ra</span>
              <span className="font-black text-vne-green text-[32px] leading-none tracking-tighter tabular-nums">
@@ -101,7 +100,6 @@ const DomesticItem = ({
              </div>
           </div>
           
-          {/* Buy (Mua vào) - Size 32px */}
           <div className="col-span-4 flex flex-col border-r border-gray-100 px-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-1">Mua vào</span>
              <span className="font-black text-gray-900 text-[32px] leading-none tracking-tighter tabular-nums">
@@ -116,7 +114,6 @@ const DomesticItem = ({
              </div>
           </div>
           
-          {/* Chart */}
           <div className="col-span-4 pl-1 h-[70px] flex items-center justify-center">
             <div className="w-full h-[50px]">
                 <Sparkline 
@@ -128,7 +125,7 @@ const DomesticItem = ({
           </div>
       </div>
 
-      {/* DESKTOP LAYOUT: Existing Grid */}
+      {/* DESKTOP LAYOUT */}
       <div className="hidden sm:flex items-center px-5 pb-1">
           <div className="flex-grow grid grid-cols-2 gap-4 items-start font-sans">
               <div className="flex flex-col border-r border-gray-100 pr-2 min-w-0">
@@ -227,10 +224,10 @@ const WorldItem = ({
                   </div>
               </div>
 
-              {/* MOBILE VIEW - Updated layout to match user request */}
-              <div className="sm:hidden px-3 py-3 flex flex-col relative font-sans border-t border-gray-100">
+              {/* MOBILE VIEW - Refined layout */}
+              <div className="sm:hidden px-3 py-4 flex flex-col relative font-sans border-t border-gray-100">
                   {/* Header Title + LIVE */}
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mb-3">
                       <h3 className="text-[18px] font-bold text-[#9f224e] font-serif leading-tight">
                           Vàng thế giới
                       </h3>
@@ -240,30 +237,30 @@ const WorldItem = ({
                       </div>
                   </div>
 
-                  {/* Price Row + Sparkline Row */}
-                  <div className="grid grid-cols-12 gap-1 items-stretch">
-                      {/* Left: Info (4/12 width) - Matches one box width above */}
-                      <div className="col-span-5 pr-2 border-r border-gray-100 flex flex-col justify-center">
-                          <div className="flex items-baseline gap-1">
+                  {/* Price/Change Row + Large Sparkline */}
+                  <div className="grid grid-cols-12 gap-1 items-center">
+                      {/* Left: Info (4/12 width) - Price and Change info stacked */}
+                      <div className="col-span-4 pr-1 border-r border-gray-100 flex flex-col justify-center">
+                          <div className="flex items-baseline gap-0.5 mb-0.5">
                               <span className="text-[26px] font-black text-gray-900 tabular-nums leading-none tracking-tighter">
                                   {product.today.sell.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </span>
-                              <span className="text-[11px] font-bold text-gray-500">USD</span>
+                              <span className="text-[10px] font-bold text-gray-400">USD</span>
                           </div>
                           
-                          <div className="flex items-center gap-1.5 mt-1">
-                              <span className={`text-[15px] font-bold ${isUp ? 'text-trend-up' : 'text-trend-down'} tabular-nums flex items-center leading-none`}>
+                          <div className="flex items-center gap-1 flex-wrap">
+                              <span className={`text-[14px] font-bold ${isUp ? 'text-trend-up' : 'text-trend-down'} tabular-nums leading-none`}>
                                   {isUp ? '+' : ''}{product.changeSell.toFixed(1)}
                               </span>
-                              <span className="text-[12px] font-medium text-gray-400">
+                              <span className="text-[11px] font-medium text-gray-400">
                                   ({Math.abs(product.percentSell).toFixed(2)}%)
                               </span>
                           </div>
                       </div>
                       
-                      {/* Right: Wide Sparkline (7/12 width) - Matches the width of Sell + Buy above */}
-                      <div className="col-span-7 pl-2 flex items-center justify-center">
-                           <div className="w-full h-[60px]">
+                      {/* Right: Wide Sparkline (8/12 width) - Matches combined width of Buy + Chart above */}
+                      <div className="col-span-8 pl-2 flex items-center justify-center">
+                           <div className="w-full h-[65px]">
                                <Sparkline 
                                   data={historyData} 
                                   dataKey={product.id} 
@@ -274,10 +271,12 @@ const WorldItem = ({
                   </div>
 
                   {/* Footer Link Row */}
-                  <div className="flex items-center justify-end mt-2">
-                       <div className="text-[12px] text-[#9f224e] font-bold flex items-center gap-1">
-                           <span className="font-normal text-gray-500">xem biểu đồ & phân tích</span>
-                           <span>Chi tiết <ChevronRight size={10} className="inline ml-0.5" /></span>
+                  <div className="flex items-center justify-end mt-4 pt-3 border-t border-gray-50">
+                       <div className="text-[12px] flex items-center gap-1.5">
+                           <span className="font-medium text-gray-500">xem biểu đồ & phân tích</span>
+                           <span className="font-bold text-[#9f224e] flex items-center">
+                               Chi tiết <ChevronRight size={12} className="inline ml-0.5" />
+                           </span>
                        </div>
                   </div>
               </div>
@@ -361,7 +360,7 @@ export const MarketHighlights: React.FC<Props> = ({
               </div>
             )}
 
-            {/* Box 1: Price Info - Attached to Tabs */}
+            {/* Box 1: Price Info */}
             <div className="bg-white border-x border-b border-gray-200 shadow-sm flex flex-col font-sans rounded-b-sm overflow-hidden p-3 sm:p-5">
                 <div className="flex justify-between items-start mb-4 border-b border-gray-100 pb-3">
                     <div className="flex flex-col gap-1">
