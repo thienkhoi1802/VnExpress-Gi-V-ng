@@ -45,10 +45,10 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
       </div>
 
       <div className="p-4 sm:p-5">
-        {/* Layout: Grid 2 columns on mobile, Flex row on desktop */}
-        <div className="grid grid-cols-2 md:flex md:flex-row md:items-end gap-3 sm:gap-4">
+        {/* Layout: Grid on mobile, Flex row with TOP ALIGNMENT (items-start) on desktop */}
+        <div className="grid grid-cols-2 md:flex md:flex-row md:items-start gap-3 sm:gap-4">
           
-          {/* Mobile Row 1 / Desktop Col 1: Quantity */}
+          {/* Quantity Block */}
           <div className="flex flex-col col-span-1 md:w-32">
             <label className="block text-[11px] font-bold text-gray-400 mb-1.5 uppercase tracking-wide">Số lượng</label>
             <div className="flex h-10 border border-gray-300 bg-white shadow-sm rounded-sm overflow-hidden">
@@ -75,7 +75,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
             </div>
           </div>
 
-          {/* Mobile Row 1 / Desktop Col 2: Unit */}
+          {/* Unit Block */}
           <div className="flex flex-col col-span-1 md:w-28">
             <label className="block text-[11px] font-bold text-gray-400 mb-1.5 uppercase tracking-wide">Đơn vị</label>
             <div className="h-10 border border-gray-300 bg-white relative shadow-sm rounded-sm">
@@ -94,7 +94,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
             </div>
           </div>
 
-          {/* Mobile Row 2 / Desktop Col 3: Gold Type */}
+          {/* Gold Type Block */}
           <div className="flex flex-col col-span-2 md:flex-1">
               <label className="block text-[11px] font-bold text-gray-400 mb-1.5 uppercase tracking-wide">Loại vàng</label>
               <div className="h-10 border border-gray-300 bg-white relative shadow-sm rounded-sm">
@@ -113,7 +113,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
               </div>
           </div>
 
-          {/* Mobile Row 3 / Desktop Col 4: Estimated Result */}
+          {/* Result Block */}
           <div className="flex flex-col col-span-2 md:w-64">
                <label className="block text-[11px] font-bold text-gray-400 mb-1.5 uppercase tracking-wide">Thành tiền ước tính</label>
                <div className="h-10 flex items-center justify-end px-4 bg-[#9f224e] text-white shadow-sm rounded-sm">
@@ -124,13 +124,12 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                       <span className="text-[10px] font-bold text-white/90 border-b border-white/30 leading-none pb-0.5 shrink-0 uppercase">VNĐ</span>
                   </div>
                </div>
+               {/* Footer Disclaimer: Right-aligned, attached with 4px margin */}
+               <div className="mt-1 text-[11px] text-gray-400 italic text-right font-medium">
+                  *Giá trị tính theo giá bán ra tại thời điểm cập nhật
+               </div>
           </div>
 
-        </div>
-        
-        {/* Footer Disclaimer - Aligned to the Right */}
-        <div className="mt-5 text-[11px] text-gray-400 italic text-right border-t border-gray-50 pt-3 font-medium">
-           *Giá trị tính theo giá bán ra tại thời điểm cập nhật
         </div>
       </div>
     </div>

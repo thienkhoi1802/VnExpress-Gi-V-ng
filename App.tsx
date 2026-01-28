@@ -1,30 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { getGoldData, getHistoryData } from './services/goldData';
+import { getGoldData, getHistoryData, fetchWorldGoldPrice, getHourlyData } from './services/goldData';
 import { GoldTable } from './components/GoldTable';
 import { Calculator } from './components/Calculator';
 import { ChartModal } from './components/ChartModal';
 import { GoldChart } from './components/GoldChart';
 import { MarketHighlights } from './components/MarketHighlights';
 import { StickyMiniBar } from './components/StickyMiniBar';
+import { GoldNews } from './components/GoldNews';
 import { ComputedGoldProduct, HistoryPoint } from './types';
 import { Menu } from 'lucide-react';
 
 const App: React.FC = () => {
   const [data, setData] = useState<ComputedGoldProduct[]>(getGoldData());
   const [historyData, setHistoryData] = useState<HistoryPoint[]>([]);
+  const [hourlyData, setHourlyData] = useState<HistoryPoint[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<ComputedGoldProduct | null>(null);
+  const [isLiveLoading, setIsLiveLoading] = useState(false);
   
   const [activeTab, setActiveTab] = useState<'vn' | 'world'>('vn');
 
   useEffect(() => {
     setHistoryData(getHistoryData());
+    setHourlyData(getHourlyData());
 
-    const intervalId = setInterval(() => {
-      const freshData = getGoldData();
-      setData(freshData);
-    }, 5 * 60 * 1000);
+    // Initial fetch to get accurate world data immediately from GoldAPI
+    const initFetch = async () => {
+        setIsLiveLoading(true);
+        const freshData = await fetchWorldGoldPrice();
+        setData(freshData);
+        setIsLiveLoading(false);
+    };
+    initFetch();
 
-    return () => clearInterval(intervalId);
+    // Refresh World Price every 60 seconds (1 minute)
+    const liveInterval = setInterval(async () => {
+        setIsLiveLoading(true);
+        const freshData = await fetchWorldGoldPrice();
+        setData(freshData);
+        // Also refresh hourly mock data for realism
+        setHourlyData(getHourlyData());
+        setIsLiveLoading(false);
+    }, 60000);
+
+    return () => clearInterval(liveInterval);
   }, []);
 
   const handleProductClick = (product: ComputedGoldProduct) => {
@@ -70,15 +88,22 @@ const App: React.FC = () => {
             onProductClick={handleProductClick} 
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            isLiveLoading={isLiveLoading}
           />
         </section>
 
         {activeTab === 'vn' && (
           <>
+            {/* Mobile News Section - Desktop hidden */}
+            <section className="md:hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
+               <GoldNews />
+            </section>
+
             <section className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <GoldChart 
                 products={data} 
                 historyData={historyData} 
+                hourlyData={hourlyData}
               />
             </section>
 
@@ -101,6 +126,7 @@ const App: React.FC = () => {
         product={selectedProduct}
         worldProduct={world}
         historyData={historyData}
+        hourlyData={hourlyData}
         onClose={() => setSelectedProduct(null)}
       />
     </div>

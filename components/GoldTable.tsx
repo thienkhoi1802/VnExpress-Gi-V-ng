@@ -95,9 +95,13 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
       onClick={() => handleSort(sortKey)}
       className={`cursor-pointer group select-none hover:bg-gray-100/80 transition-colors text-right ${className}`}
     >
-      <div className="flex items-center justify-end gap-1">
+      <div className="flex items-center justify-end gap-1.5">
         <span>{label}</span>
-        <ChevronsUpDown size={12} className={`shrink-0 transition-opacity ${sortConfig.key === sortKey ? 'opacity-100 text-[#9f224e]' : 'opacity-30 group-hover:opacity-60'}`} />
+        <ChevronsUpDown 
+          size={15} 
+          className={`shrink-0 transition-all ${sortConfig.key === sortKey ? 'opacity-100 text-[#9f224e] scale-110' : 'opacity-40 group-hover:opacity-80'}`} 
+          strokeWidth={2.5}
+        />
       </div>
     </th>
   );
@@ -113,35 +117,32 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
             Triệu / lượng
           </span>
         </div>
-        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-tight hidden sm:block font-sans">Sắp xếp theo ý bạn</div>
       </div>
 
       <div className="w-full overflow-x-auto no-scrollbar">
         <table className="w-full text-left border-collapse min-w-[320px]">
           <thead>
             {/* Tầng 1: Tiêu đề chính */}
-            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[14px] sm:text-[16px] text-gray-600 font-bold">
+            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[14px] sm:text-[15px] text-gray-600 font-bold">
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('name')}
-                /* Tăng diện tích cột Loại trên Mobile (w-[40%]) để đọc đầy đủ text */
-                className="p-2 sm:p-4 border-r border-gray-200 w-[40%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
+                className="p-2 sm:p-3 border-r border-gray-200 w-[40%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
               >
-                 <div className="flex items-center gap-1">
-                    Loại <ChevronsUpDown size={12} className={sortConfig.key === 'name' ? 'text-[#9f224e]' : 'opacity-30'} />
+                 <div className="flex items-center gap-1.5">
+                    Loại <ChevronsUpDown size={15} strokeWidth={2.5} className={sortConfig.key === 'name' ? 'text-[#9f224e] opacity-100 scale-110' : 'opacity-40 group-hover:opacity-80'} />
                  </div>
               </th>
               
-              <th colSpan={2} className="p-1 sm:p-3 text-center border-r border-gray-200 bg-white/50">
+              <th colSpan={2} className="p-1 sm:p-2 text-center border-r border-gray-200 bg-white/50">
                 <div className="flex flex-col items-center">
-                    {/* Rút gọn text cho Mobile: 'Giá vàng' thay vì 'Giá vàng hôm nay' */}
                     <span className="text-[#9f224e] font-black sm:hidden">Giá vàng</span>
                     <span className="text-[#9f224e] font-black hidden sm:block">Giá vàng hôm nay</span>
                     <span className="text-[11px] sm:text-[13px] font-medium text-gray-500 mt-0.5">({todayStr})</span>
                 </div>
               </th>
 
-              <th colSpan={2} className="hidden md:table-cell p-1 sm:p-3 text-center border-r border-gray-200">
+              <th colSpan={2} className="hidden md:table-cell p-1 sm:p-2 text-center border-r border-gray-200">
                 <div className="flex flex-col items-center">
                     <span className="text-gray-700">Giá vàng hôm qua</span>
                     <span className="text-[11px] sm:text-[13px] font-medium text-gray-400 mt-0.5">({yesterdayStr})</span>
@@ -151,15 +152,13 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('change30d')}
-                /* Cột Xu hướng chiếm phần còn lại */
-                className="p-2 sm:p-4 text-center w-[20%] sm:w-[150px] cursor-pointer group hover:bg-gray-100/50"
+                className="p-2 sm:p-3 text-center w-[20%] sm:w-[150px] cursor-pointer group hover:bg-gray-100/50"
               >
                 <div className="flex flex-col items-center">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                         <span className="text-gray-800">Xu hướng</span>
-                        <ChevronsUpDown size={12} className={sortConfig.key === 'change30d' ? 'text-[#9f224e]' : 'opacity-30'} />
+                        <ChevronsUpDown size={15} strokeWidth={2.5} className={sortConfig.key === 'change30d' ? 'text-[#9f224e] opacity-100 scale-110' : 'opacity-40 group-hover:opacity-80'} />
                     </div>
-                    {/* Giảm text phụ trên Mobile hoặc đảm bảo 1 dòng */}
                     <span className="text-[10px] sm:text-[12px] font-medium text-gray-400 mt-0.5 whitespace-nowrap">
                         <span className="sm:inline hidden">(Trong 30 ngày)</span>
                         <span className="sm:hidden inline">30 ngày</span>
@@ -168,13 +167,13 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               </th>
             </tr>
 
-            {/* Tầng 2: Mua/Bán - Đã điều chỉnh căn phải justify-end */}
-            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[13px] sm:text-[14px] text-gray-500 font-bold">
-              <SortHeader label="Mua" sortKey="todayBuy" className="p-1.5 sm:p-2.5 border-r border-gray-100" />
-              <SortHeader label="Bán" sortKey="todaySell" className="p-1.5 sm:p-2.5 border-r border-gray-100" />
+            {/* Tầng 2: Mua/Bán */}
+            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[13px] sm:text-[13px] text-gray-500 font-bold">
+              <SortHeader label="Mua" sortKey="todayBuy" className="p-1.5 sm:p-2 border-r border-gray-100" />
+              <SortHeader label="Bán" sortKey="todaySell" className="p-1.5 sm:p-2 border-r border-gray-100" />
               
-              <SortHeader label="Mua" sortKey="yesterdayBuy" className="hidden md:table-cell p-1.5 sm:p-2.5 border-r border-gray-100" />
-              <SortHeader label="Bán" sortKey="yesterdaySell" className="hidden md:table-cell p-1.5 sm:p-2.5 border-r border-gray-100" />
+              <SortHeader label="Mua" sortKey="yesterdayBuy" className="hidden md:table-cell p-1.5 sm:p-2 border-r border-gray-100" />
+              <SortHeader label="Bán" sortKey="yesterdaySell" className="hidden md:table-cell p-1.5 sm:p-2 border-r border-gray-100" />
             </tr>
           </thead>
 
@@ -185,14 +184,14 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 onClick={() => onRowClick(product)}
                 className={`border-b border-gray-50 hover:bg-[#fff9fa] transition-colors cursor-pointer group ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/10'}`}
               >
-                <td className="px-2 sm:px-4 py-3 sm:py-5 border-r border-gray-100">
-                  <div className="font-bold text-gray-900 leading-tight whitespace-normal text-[15px] sm:text-[16px]">
+                <td className="px-2 sm:px-4 py-3 sm:py-2.5 border-r border-gray-100">
+                  <div className="font-bold text-gray-900 leading-tight whitespace-normal text-[15px] sm:text-[15px]">
                     {product.name}
                   </div>
                 </td>
                 
                 {/* Hôm nay */}
-                <td className="px-1 sm:px-3 py-2.5 sm:py-4 text-right border-r border-gray-50">
+                <td className="px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-50">
                   <div className="flex flex-col items-end">
                       <div className={`font-bold tabular-nums text-[16px] sm:text-[16px] ${sortConfig.key === 'todayBuy' ? 'text-gray-900' : 'text-gray-600'}`}>
                         {product.today.buy.toLocaleString('vi-VN')}
@@ -200,7 +199,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                       <ChangeIndicator value={product.changeBuy} />
                   </div>
                 </td>
-                <td className="px-1 sm:px-3 py-2.5 sm:py-4 text-right border-r border-gray-200 bg-vne-green/5">
+                <td className="px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-200 bg-vne-green/5">
                   <div className="flex flex-col items-end">
                       <div className={`font-black tabular-nums text-[16px] sm:text-[16px] ${sortConfig.key === 'todaySell' ? 'text-vne-green' : 'text-vne-green/90'}`}>
                         {product.today.sell.toLocaleString('vi-VN')}
@@ -210,24 +209,24 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 </td>
 
                 {/* Hôm qua (Chỉ Desktop) */}
-                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-4 text-right border-r border-gray-50 bg-gray-50/30 text-gray-400">
-                  <div className="font-semibold tabular-nums">
+                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-50 bg-gray-50/30 text-gray-400">
+                  <div className="font-semibold tabular-nums text-[15px]">
                     {product.yesterday.buy.toLocaleString('vi-VN')}
                   </div>
                 </td>
-                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-4 text-right border-r border-gray-200 bg-gray-50/30 text-gray-400">
-                  <div className="font-semibold tabular-nums">
+                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-200 bg-gray-50/30 text-gray-400">
+                  <div className="font-semibold tabular-nums text-[15px]">
                     {product.yesterday.sell.toLocaleString('vi-VN')}
                   </div>
                 </td>
 
-                {/* Xu hướng - Đảm bảo text hiển thị trên 1 dòng */}
-                <td className="px-1 sm:px-3 py-2.5 sm:py-4">
+                {/* Xu hướng */}
+                <td className="px-1 sm:px-3 py-2.5 sm:py-2">
                   <div className="flex flex-col items-center justify-center gap-1">
-                      <div className={`font-black text-[11px] sm:text-[14px] tabular-nums whitespace-nowrap ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
+                      <div className={`font-black text-[11px] sm:text-[13px] tabular-nums whitespace-nowrap ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
                           {product.change30d > 0 ? '+' : ''}{product.change30d.toFixed(1)}%
                       </div>
-                      <div className="w-full h-[16px] sm:h-[28px]">
+                      <div className="w-full h-[16px] sm:h-[24px]">
                           <Sparkline 
                               data={historyData} 
                               dataKey={product.id} 
@@ -242,7 +241,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
         </table>
       </div>
 
-      <div className="bg-white p-2.5 sm:p-4 border-t border-gray-100 font-sans">
+      <div className="bg-white p-2.5 sm:p-3 border-t border-gray-100 font-sans">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[13px] sm:text-xs text-gray-500">
             <div className="flex items-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-1.5 font-bold text-gray-700 tracking-tight">

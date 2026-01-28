@@ -7,11 +7,17 @@ interface ChartModalProps {
   product: ComputedGoldProduct | null;
   worldProduct?: ComputedGoldProduct;
   historyData: HistoryPoint[];
+  hourlyData?: HistoryPoint[];
   onClose: () => void;
 }
 
-export const ChartModal: React.FC<ChartModalProps> = ({ product, worldProduct, historyData, onClose }) => {
-  // Handle Escape key
+export const ChartModal: React.FC<ChartModalProps> = ({ 
+  product, 
+  worldProduct, 
+  historyData, 
+  hourlyData,
+  onClose 
+}) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -30,8 +36,6 @@ export const ChartModal: React.FC<ChartModalProps> = ({ product, worldProduct, h
 
   if (!product) return null;
 
-  // If the selected product is World, we don't need to add World again.
-  // Otherwise, create a list [Selected, World] to pass to the chart
   const productsToShow = [product];
   if (worldProduct && product.id !== worldProduct.id) {
     productsToShow.push(worldProduct);
@@ -63,7 +67,9 @@ export const ChartModal: React.FC<ChartModalProps> = ({ product, worldProduct, h
           <GoldChart 
             products={productsToShow} 
             historyData={historyData} 
-            title="Biểu đồ chi tiết"
+            hourlyData={hourlyData}
+            title={product.name}
+            showInternalTitle={false}
           />
         </div>
       </div>

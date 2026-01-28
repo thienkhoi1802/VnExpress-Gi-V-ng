@@ -32,7 +32,8 @@ export interface ComputedGoldProduct extends GoldProduct {
 export interface HistoryPoint {
   date: string;
   fullDate: string; // ISO or full string for sorting/tooltip
-  [key: string]: string | number; 
+  isHourly?: boolean; // Flag to indicate if it's hourly data
+  [key: string]: string | number | boolean | undefined; 
 }
 
-export type TimeRange = '1w' | '1m' | '6m' | '1y' | 'all';
+export type TimeRange = '24h' | '1w' | '1m' | '6m' | '1y';

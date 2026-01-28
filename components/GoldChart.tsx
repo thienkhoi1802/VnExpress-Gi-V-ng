@@ -13,45 +13,41 @@ import { ComputedGoldProduct, HistoryPoint, TimeRange } from '../types';
 interface GoldChartProps {
   products: ComputedGoldProduct[];
   historyData: HistoryPoint[];
+  hourlyData?: HistoryPoint[];
   title?: string;
+  showInternalTitle?: boolean;
 }
 
 const TIME_RANGES: { key: TimeRange; label: string }[] = [
+  { key: '24h', label: '24h' },
   { key: '1w', label: '1 tuần' },
   { key: '1m', label: '1 tháng' },
   { key: '6m', label: '6 tháng' },
   { key: '1y', label: '1 năm' },
-  { key: 'all', label: 'toàn bộ' },
 ];
 
-// Updated Labels: SJC | Nữ trang | Thế giới
 const CATEGORIES_CONFIG = [
-  { key: 'sjc', label: 'Vàng SJC', productId: 'sjc_1l', color: '#16a34a' }, // Green
-  { key: 'jewelry', label: 'Nữ trang', productId: 'jewelry_9999', color: '#db2777' }, // Pink
-  { key: 'world', label: 'Thế giới', productId: 'world_gold', color: '#374151' }, // Dark Gray
+  { key: 'sjc', label: 'Vàng SJC', productId: 'sjc_1l', color: '#16a34a' },
+  { key: 'jewelry', label: 'Nữ trang', productId: 'jewelry_9999', color: '#db2777' },
+  { key: 'world', label: 'Thế giới', productId: 'world_gold', color: '#374151' },
 ];
 
 export const GoldChart: React.FC<GoldChartProps> = ({ 
   products, 
   historyData,
-  title
+  hourlyData = [],
+  title,
+  showInternalTitle = true
 }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>('1m');
-  
-  // State for Categories: Array of strings for multi-select. Default: ['sjc']
   const [activeKeys, setActiveKeys] = useState<string[]>(['sjc']);
-
-  // Toggles for Buy/Sell lines
   const [showSell, setShowSell] = useState(true);
   const [showBuy, setShowBuy] = useState(true);
 
-  // Determine available categories based on products passed (Modal vs Dashboard)
   const categories = useMemo(() => {
-    // If we have many products (Dashboard), use the fixed config
     if (products.length > 5) {
         return CATEGORIES_CONFIG;
     }
-    // If Modal (single or few products), map them dynamically
     return products.map((p, idx) => ({
         key: p.id,
         label: p.id === 'world_gold' ? 'Thế giới' : p.name,
@@ -60,7 +56,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     }));
   }, [products]);
 
-  // FIX: Reset or Update active keys when the incoming products change (e.g. Modal Open)
   const primaryProductId = products[0]?.id;
 
   useEffect(() => {
@@ -75,11 +70,9 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     }
   }, [primaryProductId, products.length]); 
 
-  // Handler for Multi-select Toggle
   const toggleCategory = (key: string) => {
     setActiveKeys(prev => {
         if (prev.includes(key)) {
-            // Prevent unchecking the last item
             if (prev.length === 1) return prev;
             return prev.filter(k => k !== key);
         }
@@ -92,8 +85,9 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   const primaryProduct = products.find(p => p.id === primaryCategory?.productId);
   const updateTime = primaryProduct?.updatedAt.split(' ')[1] || new Date().toLocaleDateString('vi-VN');
 
-  // Filter Data by TimeRange
   const filteredData = useMemo(() => {
+    if (timeRange === '24h') return hourlyData;
+    
     if (!historyData || historyData.length === 0) return [];
     
     const total = historyData.length;
@@ -103,14 +97,12 @@ export const GoldChart: React.FC<GoldChartProps> = ({
         case '1m': count = 30; break;
         case '6m': count = 180; break;
         case '1y': count = 365; break;
-        case 'all': count = total; break;
     }
     return historyData.slice(-count);
-  }, [historyData, timeRange]);
+  }, [historyData, hourlyData, timeRange]);
 
   const isWorldActive = activeKeys.some(k => k === 'world' || k === 'world_gold');
 
-  // Manual Domain Calculation
   const calculateDomain = (isUsd: boolean) => {
     let min = Infinity;
     let max = -Infinity;
@@ -144,7 +136,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     });
 
     if (min === Infinity || max === -Infinity) return ['auto', 'auto'];
-    const padding = (max - min) * 0.02;
+    const padding = (max - min) * 0.05; 
     if (padding === 0) return [min - 1, max + 1];
     return [min - padding, max + padding];
   };
@@ -156,7 +148,9 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     if (active && payload && payload.length) {
       return (
         <div className="bg-white/95 backdrop-blur-sm p-3 border border-gray-200 shadow-xl rounded-none text-xs z-50 min-w-[180px] font-sans">
-          <p className="font-bold text-gray-900 mb-2 border-b border-gray-100 pb-1">{label}</p>
+          <p className="font-bold text-gray-900 mb-2 border-b border-gray-100 pb-1">
+            {timeRange === '24h' ? `Thời điểm: ${label}` : label}
+          </p>
           <div className="flex flex-col gap-2">
             {payload.map((entry: any, index: number) => {
                return (
@@ -190,21 +184,21 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-none border border-gray-200 p-3 sm:p-4 flex flex-col font-sans">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 border-b border-gray-100 pb-3">
+    <div className="bg-white rounded-none border border-gray-200 p-3 sm:py-3 sm:px-4 flex flex-col font-sans">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 sm:mb-2 border-b border-gray-100 pb-3 sm:pb-2">
         <div>
            <div className="flex flex-wrap items-baseline gap-2 mb-1">
-              <h2 className="text-lg font-serif font-bold text-gray-900">
-                {title || 'Biểu đồ giá vàng'}
-              </h2>
-              <span className="text-xs text-gray-500 font-medium border-l border-gray-300 pl-2 font-sans">
+              {showInternalTitle && (
+                <h2 className="text-lg font-serif font-bold text-gray-900">
+                  {title || 'Biểu đồ giá vàng'}
+                </h2>
+              )}
+              <span className={`text-xs text-gray-500 font-medium font-sans ${showInternalTitle ? 'border-l border-gray-300 pl-2' : ''}`}>
                 Cập nhật: {updateTime}
               </span>
            </div>
         </div>
 
-        {/* Time Tabs */}
         <div className="flex items-center gap-2 shrink-0">
             <div className="flex border border-gray-200 bg-gray-50/50 p-0.5">
                 {TIME_RANGES.map((range) => (
@@ -224,8 +218,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
         </div>
       </div>
 
-      {/* Categories / Filters - Optimized for Mobile 1 line */}
-      <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1 sm:gap-2 mb-4">
+      <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1 sm:gap-2 mb-4 sm:mb-2">
          {categories.map((cat) => { 
            const isActive = activeKeys.includes(cat.key);
            return (
@@ -248,8 +241,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
          })}
       </div>
 
-      {/* Chart Area */}
-      <div className="relative h-[240px] w-full text-[10px]">
+      <div className="relative h-[240px] sm:h-[180px] w-full text-[10px]">
          {filteredData.length > 0 ? (
            <ResponsiveContainer width="100%" height="100%">
             <LineChart data={filteredData} margin={{ top: 5, right: 0, bottom: 0, left: -10 }}>
@@ -258,7 +250,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 dataKey="date" 
                 tickLine={false}
                 axisLine={false}
-                minTickGap={40}
+                minTickGap={timeRange === '24h' ? 20 : 40}
                 tick={{ fill: '#64748b', fontSize: 10, dy: 10, fontFamily: 'Arial' }}
               />
               
@@ -268,7 +260,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 tickLine={false}
                 axisLine={false}
                 tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'Arial' }}
-                tickFormatter={(val) => Math.round(val).toLocaleString()}
+                tickFormatter={(val) => val.toLocaleString('vi-VN', { maximumFractionDigits: 1 })}
                 width={35}
               />
 
@@ -280,7 +272,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 axisLine={false}
                 hide={!isWorldActive}
                 tick={{ fill: '#374151', fontSize: 10, fontWeight: 'bold', fontFamily: 'Arial' }}
-                tickFormatter={(val) => Math.round(val).toLocaleString()}
+                tickFormatter={(val) => val.toLocaleString('en-US', { maximumFractionDigits: 1 })}
                 width={40}
               />
 
@@ -327,14 +319,13 @@ export const GoldChart: React.FC<GoldChartProps> = ({
             </LineChart>
           </ResponsiveContainer>
          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+            <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50 font-sans">
                 Đang tải dữ liệu biểu đồ...
             </div>
          )}
       </div>
 
-      {/* Bottom Toggles */}
-      <div className="mt-2 flex items-center justify-center gap-8 border-t border-gray-50 pt-3 pb-1 select-none">
+      <div className="mt-2 sm:mt-1 flex items-center justify-center gap-8 border-t border-gray-50 pt-3 sm:pt-2 pb-1 select-none">
             <button 
                 onClick={() => setShowSell(!showSell)}
                 className={`flex items-center gap-2 text-sm transition-all font-sans ${showSell ? 'text-gray-900 font-bold' : 'text-gray-400 opacity-60'}`}
@@ -357,7 +348,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 Giá mua
             </button>
       </div>
-
     </div>
   );
 };
