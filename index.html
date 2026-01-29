@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Giá Vàng Trực Tuyến - VnExpress Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              /* Standard Arial for Body text */
-              sans: ['Arial', 'Helvetica', 'sans-serif'],
+              /* Strictly Arial for Body text as requested */
+              sans: ['Arial', 'sans-serif'],
               /* Merriweather strictly for Titles */
               serif: ['Merriweather', 'serif'],
             },
@@ -22,7 +22,7 @@
                 red: '#9f224e',
                 green: '#0f7d4b', /* Màu xanh đậm mới */
                 gray: '#757575',
-                bg: '#f7f7f7',
+                bg: '#ffffff', /* Changed from #f7f7f7 to white */
                 border: '#e5e5e5',
                 text: '#222222', 
               },
@@ -59,8 +59,9 @@
     </script>
     <style>
       body {
-        background-color: #fcfcfc;
+        background-color: #ffffff; /* Changed from #fcfcfc to white */
         color: #222;
+        font-family: 'Arial', sans-serif; /* Global default */
         -webkit-font-smoothing: antialiased;
       }
       

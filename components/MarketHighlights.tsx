@@ -25,6 +25,7 @@ const CURRENCIES = [
 ];
 
 const USD_VND_EXCHANGE_RATE = 25450; 
+// 1 Tael (Lượng) = 1.20565 Troy Ounce
 const TAEL_TO_OZ = 1.20565;
 
 const VietnamFlag = () => (
@@ -68,6 +69,7 @@ const DomesticItem = ({
 
   let diffTextValue = null;
   if (worldProduct) {
+     // Đồng bộ: Sử dụng giá BÁN (today.sell) của thế giới để tính chênh lệch
      const worldVnd = (worldProduct.today.sell * TAEL_TO_OZ * USD_VND_EXCHANGE_RATE) / 1000000;
      const diff = product.today.sell - worldVnd;
      diffTextValue = `${diff > 0 ? '+' : ''}${diff.toLocaleString('vi-VN', {maximumFractionDigits: 2})}`;
@@ -160,7 +162,7 @@ const DomesticItem = ({
       {diffTextValue && (
         <div className="px-3 sm:px-5 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
              <div className="flex items-center justify-between text-[12px] sm:text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-1.5 sm:pt-2">
-                  <span>Chênh lệch so với thế giới:</span>
+                  <span>Cao hơn thế giới (quy đổi):</span>
                   <span className="font-bold text-gray-900 tabular-nums">
                       {diffTextValue} <span className="text-[10px] sm:text-[11px] text-gray-500 font-bold uppercase">Triệu</span>
                   </span>
@@ -184,8 +186,11 @@ const WorldGoldInGrid = ({
 }) => {
   if (!product) return null;
 
-  const worldPricePerTaelUSD = product.today.sell * TAEL_TO_OZ;
-  const worldPricePerTaelVND = (worldPricePerTaelUSD * USD_VND_EXCHANGE_RATE) / 1000000;
+  // HIỂN THỊ CHÍNH XÁC: Hiển thị giá USD/Ounce gốc để tránh nhầm lẫn
+  // product.today.sell đã là giá Spot Ask (USD/Oz) từ API
+  const worldPriceUSD = product.today.sell; 
+  // Tính giá quy đổi VNĐ để tham chiếu (USD/Oz * 1.20565 * Tỷ giá)
+  const worldPricePerTaelVND = (worldPriceUSD * TAEL_TO_OZ * USD_VND_EXCHANGE_RATE) / 1000000;
   const isUp = product.percentSell >= 0;
 
   return (
@@ -197,19 +202,19 @@ const WorldGoldInGrid = ({
           <h3 className="font-bold tracking-tight text-[#9f224e] text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               Vàng thế giới
           </h3>
-          <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">USD / LƯỢNG</span>
+          <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">USD / OUNCE</span>
       </div>
 
       <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
           <div className="col-span-8 flex flex-col border-r border-gray-100 pr-1">
-             <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Bán ra</span>
+             <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Giá Bán (Ask)</span>
              <span className="font-black text-gray-900 text-[30px] leading-none tracking-tighter tabular-nums">
-                {worldPricePerTaelUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                {worldPriceUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
              </span>
              <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-0.5 ${isUp ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
                    {isUp ? <ArrowUp size={11}/> : <ArrowDown size={11}/>}
-                   <span>{Math.abs(product.changeSell * TAEL_TO_OZ).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
+                   <span>{Math.abs(product.changeSell).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
                 </div>
                 <span className="text-[12px] opacity-80 font-normal">({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
              </div>
@@ -228,13 +233,13 @@ const WorldGoldInGrid = ({
 
       <div className="hidden sm:flex items-center px-5 pb-1 gap-4">
           <div className="flex-grow flex flex-col min-w-0">
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
+              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Giá Bán (Ask)</span>
               <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[50px]">
-                {worldPricePerTaelUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                {worldPriceUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
               </span>
               <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${isUp ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
                   {isUp ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                  <span>{Math.abs(product.changeSell * TAEL_TO_OZ).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
+                  <span>{Math.abs(product.changeSell).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
                   <span className="text-[11px] font-bold ml-1 opacity-90">
                       ({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)
                   </span>
@@ -277,11 +282,14 @@ const WorldDetailTab = ({
   if (!world) return null;
 
   const currentRate = selectedCurrency.rate;
+  // world.today.sell chính là Ask (Giá Bán) từ API goldprice.org
   const bid = world.today.buy * currentRate; 
   const ask = world.today.sell * currentRate; 
   const change = world.changeSell * currentRate;
   const percent = world.percentSell;
+  // Quy đổi giá Bán sang VNĐ/Ounce (để tham khảo)
   const vndPerOunce = world.today.sell * USD_VND_EXCHANGE_RATE;
+  
   const dayLow = bid - (Math.random() * 5 + 10); 
   const dayHigh = ask + (Math.random() * 5 + 5);
   const rangePercent = ((ask - dayLow) / (dayHigh - dayLow)) * 100;

@@ -122,7 +122,7 @@ const App: React.FC = () => {
   const hasActiveAlerts = alerts.some(a => a.isActive);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] font-sans text-[#111] overflow-x-hidden">
+    <div className="min-h-screen bg-white font-sans text-[#111] overflow-x-hidden">
       <StickyMiniBar 
         sjc={sjc} 
         world={world} 

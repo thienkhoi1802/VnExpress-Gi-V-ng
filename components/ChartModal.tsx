@@ -109,8 +109,15 @@ export const ChartModal: React.FC<ChartModalProps> = ({
 
         {/* Improved Alert Setup UI */}
         {showQuickAlert && (
-          <div className="p-4 sm:p-6 bg-[#fff9fa] border-b border-vne-red/10 animate-in slide-in-from-top-2 font-sans">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="relative p-4 sm:p-6 bg-[#fff9fa] border-b border-vne-red/10 animate-in slide-in-from-top-2 font-sans">
+            <button 
+                onClick={() => setShowQuickAlert(false)}
+                className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 active:bg-gray-100 rounded-full transition-colors"
+            >
+                <X size={20} />
+            </button>
+
+            <div className="flex items-center gap-2 mb-4 pr-8">
                <AlertCircle size={18} className="text-vne-red" />
                <h4 className="text-[14px] font-bold text-vne-red tracking-wider">Thiết lập ngưỡng cảnh báo giá</h4>
             </div>
@@ -141,7 +148,6 @@ export const ChartModal: React.FC<ChartModalProps> = ({
                     >
                       Tăng <span className="hidden sm:inline">lên</span>
                     </button>
-                    {/* // Fix: replaces setType with setAlertType and type with alertType */}
                     <button 
                       onClick={() => setAlertType('below')}
                       className={`flex-1 flex items-center justify-center text-[13px] font-bold border-l border-gray-300 whitespace-nowrap transition-all ${alertType === 'below' ? 'bg-red-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
