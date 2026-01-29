@@ -1,3 +1,4 @@
+
 import { GoldProduct, ComputedGoldProduct, Trend, HistoryPoint } from '../types';
 
 // Helper to get formatted time string
@@ -45,7 +46,7 @@ const INITIAL_DATA: GoldProduct[] = [
   },
   {
     id: 'jewelry_9999',
-    name: 'Nữ Trang 99.99%',
+    name: 'Nữ Trang 99.99% SJC',
     group: 'jewelry',
     unit: 'Triệu đồng/lượng',
     today: { buy: 158.80, sell: 161.60 },
@@ -54,7 +55,7 @@ const INITIAL_DATA: GoldProduct[] = [
   },
   {
     id: 'jewelry_99',
-    name: 'Nữ Trang 99%',
+    name: 'Nữ Trang 99% SJC',
     group: 'jewelry',
     unit: 'Triệu đồng/lượng',
     today: { buy: 155.50, sell: 158.80 },

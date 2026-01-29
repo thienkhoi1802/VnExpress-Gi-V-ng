@@ -186,18 +186,20 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   return (
     <div className="bg-white rounded-none border border-gray-200 p-3 sm:py-3 sm:px-4 flex flex-col font-sans">
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 sm:mb-2 border-b border-gray-100 pb-3 sm:pb-2">
-        <div>
-           <div className="flex flex-wrap items-baseline gap-2 mb-1">
-              {showInternalTitle && (
+        {showInternalTitle ? (
+          <div>
+            <div className="flex flex-wrap items-baseline gap-2 mb-1">
                 <h2 className="text-lg font-serif font-bold text-gray-900">
                   {title || 'Biểu đồ giá vàng'}
                 </h2>
-              )}
-              <span className={`text-xs text-gray-500 font-medium font-sans ${showInternalTitle ? 'border-l border-gray-300 pl-2' : ''}`}>
-                Cập nhật: {updateTime}
-              </span>
-           </div>
-        </div>
+                <span className="text-xs text-gray-500 font-medium font-sans border-l border-gray-300 pl-2">
+                  Cập nhật: {updateTime}
+                </span>
+            </div>
+          </div>
+        ) : (
+          <div></div> // Empty to maintain layout structure if needed, or simply null
+        )}
 
         <div className="flex items-center gap-2 shrink-0">
             <div className="flex border border-gray-200 bg-gray-50/50 p-0.5">
@@ -244,7 +246,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
       <div className="relative h-[240px] sm:h-[180px] w-full text-[10px]">
          {filteredData.length > 0 ? (
            <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={filteredData} margin={{ top: 5, right: 0, bottom: 0, left: -10 }}>
+            <LineChart data={filteredData} margin={{ top: 5, right: 10, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis 
                 dataKey="date" 
@@ -261,7 +263,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 axisLine={false}
                 tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'Arial' }}
                 tickFormatter={(val) => val.toLocaleString('vi-VN', { maximumFractionDigits: 1 })}
-                width={35}
+                width={45}
               />
 
               <YAxis 
@@ -273,7 +275,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 hide={!isWorldActive}
                 tick={{ fill: '#374151', fontSize: 10, fontWeight: 'bold', fontFamily: 'Arial' }}
                 tickFormatter={(val) => val.toLocaleString('en-US', { maximumFractionDigits: 1 })}
-                width={40}
+                width={50}
               />
 
               <Tooltip content={<CustomTooltip />} />

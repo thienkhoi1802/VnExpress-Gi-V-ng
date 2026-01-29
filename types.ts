@@ -28,6 +28,17 @@ export interface ComputedGoldProduct extends GoldProduct {
   trendSell: Trend;
 }
 
+export interface PriceAlert {
+  id: string;
+  productId: string;
+  productName: string;
+  type: 'above' | 'below';
+  priceType: 'sell' | 'buy';
+  targetPrice: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
 // Map key is product ID, value is price
 export interface HistoryPoint {
   date: string;
