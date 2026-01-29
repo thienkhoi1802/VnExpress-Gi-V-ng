@@ -6,7 +6,9 @@ export const AdvancedRealTimeChart = memo(() => {
   useEffect(() => {
     if (!container.current) return;
     
+    // Clear the container to prevent double loading in StrictMode
     container.current.innerHTML = '';
+    
     const widgetDiv = document.createElement('div');
     widgetDiv.className = 'tradingview-widget-container__widget';
     widgetDiv.style.height = '100%';
@@ -37,6 +39,7 @@ export const AdvancedRealTimeChart = memo(() => {
     container.current.appendChild(script);
 
     return () => {
+      // Safely cleanup
       if (container.current) {
         container.current.innerHTML = '';
       }

@@ -27,9 +27,9 @@ const TIME_RANGES: { key: TimeRange; label: string }[] = [
 ];
 
 const CATEGORIES_CONFIG = [
-  { key: 'sjc', label: 'Vàng SJC', productId: 'sjc_1l', color: '#16a34a' },
+  { key: 'sjc', label: 'Vàng SJC', productId: 'sjc_1l', color: '#9f224e' },
   { key: 'jewelry', label: 'Nữ trang', productId: 'jewelry_9999', color: '#db2777' },
-  { key: 'world', label: 'Thế giới', productId: 'world_gold', color: '#374151' },
+  { key: 'world', label: 'Thế giới', productId: 'world_gold', color: '#64748b' },
 ];
 
 export const GoldChart: React.FC<GoldChartProps> = ({ 
@@ -52,7 +52,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
         key: p.id,
         label: p.id === 'world_gold' ? 'Thế giới' : p.name,
         productId: p.id,
-        color: p.group === 'world' ? '#374151' : (idx === 0 ? '#be123c' : '#16a34a')
+        color: p.group === 'world' ? '#64748b' : (idx === 0 ? '#9f224e' : '#16a34a')
     }));
   }, [products]);
 
@@ -183,11 +183,37 @@ export const GoldChart: React.FC<GoldChartProps> = ({
     return null;
   };
 
+  const CategoryToggles = ({ className = "" }: { className?: string }) => (
+    <div className={`grid grid-cols-2 md:flex md:items-center gap-1 sm:gap-2 ${className}`}>
+        {categories.map((cat) => { 
+          const isActive = activeKeys.includes(cat.key);
+          return (
+            <button
+              key={cat.key}
+              onClick={() => toggleCategory(cat.key)}
+              className={`flex items-center justify-start gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold transition-all border select-none font-sans overflow-hidden min-w-[120px] md:min-w-0 ${
+                isActive 
+                  ? 'bg-white text-gray-900 border-gray-300 shadow-sm' 
+                  : 'bg-transparent border-transparent text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              <span 
+                 className={`w-2.5 h-1 transition-colors shrink-0`}
+                 style={{ backgroundColor: isActive ? cat.color : '#e5e7eb' }}
+              ></span>
+              <span className="truncate">{cat.label}</span>
+            </button>
+          )
+        })}
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-none border border-gray-200 p-3 sm:py-3 sm:px-4 flex flex-col font-sans">
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 sm:mb-2 border-b border-gray-100 pb-3 sm:pb-2">
-        {showInternalTitle ? (
-          <div>
+      <div className="flex flex-col gap-4 sm:gap-2 mb-4 sm:mb-2 border-b border-gray-100 pb-3 sm:pb-2">
+        {/* Row Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          {showInternalTitle ? (
             <div className="flex flex-wrap items-baseline gap-2 mb-1">
                 <h2 className="text-lg font-serif font-bold text-gray-900">
                   {title || 'Biểu đồ giá vàng'}
@@ -196,51 +222,32 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                   Cập nhật: {updateTime}
                 </span>
             </div>
+          ) : (
+            /* Desktop categories in modal header area - Moved here for MD screen */
+            <CategoryToggles className="hidden md:flex border border-gray-100 p-0.5" />
+          )}
+
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+              <div className="flex border border-gray-200 bg-gray-50/50 p-0.5 w-full sm:w-auto">
+                  {TIME_RANGES.map((range) => (
+                      <button
+                          key={range.key}
+                          onClick={() => setTimeRange(range.key)}
+                          className={`flex-1 sm:flex-none px-2 sm:px-4 py-1.5 text-xs font-medium transition-all whitespace-nowrap font-sans ${
+                              timeRange === range.key 
+                              ? 'bg-[#9f224e] text-white shadow-md font-bold' 
+                              : 'text-gray-500 hover:text-gray-800'
+                          }`}
+                      >
+                          {range.label}
+                      </button>
+                  ))}
+              </div>
           </div>
-        ) : (
-          <div></div> // Empty to maintain layout structure if needed, or simply null
-        )}
-
-        <div className="flex items-center gap-2 shrink-0">
-            <div className="flex border border-gray-200 bg-gray-50/50 p-0.5">
-                {TIME_RANGES.map((range) => (
-                    <button
-                        key={range.key}
-                        onClick={() => setTimeRange(range.key)}
-                        className={`px-3 py-1.5 text-xs font-medium transition-all whitespace-nowrap font-sans ${
-                            timeRange === range.key 
-                            ? 'bg-[#9f224e] text-white shadow-md font-bold' 
-                            : 'text-gray-500 hover:text-gray-800'
-                        }`}
-                    >
-                        {range.label}
-                    </button>
-                ))}
-            </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1 sm:gap-2 mb-4 sm:mb-2">
-         {categories.map((cat) => { 
-           const isActive = activeKeys.includes(cat.key);
-           return (
-             <button
-               key={cat.key}
-               onClick={() => toggleCategory(cat.key)}
-               className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-1 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold transition-all border select-none font-sans overflow-hidden ${
-                 isActive 
-                   ? 'bg-white text-gray-900 border-gray-300 shadow-sm ring-1 ring-gray-100' 
-                   : 'bg-transparent border-transparent text-gray-400 hover:text-gray-600 hover:bg-gray-50'
-               }`}
-             >
-               <span 
-                  className={`w-2 h-2 sm:w-2.5 sm:h-2.5 transition-colors shrink-0`}
-                  style={{ backgroundColor: isActive ? cat.color : '#d1d5db' }}
-               ></span>
-               <span className="truncate">{cat.label}</span>
-             </button>
-           )
-         })}
+        {/* Categories for Mobile - ONLY show when not in modal or hidden on Desktop */}
+        <CategoryToggles className={`${!showInternalTitle ? 'md:hidden' : ''} mb-1`} />
       </div>
 
       <div className="relative h-[240px] sm:h-[180px] w-full text-[10px]">
@@ -294,7 +301,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                                   dataKey={`${cat.productId}_sell`}
                                   name={`${cat.label} (Bán)`}
                                   stroke={cat.color}
-                                  strokeWidth={2}
+                                  strokeWidth={2.5}
                                   dot={false}
                                   activeDot={{ r: 4, strokeWidth: 2, stroke: '#fff', fill: cat.color }}
                                   isAnimationActive={true}
