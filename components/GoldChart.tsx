@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
   LineChart, 
@@ -43,6 +44,14 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   const [activeKeys, setActiveKeys] = useState<string[]>(['sjc']);
   const [showSell, setShowSell] = useState(true);
   const [showBuy, setShowBuy] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const categories = useMemo(() => {
     if (products.length > 5) {
@@ -102,6 +111,10 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   }, [historyData, hourlyData, timeRange]);
 
   const isWorldActive = activeKeys.some(k => k === 'world' || k === 'world_gold');
+  
+  // Logic to optimize mobile layout for single World Gold chart
+  const isWorldOnly = activeKeys.length === 1 && (activeKeys[0] === 'world' || activeKeys[0] === 'world_gold');
+  const shouldOptimizeLayout = isMobile && isWorldOnly;
 
   const calculateDomain = (isUsd: boolean) => {
     let min = Infinity;
@@ -247,13 +260,16 @@ export const GoldChart: React.FC<GoldChartProps> = ({
         </div>
 
         {/* Categories for Mobile - ONLY show when not in modal or hidden on Desktop */}
-        <CategoryToggles className={`${!showInternalTitle ? 'md:hidden' : ''} mb-1`} />
+        {/* Hide if only 1 category exists (e.g. World Gold popup on mobile) */}
+        {categories.length > 1 && (
+            <CategoryToggles className={`${!showInternalTitle ? 'md:hidden' : ''} mb-1`} />
+        )}
       </div>
 
       <div className="relative h-[240px] sm:h-[180px] w-full text-[10px]">
          {filteredData.length > 0 ? (
            <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={filteredData} margin={{ top: 5, right: 10, bottom: 0, left: 0 }}>
+            <LineChart data={filteredData} margin={{ top: 5, right: shouldOptimizeLayout ? 0 : 10, bottom: 0, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis 
                 dataKey="date" 
@@ -263,6 +279,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 tick={{ fill: '#64748b', fontSize: 10, dy: 10, fontFamily: 'Arial' }}
               />
               
+              {/* VND Axis - Hidden on mobile world-only view to save space */}
               <YAxis 
                 yAxisId="vnd"
                 domain={vndDomain} 
@@ -270,12 +287,14 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 axisLine={false}
                 tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'Arial' }}
                 tickFormatter={(val) => val.toLocaleString('vi-VN', { maximumFractionDigits: 1 })}
-                width={45}
+                width={shouldOptimizeLayout ? 0 : 45}
+                hide={shouldOptimizeLayout}
               />
 
+              {/* USD Axis - Moved to left on mobile world-only view */}
               <YAxis 
                 yAxisId="usd"
-                orientation="right"
+                orientation={shouldOptimizeLayout ? "left" : "right"}
                 domain={usdDomain}
                 tickLine={false}
                 axisLine={false}

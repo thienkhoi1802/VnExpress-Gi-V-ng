@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ComputedGoldProduct, HistoryPoint } from '../types';
 import { ArrowUp, ArrowDown, Globe, ChevronRight, ChevronDown, Check, X, ZoomIn, Clock, Loader2, Info } from 'lucide-react';
@@ -470,10 +471,10 @@ const WorldDetailTab = ({
                               </button>
                               
                               {isGuidanceOpen && (
-                                <div className="p-4 pt-0 border-t border-gray-100 animate-in slide-in-from-top-2 duration-300">
-                                    <div className="pt-4 mb-6">
-                                        <p className="text-[13px] font-bold text-gray-500 mb-3 uppercase tracking-wider">Chú thích màu sắc:</p>
-                                        <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10">
+                                <div className="p-3 sm:p-4 pt-0 border-t border-gray-100 animate-in slide-in-from-top-2 duration-300">
+                                    <div className="pt-3 sm:pt-4 mb-3 sm:mb-6">
+                                        <p className="text-[13px] font-bold text-gray-500 mb-2 sm:mb-3 tracking-wide">Chú thích màu sắc:</p>
+                                        <div className="flex flex-col md:flex-row md:items-center gap-2 sm:gap-3 md:gap-10">
                                             <div className="flex items-center gap-2.5">
                                                 <div className="w-4 h-4 bg-[#00ff00] rounded-sm shadow-sm border border-black/10"></div>
                                                 <span className="text-[14px] md:text-[16px] font-bold text-gray-800">Giá hiện tại</span>
@@ -489,15 +490,15 @@ const WorldDetailTab = ({
                                         </div>
                                     </div>
 
-                                    <div className="space-y-6 border-t border-gray-200 pt-6 pb-2">
+                                    <div className="space-y-4 sm:space-y-6 border-t border-gray-200 pt-4 sm:pt-6 pb-2">
                                         <div>
-                                            <p className="text-[13px] md:text-[15px] font-bold text-[#9f224e] mb-2 uppercase tracking-wide">Quy tắc:</p>
+                                            <p className="text-[13px] md:text-[15px] font-bold text-[#9f224e] mb-1 sm:mb-2 tracking-wide">Quy tắc:</p>
                                             <p className="text-[15px] md:text-[18px] text-gray-900 leading-snug md:leading-relaxed font-medium">
                                                 Giá kết thúc ngày hôm trước là giá khởi đầu ngày hôm sau.
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-[13px] md:text-[15px] font-bold text-[#9f224e] mb-2 uppercase tracking-wide">Thời gian & Sàn giao dịch:</p>
+                                            <p className="text-[13px] md:text-[15px] font-bold text-[#9f224e] mb-1 sm:mb-2 tracking-wide">Thời gian & Sàn giao dịch:</p>
                                             <p className="text-[15px] md:text-[18px] text-gray-900 leading-snug md:leading-relaxed font-medium">
                                                 Hai trục thời gian ở dưới cùng gồm giờ New York và giờ chuẩn GMT. Các thanh tên sàn (New York, London, HongKong) thể hiện thời gian giao dịch của sàn đó.
                                             </p>
