@@ -77,16 +77,14 @@ const DomesticItem = ({
       onClick={() => onProductClick(product)}
       className={`bg-white hover:bg-gray-50/80 transition-all cursor-pointer group relative flex flex-col h-full ${className}`}
     >
-      <div className="px-3 sm:px-5 pt-3.5 pb-2 sm:py-2.5 flex justify-between items-center">
+      <div className="px-3 sm:px-5 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
           <h3 className="font-bold tracking-tight text-gray-900 text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               {label}
           </h3>
           <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">Triệu/lượng</span>
       </div>
 
-      {/* MOBILE LAYOUT: Tối ưu padding thu hẹp cho gọn */}
       <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
-          {/* Sell (Bán ra) */}
           <div className="col-span-4 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Bán ra</span>
              <span className="font-black text-vne-green text-[30px] leading-none tracking-tighter tabular-nums">
@@ -101,7 +99,6 @@ const DomesticItem = ({
              </div>
           </div>
           
-          {/* Buy (Mua vào) */}
           <div className="col-span-4 flex flex-col border-r border-gray-100 px-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Mua vào</span>
              <span className="font-black text-gray-900 text-[30px] leading-none tracking-tighter tabular-nums">
@@ -116,7 +113,6 @@ const DomesticItem = ({
              </div>
           </div>
           
-          {/* Chart area: col-span-4 */}
           <div className="col-span-4 pl-1 h-[60px] flex items-center justify-center">
             <div className="w-full h-[45px]">
                 <Sparkline 
@@ -128,7 +124,6 @@ const DomesticItem = ({
           </div>
       </div>
 
-      {/* DESKTOP LAYOUT (Giữ nguyên) */}
       <div className="hidden sm:flex items-center px-5 pb-1">
           <div className="flex-grow grid grid-cols-2 gap-4 items-start font-sans">
               <div className="flex flex-col border-r border-gray-100 pr-2 min-w-0">
@@ -196,7 +191,6 @@ const WorldItem = ({
               onClick={() => setActiveTab('world')}
               className={`bg-white cursor-pointer hover:bg-gray-50/80 transition-all group relative ${className}`}
           >
-              {/* DESKTOP VIEW */}
               <div className="hidden sm:flex px-5 py-3 items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
@@ -227,7 +221,6 @@ const WorldItem = ({
                   </div>
               </div>
 
-              {/* MOBILE VIEW - Tối ưu khoảng cách và padding */}
               <div className="sm:hidden px-3 py-2 flex flex-col relative font-sans border-t border-gray-100">
                   <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-[17px] font-bold text-[#9f224e] font-serif leading-tight">
@@ -358,7 +351,6 @@ export const MarketHighlights: React.FC<Props> = ({
               </div>
             )}
 
-            {/* Box 1: Price Info */}
             <div className="bg-white border-x border-b border-gray-200 shadow-sm flex flex-col font-sans rounded-b-sm overflow-hidden p-3 sm:p-5">
                 <div className="flex justify-between items-start mb-4 border-b border-gray-100 pb-3">
                     <div className="flex flex-col gap-1">
@@ -466,28 +458,6 @@ export const MarketHighlights: React.FC<Props> = ({
                 </div>
             </div>
 
-            {sources.length > 0 && (
-              <div className="bg-white border border-gray-200 p-4 font-sans rounded-sm shadow-sm mt-4">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <Clock size={12} /> Nguồn dữ liệu (1 phút/lần)
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                      {sources.map((source, i) => (
-                          <a 
-                              key={i} 
-                              href={source.uri} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 text-[11px] font-bold text-gray-700 hover:bg-gray-100 hover:text-vne-red transition-all rounded-sm"
-                          >
-                              <ExternalLink size={10} />
-                              {source.title.length > 30 ? source.title.substring(0, 30) + '...' : source.title}
-                          </a>
-                      ))}
-                  </div>
-              </div>
-            )}
-
             <div className="space-y-4 mt-4">
                 <div className="bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col rounded-sm">
                     <div className="px-3 py-3 border-b border-gray-50 bg-white">
@@ -541,7 +511,7 @@ export const MarketHighlights: React.FC<Props> = ({
 
         <div>
             {activeTab === 'vn' ? (
-                <div className="animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col bg-white border border-gray-200 border-t-0 shadow-sm rounded-b-sm pt-2 sm:pt-0">
+                <div className="animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col bg-white border border-gray-200 border-t-0 shadow-sm rounded-b-sm pt-4 sm:pt-0">
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         <div className="border-b md:border-b-0 md:border-r border-gray-200">
                              <DomesticItem 
