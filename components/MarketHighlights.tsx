@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ComputedGoldProduct, HistoryPoint } from '../types';
-import { ArrowUp, ArrowDown, Globe, ChevronRight, ChevronDown, Check, X, ZoomIn, Clock, Loader2 } from 'lucide-react';
+import { ArrowUp, ArrowDown, Globe, ChevronRight, ChevronDown, Check, X, ZoomIn, Clock, Loader2, Info } from 'lucide-react';
 import { AdvancedRealTimeChart } from './TradingViewWidgets';
 import { Sparkline } from './Sparkline';
 
@@ -199,7 +199,6 @@ const WorldGoldInGrid = ({
           <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">USD / LƯỢNG</span>
       </div>
 
-      {/* Mobile View: Giữ nguyên */}
       <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
           <div className="col-span-8 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Bán ra</span>
@@ -226,7 +225,6 @@ const WorldGoldInGrid = ({
           </div>
       </div>
 
-      {/* Desktop View: Bổ sung biểu đồ bên phải */}
       <div className="hidden sm:flex items-center px-5 pb-1 gap-4">
           <div className="flex-grow flex flex-col min-w-0">
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
@@ -273,6 +271,8 @@ const WorldDetailTab = ({
   setZoomedImage, 
   zoomedImage 
 }: any) => {
+  const [isGuidanceOpen, setIsGuidanceOpen] = useState(false);
+  
   if (!world) return null;
 
   const currentRate = selectedCurrency.rate;
@@ -285,9 +285,21 @@ const WorldDetailTab = ({
   const dayHigh = ask + (Math.random() * 5 + 5);
   const rangePercent = ((ask - dayLow) / (dayHigh - dayLow)) * 100;
 
-  const ChartImage = ({ src, alt, className = "" }: { src: string, alt: string, className?: string }) => (
+  const ChartImage = ({ 
+      src, 
+      alt, 
+      className = "", 
+      noTopRadius = false, 
+      noBottomRadius = false 
+  }: { 
+      src: string, 
+      alt: string, 
+      className?: string, 
+      noTopRadius?: boolean, 
+      noBottomRadius?: boolean 
+  }) => (
     <div 
-      className={`border border-gray-200 p-1 bg-white relative group cursor-zoom-in hover:border-[#9f224e] transition-colors overflow-hidden rounded-sm w-full ${className}`}
+      className={`border border-gray-200 p-1 bg-white relative group cursor-zoom-in hover:border-[#9f224e] transition-colors overflow-hidden w-full ${className} ${noTopRadius ? 'rounded-t-none border-t-0' : 'rounded-t-sm'} ${noBottomRadius ? 'rounded-b-none border-b-0' : 'rounded-b-sm'}`}
       onClick={() => setZoomedImage(src)}
     >
       <img 
@@ -425,7 +437,7 @@ const WorldDetailTab = ({
 
           <div className="space-y-4 mt-4">
               <div className="bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col rounded-sm">
-                  <div className="px-3 py-3 border-b border-gray-50 bg-white">
+                  <div className="px-3 sm:px-5 py-3 border-b border-gray-50 bg-white">
                       <h2 className="text-[16px] sm:text-[18px] font-serif font-bold text-gray-900">Biểu đồ trực tuyến (XAU/USD)</h2>
                   </div>
                   <div className="border-b border-gray-100">
@@ -434,13 +446,73 @@ const WorldDetailTab = ({
               </div>
 
               <div className="bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden font-sans">
-                  <div className="px-3 py-3 border-b border-gray-50 bg-white">
+                  <div className="px-3 sm:px-5 py-3 border-b border-gray-50 bg-white">
                       <h2 className="text-[16px] sm:text-[18px] font-serif font-bold text-gray-900">Lịch sử giá vàng</h2>
                   </div>
-                  <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
-                      <ChartImage src="https://www.kitco.com/chart-images/images/live/gold.gif" alt="Live 24hrs gold chart" />
-                      <ChartImage src="https://www.kitco.com/chart-images/images/live/nygold.gif" alt="Live New York gold Chart" />
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="p-3 sm:p-5 space-y-4">
+                      {/* Stick Guidance to Chart 1 (24h Spot Gold) */}
+                      <div className="flex flex-col -space-y-px">
+                          <ChartImage 
+                              src="https://www.kitco.com/chart-images/images/live/gold.gif" 
+                              alt="Live 24hrs gold chart" 
+                              noBottomRadius={true}
+                          />
+                          <div className={`bg-gray-50 border border-gray-100 transition-all duration-300 ${isGuidanceOpen ? 'border-t-0 rounded-b-sm' : 'rounded-sm mt-4'}`}>
+                              <button 
+                                onClick={() => setIsGuidanceOpen(!isGuidanceOpen)}
+                                className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-gray-100/50 transition-colors"
+                              >
+                                  <div className="flex items-center gap-2">
+                                      <Info size={16} className="text-[#9f224e]" />
+                                      <h4 className="text-[14px] font-bold text-gray-800 tracking-tight">Hướng dẫn đọc biểu đồ</h4>
+                                  </div>
+                                  <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${isGuidanceOpen ? 'rotate-180' : ''}`} />
+                              </button>
+                              
+                              {isGuidanceOpen && (
+                                <div className="p-4 pt-0 border-t border-gray-100 animate-in slide-in-from-top-2 duration-300">
+                                    <div className="pt-4 mb-6">
+                                        <p className="text-[13px] font-bold text-gray-500 mb-3 uppercase tracking-wider">Chú thích màu sắc:</p>
+                                        <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-10">
+                                            <div className="flex items-center gap-2.5">
+                                                <div className="w-4 h-4 bg-[#00ff00] rounded-sm shadow-sm border border-black/10"></div>
+                                                <span className="text-[14px] md:text-[16px] font-bold text-gray-800">Giá hiện tại</span>
+                                            </div>
+                                            <div className="flex items-center gap-2.5">
+                                                <div className="w-4 h-4 bg-[#ff0000] rounded-sm shadow-sm border border-black/10"></div>
+                                                <span className="text-[14px] md:text-[16px] font-bold text-gray-800">Giá hôm qua</span>
+                                            </div>
+                                            <div className="flex items-center gap-2.5">
+                                                <div className="w-4 h-4 bg-[#00ffff] rounded-sm shadow-sm border border-black/10"></div>
+                                                <span className="text-[14px] md:text-[16px] font-bold text-gray-800">Giá hôm kia</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-6 border-t border-gray-200 pt-6 pb-2">
+                                        <div>
+                                            <p className="text-[13px] md:text-[15px] font-bold text-[#9f224e] mb-2 uppercase tracking-wide">Quy tắc:</p>
+                                            <p className="text-[15px] md:text-[18px] text-gray-900 leading-snug md:leading-relaxed font-medium">
+                                                Giá kết thúc ngày hôm trước là giá khởi đầu ngày hôm sau.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[13px] md:text-[15px] font-bold text-[#9f224e] mb-2 uppercase tracking-wide">Thời gian & Sàn giao dịch:</p>
+                                            <p className="text-[15px] md:text-[18px] text-gray-900 leading-snug md:leading-relaxed font-medium">
+                                                Hai trục thời gian ở dưới cùng gồm giờ New York và giờ chuẩn GMT. Các thanh tên sàn (New York, London, HongKong) thể hiện thời gian giao dịch của sàn đó.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                              )}
+                          </div>
+                      </div>
+
+                      <div className="mt-4">
+                        <ChartImage src="https://www.kitco.com/chart-images/images/live/nygold.gif" alt="Live New York gold Chart" />
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-4">
                            <ChartImage alt="30 Days Gold" src="https://www.kitco.com/chart-images/LFgif/AU0030lnb.gif" />
                            <ChartImage alt="60 Days Gold" src="https://www.kitco.com/chart-images/LFgif/AU0060lnb.gif" />
                            <ChartImage alt="6 Months Gold" src="https://www.kitco.com/chart-images/LFgif/AU0182nyb.gif" />

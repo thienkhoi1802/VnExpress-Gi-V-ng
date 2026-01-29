@@ -184,14 +184,14 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   };
 
   const CategoryToggles = ({ className = "" }: { className?: string }) => (
-    <div className={`grid grid-cols-2 md:flex md:items-center gap-1 sm:gap-2 ${className}`}>
+    <div className={`flex items-center overflow-x-auto no-scrollbar gap-2 ${className}`}>
         {categories.map((cat) => { 
           const isActive = activeKeys.includes(cat.key);
           return (
             <button
               key={cat.key}
               onClick={() => toggleCategory(cat.key)}
-              className={`flex items-center justify-start gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold transition-all border select-none font-sans overflow-hidden min-w-[120px] md:min-w-0 ${
+              className={`shrink-0 flex items-center justify-start gap-1.5 px-3 py-1.5 text-[13px] sm:text-xs font-bold transition-all border select-none font-sans whitespace-nowrap rounded-sm ${
                 isActive 
                   ? 'bg-white text-gray-900 border-gray-300 shadow-sm' 
                   : 'bg-transparent border-transparent text-gray-400 hover:text-gray-600'
@@ -201,7 +201,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                  className={`w-2.5 h-1 transition-colors shrink-0`}
                  style={{ backgroundColor: isActive ? cat.color : '#e5e7eb' }}
               ></span>
-              <span className="truncate">{cat.label}</span>
+              <span>{cat.label}</span>
             </button>
           )
         })}

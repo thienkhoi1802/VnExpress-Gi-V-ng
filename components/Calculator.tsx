@@ -114,7 +114,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
           </div>
 
           {/* Result Block */}
-          <div className="flex flex-col col-span-2 md:w-64">
+          <div className="flex flex-col col-span-2 md:w-72">
                <label className="block text-[11px] font-bold text-gray-400 mb-1.5 uppercase tracking-wide">Thành tiền ước tính</label>
                <div className="h-10 flex items-center justify-end px-4 bg-[#9f224e] text-white shadow-sm rounded-sm">
                   <div className="flex items-baseline gap-1 overflow-hidden">
@@ -124,8 +124,8 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                       <span className="text-[10px] font-bold text-white/90 border-b border-white/30 leading-none pb-0.5 shrink-0 uppercase">VNĐ</span>
                   </div>
                </div>
-               {/* Footer Disclaimer: Right-aligned, attached with 4px margin */}
-               <div className="mt-1 text-[11px] text-gray-400 italic text-right font-medium">
+               {/* Footer Disclaimer: Right-aligned, prevent line break */}
+               <div className="mt-1 text-[11px] text-gray-400 italic text-right font-medium whitespace-nowrap">
                   *Giá trị tính theo giá bán ra tại thời điểm cập nhật
                </div>
           </div>

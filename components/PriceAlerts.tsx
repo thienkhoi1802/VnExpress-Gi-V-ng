@@ -157,13 +157,13 @@ export const PriceAlerts: React.FC<PriceAlertsProps> = ({ products, alerts, onAd
                       onClick={() => setType('above')}
                       className={`flex-1 flex items-center justify-center text-[13px] font-bold whitespace-nowrap transition-all ${type === 'above' ? 'bg-green-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      Tăng<span className="hidden sm:inline"> lên</span>
+                      Tăng <span className="hidden sm:inline">lên</span>
                     </button>
                     <button 
                       onClick={() => setType('below')}
                       className={`flex-1 flex items-center justify-center text-[13px] font-bold border-l border-gray-300 whitespace-nowrap transition-all ${type === 'below' ? 'bg-red-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      Giảm<span className="hidden sm:inline"> xuống</span>
+                      Giảm <span className="hidden sm:inline">xuống</span>
                     </button>
                   </div>
                 </div>
@@ -205,41 +205,48 @@ export const PriceAlerts: React.FC<PriceAlertsProps> = ({ products, alerts, onAd
             </div>
           ) : (
             alerts.map(alert => (
-              <div key={alert.id} className="flex items-center justify-between p-4 border border-gray-100 hover:border-gray-200 transition-colors group bg-white shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className={`p-2.5 rounded-full ${alert.type === 'above' ? 'bg-green-50 text-vne-green' : 'bg-red-50 text-[#bd0000]'}`}>
-                    {alert.type === 'above' ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
+              <div key={alert.id} className="flex items-center justify-between p-3 sm:p-4 border border-gray-100 hover:border-gray-200 transition-colors group bg-white shadow-sm">
+                <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                  <div className={`shrink-0 p-2 sm:p-2.5 rounded-full ${alert.type === 'above' ? 'bg-green-50 text-vne-green' : 'bg-red-50 text-[#bd0000]'}`}>
+                    {alert.type === 'above' ? <TrendingUp size={18} className="sm:w-5 sm:h-5" /> : <TrendingDown size={18} className="sm:w-5 sm:h-5" />}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-[17px] sm:text-[19px] font-black text-gray-900 leading-tight">{alert.productName}</span>
-                       <span className="text-[12px] px-2 py-0.5 bg-gray-100 text-gray-600 font-bold uppercase rounded-sm">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+                       <span className="text-[15px] sm:text-[18px] font-black text-gray-900 leading-tight truncate">
+                         {alert.productName}
+                       </span>
+                       <span className="hidden sm:inline-block text-[12px] px-2 py-0.5 bg-gray-100 text-gray-600 font-bold uppercase rounded-sm whitespace-nowrap w-fit">
                          {alert.priceType === 'sell' ? 'Bán ra' : 'Mua vào'}
                        </span>
                     </div>
-                    <div className="flex items-baseline gap-2 mt-1">
-                       <span className="text-[14px] sm:text-[15px] font-medium text-gray-400">{alert.type === 'above' ? 'Tăng trên' : 'Giảm dưới'}</span>
-                       <span className="text-[22px] sm:text-[24px] font-black text-gray-900 tabular-nums leading-none tracking-tight">
+                    <div className="flex items-center gap-2 sm:gap-1.5 mt-1 sm:mt-1.5">
+                       <span className="sm:hidden text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 font-bold uppercase rounded-sm whitespace-nowrap tracking-tight">
+                         {alert.priceType === 'sell' ? 'Bán' : 'Mua'}
+                       </span>
+                       <span className="text-[15px] sm:text-[16px] font-medium text-gray-500 whitespace-nowrap">
+                         {alert.type === 'above' ? 'Tăng trên' : 'Giảm dưới'}
+                       </span>
+                       <span className="text-[15px] sm:text-[16px] font-black text-gray-900 tabular-nums leading-none tracking-tight">
                          {alert.targetPrice.toLocaleString()}
                        </span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-1">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 pl-2 sm:pl-2 shrink-0 border-l border-gray-100 sm:border-l-0 ml-2 sm:ml-0 min-h-[50px] sm:min-h-0">
                   <button 
                     onClick={() => handleEdit(alert)}
-                    className="p-2 text-gray-300 hover:text-vne-red transition-colors"
+                    className="p-1.5 sm:p-2 text-gray-300 hover:text-vne-red transition-colors active:bg-gray-50 rounded-full sm:rounded-none"
                     title="Sửa"
                   >
-                    <Pencil size={18} />
+                    <Pencil size={16} className="sm:w-[18px] sm:h-[18px]" />
                   </button>
                   <button 
                     onClick={() => onRemoveAlert(alert.id)}
-                    className="p-2 text-gray-300 hover:text-red-500 transition-colors"
+                    className="p-1.5 sm:p-2 text-gray-300 hover:text-red-500 transition-colors active:bg-gray-50 rounded-full sm:rounded-none"
                     title="Xóa"
                   >
-                    <Trash2 size={20} />
+                    <Trash2 size={16} className="sm:w-[20px] sm:h-[20px]" />
                   </button>
                 </div>
               </div>

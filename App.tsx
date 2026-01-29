@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { getGoldData, getHistoryData, fetchWorldGoldPrice, getHourlyData } from './services/goldData';
 import { GoldTable } from './components/GoldTable';
@@ -122,22 +123,28 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] font-sans text-[#111] overflow-x-hidden">
-      <StickyMiniBar sjc={sjc} world={world} updatedAt={data[0]?.updatedAt} />
+      <StickyMiniBar 
+        sjc={sjc} 
+        world={world} 
+        updatedAt={data[0]?.updatedAt} 
+        onOpenAlerts={() => setIsAlertModalOpen(true)}
+        hasActiveAlerts={hasActiveAlerts}
+      />
 
       {/* Triggered Alert Toast */}
       {toastAlert && (
-        <div className="fixed bottom-4 left-4 right-4 z-[80] sm:left-auto sm:right-4 sm:w-80 bg-vne-red text-white p-4 shadow-2xl animate-in slide-in-from-right-4 duration-500">
+        <div className="fixed bottom-4 left-4 right-4 z-[80] sm:left-auto sm:right-4 sm:w-96 bg-vne-red text-white p-4 shadow-2xl animate-in slide-in-from-right-4 duration-500 rounded-sm">
            <div className="flex items-start gap-3">
-              <div className="bg-white/20 p-2 rounded-full">
+              <div className="bg-white/20 p-2 rounded-full shrink-0">
                 <BellRing size={20} className="animate-bounce" />
               </div>
-              <div className="flex-1">
-                <p className="font-bold text-sm">Cảnh báo giá chạm ngưỡng!</p>
-                <p className="text-xs opacity-90 mt-0.5">
-                  {toastAlert.productName} đã đạt mục tiêu {toastAlert.targetPrice.toLocaleString()} của bạn.
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-[15px] whitespace-nowrap leading-tight">Cảnh báo giá chạm ngưỡng!</p>
+                <p className="text-[13px] opacity-90 mt-1 leading-snug">
+                  {toastAlert.productName} đã đạt mục tiêu <span className="font-bold">{toastAlert.targetPrice.toLocaleString()}</span> của bạn.
                 </p>
               </div>
-              <button onClick={() => setToastAlert(null)} className="text-white/60 hover:text-white">
+              <button onClick={() => setToastAlert(null)} className="text-white/60 hover:text-white shrink-0 mt-0.5">
                 <X size={18} />
               </button>
            </div>
@@ -152,9 +159,10 @@ const App: React.FC = () => {
                <span className="font-serif text-xl sm:text-2xl font-black text-vne-red tracking-tight">VnExpress</span>
             </div>
 
+            {/* Mobile Button - Hidden on MD+ */}
             <button 
               onClick={() => setIsAlertModalOpen(true)}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 border transition-all rounded-sm shadow-sm group ${hasActiveAlerts ? 'bg-vne-red/5 border-vne-red/30 text-vne-red' : 'bg-gray-50 border-gray-200 text-gray-700 hover:text-vne-red'}`}
+              className={`md:hidden flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 border transition-all rounded-sm shadow-sm group ${hasActiveAlerts ? 'bg-vne-red/5 border-vne-red/30 text-vne-red' : 'bg-gray-50 border-gray-200 text-gray-700 hover:text-vne-red'}`}
             >
                <div className="relative">
                  {hasActiveAlerts ? (
@@ -170,22 +178,41 @@ const App: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-1">
-            <div>
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 leading-none">
+          <div className="flex flex-col gap-1">
+            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 leading-none">
                 Giá vàng hôm nay
-              </h1>
-              <div className="flex items-center gap-2 mt-1.5 text-[11px] sm:text-xs text-gray-500">
-                <span className="text-vne-red font-bold">Cập nhật: {data[0]?.updatedAt}</span>
-                <span className="w-0.5 h-3 bg-gray-300"></span>
-                <span>Nguồn: SJC, DOJI, Kitco</span>
-              </div>
+            </h1>
+            
+            <div className="flex items-end justify-between mt-1.5">
+                <div className="flex items-center gap-2 text-[11px] sm:text-xs text-gray-500">
+                    <span className="text-vne-red font-bold">Cập nhật: {data[0]?.updatedAt}</span>
+                    <span className="w-0.5 h-3 bg-gray-300"></span>
+                    <span>Nguồn: SJC, DOJI, Kitco</span>
+                </div>
+
+                {/* Desktop Button - Visible on MD+ */}
+                <button 
+                  onClick={() => setIsAlertModalOpen(true)}
+                  className={`hidden md:flex items-center gap-1.5 px-3 py-1 border transition-all rounded-sm shadow-sm group ${hasActiveAlerts ? 'bg-vne-red/5 border-vne-red/30 text-vne-red' : 'bg-white border-gray-200 text-gray-700 hover:text-vne-red hover:border-vne-red/30'}`}
+                >
+                   <div className="relative">
+                     {hasActiveAlerts ? (
+                       <>
+                        <BellRing size={14} className="text-vne-red animate-pulse" />
+                        <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-vne-red rounded-full border border-white"></span>
+                       </>
+                     ) : (
+                       <Bell size={14} className="group-hover:text-vne-red" />
+                     )}
+                   </div>
+                   <span className="text-[11px] font-bold uppercase whitespace-nowrap">Cảnh báo giá</span>
+                </button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-[760px] mx-auto px-3 sm:px-4 py-4 space-y-6 overflow-hidden">
+      <main className="max-w-[760px] mx-auto px-3 sm:px-4 py-4 space-y-4 overflow-hidden">
         <section>
           <MarketHighlights 
             data={data} 

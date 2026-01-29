@@ -112,7 +112,7 @@ export const ChartModal: React.FC<ChartModalProps> = ({
           <div className="p-4 sm:p-6 bg-[#fff9fa] border-b border-vne-red/10 animate-in slide-in-from-top-2 font-sans">
             <div className="flex items-center gap-2 mb-4">
                <AlertCircle size={18} className="text-vne-red" />
-               <h4 className="text-[14px] font-bold text-vne-red uppercase tracking-wider">Thiết lập ngưỡng cảnh báo giá</h4>
+               <h4 className="text-[14px] font-bold text-vne-red tracking-wider">Thiết lập ngưỡng cảnh báo giá</h4>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
@@ -139,14 +139,14 @@ export const ChartModal: React.FC<ChartModalProps> = ({
                       onClick={() => setAlertType('above')}
                       className={`flex-1 flex items-center justify-center text-[13px] font-bold whitespace-nowrap transition-all ${alertType === 'above' ? 'bg-green-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      Tăng<span className="hidden sm:inline"> lên</span>
+                      Tăng <span className="hidden sm:inline">lên</span>
                     </button>
                     {/* // Fix: replaces setType with setAlertType and type with alertType */}
                     <button 
                       onClick={() => setAlertType('below')}
                       className={`flex-1 flex items-center justify-center text-[13px] font-bold border-l border-gray-300 whitespace-nowrap transition-all ${alertType === 'below' ? 'bg-red-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      Giảm<span className="hidden sm:inline"> xuống</span>
+                      Giảm <span className="hidden sm:inline">xuống</span>
                     </button>
                 </div>
               </div>
