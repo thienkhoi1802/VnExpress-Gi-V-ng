@@ -20,6 +20,7 @@ export const PriceAlerts: React.FC<PriceAlertsProps> = ({ products, alerts, onAd
   const [type, setType] = useState<'above' | 'below'>('above');
   const [priceType, setPriceType] = useState<'sell' | 'buy'>('sell');
   const [targetPrice, setTargetPrice] = useState<string>('');
+  
   const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>(
     typeof Notification !== 'undefined' ? Notification.permission : 'default'
   );
@@ -28,9 +29,25 @@ export const PriceAlerts: React.FC<PriceAlertsProps> = ({ products, alerts, onAd
   const unitLabel = selectedProduct?.unit === 'USD/ounce' ? 'USD' : 'Triệu đồng';
 
   const requestPermission = async () => {
-    if (typeof Notification === 'undefined') return;
-    const result = await Notification.requestPermission();
-    setPermissionStatus(result);
+    if (typeof Notification === 'undefined') {
+        alert("Trình duyệt của bạn không hỗ trợ tính năng thông báo.");
+        return;
+    }
+
+    try {
+      const result = await Notification.requestPermission();
+      setPermissionStatus(result);
+      
+      if (result === 'granted') {
+        // Send a test notification to confirm
+        new Notification("VnExpress | Giá vàng", { 
+          body: "Đăng ký nhận thông báo thành công! Bạn sẽ nhận được tin khi giá chạm ngưỡng.", 
+          icon: '/favicon.ico' 
+        });
+      }
+    } catch (error) {
+      console.error("Error requesting notification permission:", error);
+    }
   };
 
   const handleEdit = (alert: PriceAlert) => {
@@ -99,17 +116,23 @@ export const PriceAlerts: React.FC<PriceAlertsProps> = ({ products, alerts, onAd
            </button>
         )}
 
-        {permissionStatus === 'default' && (
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-100 flex items-start gap-3">
-            <AlertCircle size={18} className="text-blue-600 shrink-0 mt-0.5" />
+        {permissionStatus !== 'granted' && (
+          <div className={`mb-4 p-3 border flex items-start gap-3 ${permissionStatus === 'denied' ? 'bg-red-50 border-red-100' : 'bg-blue-50 border-blue-100'}`}>
+            <AlertCircle size={18} className={`${permissionStatus === 'denied' ? 'text-red-600' : 'text-blue-600'} shrink-0 mt-0.5`} />
             <div className="flex-1">
-              <p className="text-[12px] text-blue-800 font-medium">Bật thông báo trình duyệt để nhận cập nhật ngay lập tức.</p>
-              <button 
-                onClick={requestPermission}
-                className="mt-1 text-[11px] font-bold text-blue-700 underline hover:text-blue-900"
-              >
-                Cho phép nhận thông báo
-              </button>
+              <p className={`text-[12px] font-medium leading-snug ${permissionStatus === 'denied' ? 'text-red-800' : 'text-blue-800'}`}>
+                {permissionStatus === 'denied' 
+                  ? 'Bạn đã chặn quyền thông báo. Vui lòng nhấp vào biểu tượng ổ khóa 🔒 trên thanh địa chỉ để bật lại.' 
+                  : 'Bật thông báo trình duyệt để nhận cập nhật ngay lập tức.'}
+              </p>
+              {permissionStatus === 'default' && (
+                <button 
+                  onClick={requestPermission}
+                  className="mt-1.5 text-[11px] font-bold text-blue-700 underline hover:text-blue-900"
+                >
+                  Cho phép nhận thông báo
+                </button>
+              )}
             </div>
           </div>
         )}
