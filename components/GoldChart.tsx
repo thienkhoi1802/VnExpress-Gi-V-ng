@@ -222,7 +222,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   );
 
   return (
-    <div className="bg-white rounded-none border border-gray-200 p-3 sm:py-3 sm:px-4 flex flex-col font-sans">
+    <div className="bg-white rounded-none border border-gray-200 p-3 sm:py-3 sm:px-4 md:px-8 md:py-4 flex flex-col font-sans">
       <div className="flex flex-col gap-4 sm:gap-2 mb-4 sm:mb-2 border-b border-gray-100 pb-3 sm:pb-2">
         {/* Row Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

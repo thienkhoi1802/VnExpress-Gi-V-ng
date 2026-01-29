@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Minus, Plus, RefreshCcw, ChevronDown } from 'lucide-react';
 import { ComputedGoldProduct } from '../types';
@@ -32,7 +33,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
   return (
     <div className="bg-white border border-gray-200 font-sans rounded-none shadow-sm max-w-full overflow-hidden">
       {/* Header Section */}
-      <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="p-3 sm:p-4 md:px-8 border-b border-gray-100 flex items-center justify-between">
         <h2 className="text-lg font-serif font-bold text-gray-900">
           Tính giá vàng
         </h2>
@@ -44,7 +45,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
          </button>
       </div>
 
-      <div className="p-4 sm:p-5">
+      <div className="p-4 sm:p-5 md:px-8">
         {/* Layout: Grid on mobile, Flex row with TOP ALIGNMENT (items-start) on desktop */}
         <div className="grid grid-cols-2 md:flex md:flex-row md:items-start gap-3 sm:gap-4">
           

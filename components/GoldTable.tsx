@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { ComputedGoldProduct, HistoryPoint } from '../types';
 import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, ChevronsUpDown } from 'lucide-react';
@@ -108,7 +109,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
 
   return (
     <div className="bg-white border border-gray-200 shadow-sm flex flex-col font-sans rounded-none w-full overflow-hidden">
-      <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="p-3 sm:p-4 md:px-8 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
           <h2 className="text-base sm:text-lg font-serif font-bold text-gray-900 whitespace-nowrap">
             Bảng giá vàng
@@ -127,7 +128,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('name')}
-                className="p-2 sm:p-3 border-r border-gray-200 w-[40%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
+                className="p-2 sm:p-3 md:pl-8 border-r border-gray-200 w-[40%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
               >
                  <div className="flex items-center gap-1.5">
                     Loại <ChevronsUpDown size={15} strokeWidth={2.5} className={sortConfig.key === 'name' ? 'text-[#9f224e] opacity-100 scale-110' : 'opacity-40 group-hover:opacity-80'} />
@@ -151,7 +152,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('change30d')}
-                className="p-2 sm:p-3 text-center w-[20%] sm:w-[150px] cursor-pointer group hover:bg-gray-100/50"
+                className="p-2 sm:p-3 md:pr-8 text-center w-[20%] sm:w-[150px] cursor-pointer group hover:bg-gray-100/50"
               >
                 <div className="flex flex-col items-center">
                     <div className="flex items-center gap-1.5">
@@ -183,7 +184,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 onClick={() => onRowClick(product)}
                 className={`border-b border-gray-50 hover:bg-[#fff9fa] transition-colors cursor-pointer group ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/10'}`}
               >
-                <td className="px-2 sm:px-4 py-3 sm:py-2.5 border-r border-gray-100">
+                <td className="px-2 sm:px-4 md:pl-8 py-3 sm:py-2.5 border-r border-gray-100">
                   <div className="font-bold text-gray-900 leading-tight whitespace-normal text-[15px] sm:text-[15px]">
                     {product.name}
                   </div>
@@ -220,7 +221,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 </td>
 
                 {/* Xu hướng */}
-                <td className="px-1 sm:px-3 py-2.5 sm:py-2">
+                <td className="px-1 sm:px-3 md:pr-8 py-2.5 sm:py-2">
                   <div className="flex flex-col items-center justify-center gap-1">
                       <div className={`font-black text-[11px] sm:text-[13px] tabular-nums whitespace-nowrap ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
                           {product.change30d > 0 ? '+' : ''}{product.change30d.toFixed(1)}%
@@ -240,7 +241,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
         </table>
       </div>
 
-      <div className="bg-white p-2.5 sm:p-3 border-t border-gray-100 font-sans">
+      <div className="bg-white p-2.5 sm:p-3 md:px-8 md:py-4 border-t border-gray-100 font-sans">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[13px] sm:text-xs text-gray-500">
             <div className="flex items-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-1.5 font-bold text-gray-700 tracking-tight">

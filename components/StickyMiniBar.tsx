@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { ComputedGoldProduct, Trend } from '../types';
 import { ArrowUp, ArrowDown, BellRing, Bell } from 'lucide-react';
@@ -47,7 +48,7 @@ export const StickyMiniBar: React.FC<Props> = ({ sjc, world, updatedAt, onOpenAl
 
   return (
     <div className="fixed top-0 left-0 w-full bg-white border-b border-gray-200 shadow-md z-[60] transform transition-transform duration-300 animate-in slide-in-from-top">
-      <div className="max-w-[760px] mx-auto px-4 h-11 flex items-center justify-between text-xs">
+      <div className="max-w-[760px] mx-auto px-4 md:px-8 h-11 flex items-center justify-between text-xs">
         <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto no-scrollbar">
           <PriceItem label="SJC Bán" product={sjc} />
           <div className="h-3 w-px bg-gray-200 shrink-0"></div>

@@ -80,7 +80,7 @@ const DomesticItem = ({
       onClick={() => onProductClick(product)}
       className={`bg-white hover:bg-gray-50/80 transition-all cursor-pointer group relative flex flex-col h-full ${className}`}
     >
-      <div className="px-3 sm:px-5 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
+      <div className="px-3 sm:px-5 md:px-8 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
           <h3 className="font-bold tracking-tight text-gray-900 text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               {label}
           </h3>
@@ -127,7 +127,7 @@ const DomesticItem = ({
           </div>
       </div>
 
-      <div className="hidden sm:flex items-center px-5 pb-1">
+      <div className="hidden sm:flex items-center px-5 md:px-8 pb-1">
           <div className="flex-grow grid grid-cols-2 gap-4 items-start font-sans">
               <div className="flex flex-col border-r border-gray-100 pr-2 min-w-0">
                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
@@ -160,7 +160,7 @@ const DomesticItem = ({
       </div>
 
       {diffTextValue && (
-        <div className="px-3 sm:px-5 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
+        <div className="px-3 sm:px-5 md:px-8 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
              <div className="flex items-center justify-between text-[12px] sm:text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-1.5 sm:pt-2">
                   <span>Cao hơn thế giới (quy đổi):</span>
                   <span className="font-bold text-gray-900 tabular-nums">
@@ -198,7 +198,7 @@ const WorldGoldInGrid = ({
       onClick={() => onProductClick(product)}
       className={`bg-white hover:bg-gray-50/80 transition-all cursor-pointer group relative flex flex-col h-full ${className}`}
     >
-      <div className="px-3 sm:px-5 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
+      <div className="px-3 sm:px-5 md:px-8 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
           <h3 className="font-bold tracking-tight text-[#9f224e] text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               Vàng thế giới
           </h3>
@@ -231,7 +231,7 @@ const WorldGoldInGrid = ({
           </div>
       </div>
 
-      <div className="hidden sm:flex items-center px-5 pb-1 gap-4">
+      <div className="hidden sm:flex items-center px-5 md:px-8 pb-1 gap-4">
           <div className="flex-grow flex flex-col min-w-0">
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Giá Bán (Ask)</span>
               <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[50px]">
@@ -254,7 +254,7 @@ const WorldGoldInGrid = ({
           </div>
       </div>
 
-      <div className="px-3 sm:px-5 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
+      <div className="px-3 sm:px-5 md:px-8 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
              <div className="flex items-center justify-between text-[12px] sm:text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-1.5 sm:pt-2">
                   <span>Quy đổi giá VNĐ:</span>
                   <span className="font-bold text-gray-900 tabular-nums">
@@ -337,7 +337,7 @@ const WorldDetailTab = ({
             </div>
           )}
 
-          <div className="bg-white border-x border-b border-gray-200 shadow-sm flex flex-col font-sans rounded-b-sm overflow-hidden p-3 sm:p-5">
+          <div className="bg-white border-x border-b border-gray-200 shadow-sm flex flex-col font-sans rounded-b-sm overflow-hidden p-3 sm:p-5 md:px-8 md:py-6">
               <div className="flex justify-between items-start mb-4 border-b border-gray-100 pb-3">
                   <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">

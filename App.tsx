@@ -152,7 +152,8 @@ const App: React.FC = () => {
       )}
 
       <header className="bg-white border-b border-[#e5e5e5] py-3">
-        <div className="max-w-[760px] mx-auto px-3 sm:px-4">
+        {/* Adjusted padding: md:px-0 to align flush with 760px box edges on desktop */}
+        <div className="max-w-[760px] mx-auto px-3 sm:px-4 md:px-0">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2.5">
                <button className="text-gray-600 hover:text-vne-red"><Menu size={20} /></button>
@@ -212,7 +213,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-[760px] mx-auto px-3 sm:px-4 py-4 space-y-4 overflow-hidden">
+      {/* Adjusted padding: md:px-0 so boxes take full 760px width */}
+      <main className="max-w-[760px] mx-auto px-3 sm:px-4 md:px-0 py-4 space-y-4 overflow-hidden">
         <section>
           <MarketHighlights 
             data={data} 
