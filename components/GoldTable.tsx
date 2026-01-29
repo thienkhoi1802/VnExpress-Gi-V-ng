@@ -136,15 +136,14 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               
               <th colSpan={2} className="p-1 sm:p-2 text-center border-r border-gray-200 bg-white/50">
                 <div className="flex flex-col items-center">
-                    <span className="text-[#9f224e] font-black sm:hidden">Giá vàng</span>
-                    <span className="text-[#9f224e] font-black hidden sm:block">Giá vàng hôm nay</span>
+                    <span className="text-[#9f224e] font-black">Hôm nay</span>
                     <span className="text-[11px] sm:text-[13px] font-medium text-gray-500 mt-0.5">({todayStr})</span>
                 </div>
               </th>
 
               <th colSpan={2} className="hidden md:table-cell p-1 sm:p-2 text-center border-r border-gray-200">
                 <div className="flex flex-col items-center">
-                    <span className="text-gray-700">Giá vàng hôm qua</span>
+                    <span className="text-gray-700">Hôm qua</span>
                     <span className="text-[11px] sm:text-[13px] font-medium text-gray-400 mt-0.5">({yesterdayStr})</span>
                 </div>
               </th>

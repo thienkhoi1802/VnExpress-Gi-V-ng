@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { X, Bell, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
 import { GoldChart } from './GoldChart';
@@ -93,7 +94,7 @@ export const ChartModal: React.FC<ChartModalProps> = ({
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border ${activeAlertForProduct || showQuickAlert ? 'bg-vne-red text-white border-vne-red' : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'}`}
               >
                 <Bell size={18} className={activeAlertForProduct ? "animate-pulse" : ""} />
-                <span className="text-[12px] font-bold uppercase hidden sm:inline">Thông báo giá</span>
+                <span className="text-[12px] font-bold uppercase hidden sm:inline">Cảnh báo giá</span>
               </button>
             </div>
             <p className="text-[13px] text-gray-500 mt-1 font-sans">Cập nhật: {updateDate}</p>
@@ -111,7 +112,7 @@ export const ChartModal: React.FC<ChartModalProps> = ({
           <div className="p-4 sm:p-6 bg-[#fff9fa] border-b border-vne-red/10 animate-in slide-in-from-top-2 font-sans">
             <div className="flex items-center gap-2 mb-4">
                <AlertCircle size={18} className="text-vne-red" />
-               <h4 className="text-[14px] font-bold text-vne-red uppercase tracking-wider">Thiết lập ngưỡng báo giá</h4>
+               <h4 className="text-[14px] font-bold text-vne-red uppercase tracking-wider">Thiết lập ngưỡng cảnh báo giá</h4>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
@@ -136,15 +137,16 @@ export const ChartModal: React.FC<ChartModalProps> = ({
                 <div className="flex border border-gray-300 bg-white h-10 rounded-sm overflow-hidden">
                     <button 
                       onClick={() => setAlertType('above')}
-                      className={`flex-1 flex items-center justify-center gap-1 text-[12px] font-bold transition-all ${alertType === 'above' ? 'bg-green-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 flex items-center justify-center text-[13px] font-bold whitespace-nowrap transition-all ${alertType === 'above' ? 'bg-green-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      <TrendingUp size={14} /> Tăng trên
+                      Tăng<span className="hidden sm:inline"> lên</span>
                     </button>
+                    {/* // Fix: replaces setType with setAlertType and type with alertType */}
                     <button 
                       onClick={() => setAlertType('below')}
-                      className={`flex-1 flex items-center justify-center gap-1 text-[12px] font-bold border-l border-gray-300 transition-all ${alertType === 'below' ? 'bg-red-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 flex items-center justify-center text-[13px] font-bold border-l border-gray-300 whitespace-nowrap transition-all ${alertType === 'below' ? 'bg-red-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      <TrendingDown size={14} /> Giảm dưới
+                      Giảm<span className="hidden sm:inline"> xuống</span>
                     </button>
                 </div>
               </div>
@@ -178,7 +180,7 @@ export const ChartModal: React.FC<ChartModalProps> = ({
                      Đang theo dõi: <strong>Giá {activeAlertForProduct.priceType === 'sell' ? 'Bán ra' : 'Mua vào'}</strong> {activeAlertForProduct.type === 'above' ? 'tăng trên' : 'giảm dưới'} <strong className="text-vne-red text-[16px]">{activeAlertForProduct.targetPrice.toLocaleString()}</strong>
                    </span>
                 </div>
-                <button onClick={() => onRemoveAlert(activeAlertForProduct.id)} className="text-vne-red font-bold hover:underline text-[13px] px-3">Hủy thông báo</button>
+                <button onClick={() => onRemoveAlert(activeAlertForProduct.id)} className="text-vne-red font-bold hover:underline text-[13px] px-3">Hủy cảnh báo</button>
               </div>
             )}
           </div>

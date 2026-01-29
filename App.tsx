@@ -104,6 +104,10 @@ const App: React.FC = () => {
     setAlerts(prev => [alert, ...prev]);
   };
 
+  const updateAlert = (updatedAlert: PriceAlert) => {
+    setAlerts(prev => prev.map(a => a.id === updatedAlert.id ? updatedAlert : a));
+  };
+
   const removeAlert = (id: string) => {
     setAlerts(prev => prev.filter(a => a.id !== id));
   };
@@ -114,6 +118,7 @@ const App: React.FC = () => {
 
   const sjc = data.find(p => p.group === 'sjc');
   const world = data.find(p => p.group === 'world');
+  const hasActiveAlerts = alerts.some(a => a.isActive);
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] font-sans text-[#111] overflow-x-hidden">
@@ -149,10 +154,19 @@ const App: React.FC = () => {
 
             <button 
               onClick={() => setIsAlertModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-700 hover:text-vne-red transition-all rounded-sm shadow-sm group"
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 border transition-all rounded-sm shadow-sm group ${hasActiveAlerts ? 'bg-vne-red/5 border-vne-red/30 text-vne-red' : 'bg-gray-50 border-gray-200 text-gray-700 hover:text-vne-red'}`}
             >
-               <Bell size={16} className={alerts.some(a => a.isActive) ? "text-vne-red animate-pulse" : "group-hover:text-vne-red"} />
-               <span className="text-[11px] font-bold uppercase hidden sm:inline">Thông báo giá</span>
+               <div className="relative">
+                 {hasActiveAlerts ? (
+                   <>
+                    <BellRing size={16} className="text-vne-red animate-pulse" />
+                    <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-vne-red rounded-full border border-white"></span>
+                   </>
+                 ) : (
+                   <Bell size={16} className="group-hover:text-vne-red" />
+                 )}
+               </div>
+               <span className="text-[10px] sm:text-[11px] font-bold uppercase whitespace-nowrap">Cảnh báo giá</span>
             </button>
           </div>
 
@@ -229,6 +243,7 @@ const App: React.FC = () => {
         products={data}
         alerts={alerts}
         onAddAlert={addAlert}
+        onUpdateAlert={updateAlert}
         onRemoveAlert={removeAlert}
       />
     </div>

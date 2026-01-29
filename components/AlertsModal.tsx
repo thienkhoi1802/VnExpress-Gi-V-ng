@@ -9,6 +9,7 @@ interface AlertsModalProps {
   products: ComputedGoldProduct[];
   alerts: PriceAlert[];
   onAddAlert: (alert: Omit<PriceAlert, 'id' | 'createdAt' | 'isActive'>) => void;
+  onUpdateAlert: (alert: PriceAlert) => void;
   onRemoveAlert: (id: string) => void;
 }
 
@@ -18,6 +19,7 @@ export const AlertsModal: React.FC<AlertsModalProps> = ({
   products, 
   alerts, 
   onAddAlert, 
+  onUpdateAlert,
   onRemoveAlert 
 }) => {
   useEffect(() => {
@@ -40,7 +42,7 @@ export const AlertsModal: React.FC<AlertsModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-[#f7f7f7]">
-          <h3 className="font-serif font-bold text-gray-900 text-lg">Quản lý thông báo giá</h3>
+          <h3 className="font-serif font-bold text-gray-900 text-lg">Quản lý cảnh báo giá</h3>
           <button 
             onClick={onClose}
             className="p-2 hover:bg-gray-100 transition-colors"
@@ -54,6 +56,7 @@ export const AlertsModal: React.FC<AlertsModalProps> = ({
             products={products}
             alerts={alerts}
             onAddAlert={onAddAlert}
+            onUpdateAlert={onUpdateAlert}
             onRemoveAlert={onRemoveAlert}
           />
         </div>
