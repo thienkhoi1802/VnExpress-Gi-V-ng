@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { getGoldData, getHistoryData, fetchWorldGoldPrice, getHourlyData } from './services/goldData';
+import { getGoldData, getHistoryData, fetchAllGoldPrices, getHourlyData } from './services/goldData';
 import { GoldTable } from './components/GoldTable';
 import { Calculator } from './components/Calculator';
 import { ChartModal } from './components/ChartModal';
@@ -38,7 +38,8 @@ const App: React.FC = () => {
 
     const initFetch = async () => {
         setIsLiveLoading(true);
-        const freshData = await fetchWorldGoldPrice();
+        // Changed to fetchAllGoldPrices to include domestic sheets
+        const freshData = await fetchAllGoldPrices();
         setData(freshData);
         setIsLiveLoading(false);
     };
@@ -46,7 +47,7 @@ const App: React.FC = () => {
 
     const liveInterval = setInterval(async () => {
         setIsLiveLoading(true);
-        const freshData = await fetchWorldGoldPrice();
+        const freshData = await fetchAllGoldPrices();
         setData(freshData);
         setHourlyData(getHourlyData());
         setIsLiveLoading(false);
@@ -152,7 +153,7 @@ const App: React.FC = () => {
       )}
 
       <header className="bg-white border-b border-[#e5e5e5] py-3">
-        {/* Adjusted padding: md:px-0 to align flush with 760px box edges on desktop */}
+        {/* Adjusted padding: md:px-0 to align with box content of 760px */}
         <div className="max-w-[760px] mx-auto px-3 sm:px-4 md:px-0">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2.5">

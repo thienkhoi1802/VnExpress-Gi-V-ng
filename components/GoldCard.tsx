@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { ComputedGoldProduct, HistoryPoint, Trend } from '../types';
 import { Sparkline } from './Sparkline';
 import { TrendIndicator } from './TrendIndicator';
+import { formatGoldPrice } from '../services/goldData';
 
 interface GoldCardProps {
   product: ComputedGoldProduct;
@@ -29,7 +31,7 @@ export const GoldCard: React.FC<GoldCardProps> = ({ product, historyData, onClic
              <span className="text-[10px] uppercase text-gray-500 mb-0.5">Bán ra</span>
              <div className="flex items-center gap-2">
                 <span className={`text-base font-bold tabular-nums ${product.trendSell === Trend.UP ? 'text-trend-up' : product.trendSell === Trend.DOWN ? 'text-trend-down' : 'text-gray-900'}`}>
-                  {product.today.sell.toLocaleString('vi-VN')}
+                  {formatGoldPrice(product.today.sell, product.group)}
                 </span>
                 {!isWorld && <TrendIndicator trend={product.trendSell} value={product.changeSell} showValue={false} />}
              </div>
@@ -39,7 +41,7 @@ export const GoldCard: React.FC<GoldCardProps> = ({ product, historyData, onClic
           <div className="flex flex-col">
              <span className="text-[10px] uppercase text-gray-500 mb-0.5">Mua vào</span>
              <span className="text-sm font-semibold text-gray-700 tabular-nums">
-               {product.today.buy.toLocaleString('vi-VN')}
+               {formatGoldPrice(product.today.buy, product.group)}
              </span>
           </div>
         </div>

@@ -42,7 +42,7 @@ const NEWS_DATA: NewsItem[] = [
 
 export const GoldNews: React.FC = () => {
   return (
-    <div className="bg-white border border-gray-200 shadow-sm py-4 px-4 md:px-8">
+    <div className="bg-white border border-gray-200 shadow-sm py-4 px-4 md:px-5 md:py-5">
       <div className="flex items-center justify-between mb-4">
         {/* Section title matched to Chart Title style (text-lg font-serif) */}
         <h3 className="text-lg font-bold text-gray-900 font-serif">

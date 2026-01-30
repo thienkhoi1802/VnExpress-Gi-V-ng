@@ -6,15 +6,20 @@ const getFormattedTime = (date: Date = new Date()) => {
   return `${date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} ${date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
 };
 
-// Initial Mock Data - Updated SJC prices to reflect real market (~84.5m) rather than future projection
+// --- DATA SOURCE CONFIGURATION ---
+const SHEET_A_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTFknfHc1PzpA2BwTh4XtiKCl91VkeOf8ZIwp4BGaurggUAFk8jYDVazTmWWn0oseC1TVpPxhY1Axl1/pub?gid=1051355078&single=true&output=tsv";
+// Updated SHEET_B to the new GID for Regional data (date-based rows)
+const SHEET_B_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTFknfHc1PzpA2BwTh4XtiKCl91VkeOf8ZIwp4BGaurggUAFk8jYDVazTmWWn0oseC1TVpPxhY1Axl1/pub?gid=1664628255&single=true&output=tsv";
+
+// Initial Mock Data (Reflecting 2026 Price Levels)
 const INITIAL_DATA: GoldProduct[] = [
   {
     id: 'world_gold',
     name: 'Giá vàng thế giới',
     group: 'world',
     unit: 'USD/ounce',
-    today: { buy: 2720.50, sell: 2721.50 }, // Consistent with recent market
-    yesterday: { buy: 2705.20, sell: 2706.20 }, 
+    today: { buy: 5720.50, sell: 5721.50 },
+    yesterday: { buy: 5705.20, sell: 5706.20 }, 
     updatedAt: getFormattedTime()
   },
   {
@@ -22,8 +27,8 @@ const INITIAL_DATA: GoldProduct[] = [
     name: 'SJC 1L, 10L, 1KG',
     group: 'sjc',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 82.50, sell: 84.50 }, // Real market value
-    yesterday: { buy: 81.00, sell: 83.00 },
+    today: { buy: 178.00, sell: 181.00 },
+    yesterday: { buy: 186.60, sell: 189.60 },
     updatedAt: getFormattedTime()
   },
   {
@@ -31,8 +36,8 @@ const INITIAL_DATA: GoldProduct[] = [
     name: 'SJC 5c',
     group: 'sjc',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 82.50, sell: 84.52 },
-    yesterday: { buy: 81.00, sell: 83.02 },
+    today: { buy: 181.00, sell: 178.00 },
+    yesterday: { buy: 189.60, sell: 186.60 },
     updatedAt: getFormattedTime()
   },
   {
@@ -40,8 +45,8 @@ const INITIAL_DATA: GoldProduct[] = [
     name: 'SJC 2c, 1C, 5 phân',
     group: 'sjc',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 82.50, sell: 84.53 },
-    yesterday: { buy: 81.00, sell: 83.03 },
+    today: { buy: 181.02, sell: 178.00 },
+    yesterday: { buy: 189.62, sell: 186.60 },
     updatedAt: getFormattedTime()
   },
   {
@@ -49,8 +54,8 @@ const INITIAL_DATA: GoldProduct[] = [
     name: 'Nữ Trang 99.99% SJC',
     group: 'jewelry',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 81.80, sell: 83.60 },
-    yesterday: { buy: 80.50, sell: 82.30 },
+    today: { buy: 177.000, sell: 180.000 },
+    yesterday: { buy: 186.300, sell: 189.300 },
     updatedAt: getFormattedTime()
   },
   {
@@ -58,17 +63,8 @@ const INITIAL_DATA: GoldProduct[] = [
     name: 'Nữ Trang 99% SJC',
     group: 'jewelry',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 80.50, sell: 82.80 },
-    yesterday: { buy: 79.20, sell: 81.50 },
-    updatedAt: getFormattedTime()
-  },
-  {
-    id: 'hcm_pnj',
-    name: 'TPHCM PNJ',
-    group: 'regional',
-    unit: 'Triệu đồng/lượng',
-    today: { buy: 82.90, sell: 84.50 },
-    yesterday: { buy: 82.90, sell: 84.50 },
+    today: { buy: 177.000, sell: 180.000 },
+    yesterday: { buy: 186.300, sell: 189.300 },
     updatedAt: getFormattedTime()
   },
   {
@@ -76,17 +72,17 @@ const INITIAL_DATA: GoldProduct[] = [
     name: 'TPHCM SJC',
     group: 'regional',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 82.50, sell: 84.50 },
-    yesterday: { buy: 81.00, sell: 83.00 },
+    today: { buy: 178.00, sell: 181.00 },
+    yesterday: { buy: 178.00, sell: 181.00 },
     updatedAt: getFormattedTime()
   },
   {
-    id: 'hanoi_pnj',
-    name: 'Hà Nội PNJ',
+    id: 'hcm_pnj',
+    name: 'TPHCM PNJ',
     group: 'regional',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 82.90, sell: 84.50 },
-    yesterday: { buy: 82.90, sell: 84.50 },
+    today: { buy: 178.00, sell: 181.00 },
+    yesterday: { buy: 178.00, sell: 181.00 },
     updatedAt: getFormattedTime()
   },
   {
@@ -94,8 +90,17 @@ const INITIAL_DATA: GoldProduct[] = [
     name: 'Hà Nội SJC',
     group: 'regional',
     unit: 'Triệu đồng/lượng',
-    today: { buy: 82.50, sell: 84.50 },
-    yesterday: { buy: 81.00, sell: 83.00 },
+    today: { buy: 178.00, sell: 181.00 },
+    yesterday: { buy: 178.00, sell: 181.00 },
+    updatedAt: getFormattedTime()
+  },
+  {
+    id: 'hanoi_pnj',
+    name: 'Hà Nội PNJ',
+    group: 'regional',
+    unit: 'Triệu đồng/lượng',
+    today: { buy: 178.00, sell: 181.00 },
+    yesterday: { buy: 178.00, sell: 181.00 },
     updatedAt: getFormattedTime()
   },
 ];
@@ -108,13 +113,176 @@ const determineTrend = (change: number): Trend => {
   return Trend.FLAT;
 };
 
+// --- TSV PARSING HELPERS ---
+
+const parseValue = (val: string): number => {
+  if (!val || val.trim() === '') return 0;
+  let cleanVal = val.trim();
+  
+  // Remove thousand separator dot
+  cleanVal = cleanVal.replace(/\./g, '');
+  // Convert comma to dot for float
+  cleanVal = cleanVal.replace(/,/g, '.');
+  
+  let num = parseFloat(cleanVal);
+  if (isNaN(num)) return 0;
+
+  // Logic: Nếu số quá lớn (như 178.000.000), chia cho 1 triệu để lấy đơn vị "Triệu đồng"
+  // Nếu là số nhỏ (như 178), giữ nguyên. 
+  // Nếu nằm giữa (như 180.000), có thể là do định dạng sai từ Sheet, cần chuẩn hóa
+  if (num >= 1000000) return num / 1000000;
+  if (num >= 100000) return num / 1000; // Case where 180.000 means 180 triệu
+
+  return num;
+};
+
+const fetchTSV = async (url: string) => {
+  const response = await fetch(url, { cache: 'no-store' });
+  const text = await response.text();
+  return text.split(/\r?\n/).map(line => line.split('\t'));
+};
+
+// --- DATA FETCHING LOGIC ---
+
+// 1. Fetch Sheet A (SJC History)
+const fetchSheetA = async () => {
+  try {
+    const rows = await fetchTSV(SHEET_A_URL);
+    if (rows.length < 2) return; 
+
+    const headers = rows[0].map(h => h.toLowerCase());
+    const findIndex = (keywords: string[]) => headers.findIndex(h => keywords.some(k => h.includes(k)));
+
+    const mapping = [
+      { id: 'sjc_1l', keywords: ['1l', '10l', '1kg'], fallbackIdx: 1 },
+      { id: 'sjc_5c', keywords: ['5c'], fallbackIdx: 3 }, 
+      { id: 'sjc_2c', keywords: ['2c', '1c', '5 phân'], fallbackIdx: 5 },
+      { id: 'jewelry_9999', keywords: ['99.99%', '99,99%'], fallbackIdx: 7 },
+      { id: 'jewelry_99', keywords: ['99%'], fallbackIdx: 9 },
+    ];
+
+    const validRows = rows.filter(r => r.length > 1 && r[0].trim() !== '');
+    if (validRows.length < 2) return;
+
+    const todayRow = validRows[validRows.length - 1];
+    const yesterdayRow = validRows[validRows.length - 2];
+    
+    mapping.forEach(m => {
+      const colIdx = findIndex(m.keywords);
+      const buyIdx = colIdx !== -1 ? colIdx : m.fallbackIdx;
+      const sellIdx = buyIdx + 1; 
+
+      const productIdx = currentDataStore.findIndex(p => p.id === m.id);
+      if (productIdx !== -1) {
+        if (todayRow[buyIdx] && todayRow[sellIdx]) {
+            currentDataStore[productIdx].today.buy = parseValue(todayRow[buyIdx]);
+            currentDataStore[productIdx].today.sell = parseValue(todayRow[sellIdx]);
+            currentDataStore[productIdx].updatedAt = getFormattedTime();
+        }
+        if (yesterdayRow[buyIdx] && yesterdayRow[sellIdx]) {
+            currentDataStore[productIdx].yesterday.buy = parseValue(yesterdayRow[buyIdx]);
+            currentDataStore[productIdx].yesterday.sell = parseValue(yesterdayRow[sellIdx]);
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Error fetching Sheet A:", error);
+  }
+};
+
+// 2. Fetch Sheet B (Regional - Date based)
+const fetchSheetB = async () => {
+  try {
+    const rows = await fetchTSV(SHEET_B_URL);
+    if (rows.length < 2) return;
+
+    // Header row mapping: Col A (Date), B (TPHCM PNJ), C (TPHCM SJC), E (Hà Nội SJC), F? (Hà Nội PNJ)
+    // Looking for headers to be safe
+    const headers = rows[0].map(h => h.toLowerCase());
+    
+    const validRows = rows.filter(r => r.length > 1 && r[0].trim() !== '');
+    if (validRows.length < 2) return;
+
+    // Get today and yesterday based on the last two rows of this sheet
+    const todayRow = validRows[validRows.length - 1];
+    const yesterdayRow = validRows[validRows.length - 2];
+
+    const findCol = (keyword: string) => headers.findIndex(h => h.includes(keyword));
+
+    const mapping = [
+      { id: 'hcm_pnj', col: findCol('tphcm pnj') !== -1 ? findCol('tphcm pnj') : 1 },
+      { id: 'hcm_sjc', col: findCol('tphcm sjc') !== -1 ? findCol('tphcm sjc') : 2 },
+      { id: 'hanoi_sjc', col: findCol('hà nội sjc') !== -1 ? findCol('hà nội sjc') : 4 },
+      { id: 'hanoi_pnj', col: findCol('hà nội - pnj') !== -1 ? findCol('hà nội - pnj') : 5 },
+    ];
+
+    mapping.forEach(m => {
+      const productIdx = currentDataStore.findIndex(p => p.id === m.id);
+      if (productIdx !== -1) {
+        // Today
+        const todayVal = parseValue(todayRow[m.col]);
+        if (todayVal > 0) {
+            currentDataStore[productIdx].today.buy = todayVal;
+            currentDataStore[productIdx].today.sell = todayVal; // Regional often only provides one price or same price for both in simple sheets
+        }
+        // Yesterday
+        const yesterdayVal = parseValue(yesterdayRow[m.col]);
+        if (yesterdayVal > 0) {
+            currentDataStore[productIdx].yesterday.buy = yesterdayVal;
+            currentDataStore[productIdx].yesterday.sell = yesterdayVal;
+        }
+        currentDataStore[productIdx].updatedAt = getFormattedTime();
+      }
+    });
+
+  } catch (error) {
+    console.error("Error fetching Sheet B:", error);
+  }
+};
+
+// 3. Fetch World Price
+const fetchWorldGold = async () => {
+    try {
+        const response = await fetch("https://data-asg.goldprice.org/dbXRates/USD", {
+            method: 'GET',
+            headers: { "User-Agent": "Mozilla/5.0", "Accept": "application/json" },
+            cache: 'no-store'
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.items && data.items.length > 0) {
+                const item = data.items[0];
+                const spotPrice = item.xauPrice;
+                const closePrice = item.xauClose;
+                const SPREAD = 0.8;
+                const worldIndex = currentDataStore.findIndex(p => p.group === 'world');
+                if (worldIndex !== -1) {
+                    currentDataStore[worldIndex].today.buy = spotPrice;
+                    currentDataStore[worldIndex].today.sell = spotPrice + SPREAD;
+                    if (!isNaN(closePrice) && closePrice > 0) {
+                        currentDataStore[worldIndex].yesterday.sell = closePrice;
+                        currentDataStore[worldIndex].yesterday.buy = closePrice - SPREAD; 
+                    }
+                    currentDataStore[worldIndex].updatedAt = getFormattedTime();
+                }
+            }
+        }
+    } catch (error) {
+        console.error("API Error world gold", error);
+    }
+};
+
+// --- PUBLIC EXPORTS ---
+
 export const getGoldData = (): ComputedGoldProduct[] => {
   return currentDataStore.map(product => {
     const changeBuy = product.today.buy - product.yesterday.buy;
     const changeSell = product.today.sell - product.yesterday.sell;
     
-    const percentBuy = (changeBuy / product.yesterday.buy) * 100;
-    const percentSell = (changeSell / product.yesterday.sell) * 100;
+    const percentBuy = product.yesterday.buy > 0 ? (changeBuy / product.yesterday.buy) * 100 : 0;
+    const percentSell = product.yesterday.sell > 0 ? (changeSell / product.yesterday.sell) * 100 : 0;
 
     return {
       ...product,
@@ -128,85 +296,16 @@ export const getGoldData = (): ComputedGoldProduct[] => {
   });
 };
 
-export const fetchWorldGoldPrice = async (): Promise<ComputedGoldProduct[]> => {
-    try {
-        // Sử dụng API public của GoldPrice.org để lấy dữ liệu thực tế hơn
-        const response = await fetch("https://data-asg.goldprice.org/dbXRates/USD", {
-            method: 'GET',
-            headers: {
-                "User-Agent": "Mozilla/5.0",
-                "Accept": "application/json"
-            },
-            cache: 'no-store'
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            // Data format: { items: [{ curr: "USD", xauPrice: 2735.45, xauClose: 2720.25, ... }] }
-            if (data.items && data.items.length > 0) {
-                const item = data.items[0];
-                const spotPrice = item.xauPrice;
-                const closePrice = item.xauClose;
-
-                // Giả lập Spread (chênh lệch mua bán) thị trường quốc tế ~0.5 - 1.0 USD
-                const SPREAD = 0.8;
-                
-                // Bid = Giá thị trường chấp nhận mua (Spot)
-                // Ask = Giá thị trường chào bán (Spot + Spread)
-                const bid = spotPrice;
-                const ask = spotPrice + SPREAD;
-                
-                updateWorldStore(bid, ask, closePrice);
-            } else {
-                simulateLivePrice();
-            }
-        } else {
-            simulateLivePrice();
-        }
-    } catch (error) {
-        console.error("API Error - switching to simulation", error);
-        simulateLivePrice();
-    }
-    
+export const fetchAllGoldPrices = async (): Promise<ComputedGoldProduct[]> => {
+    await Promise.all([
+        fetchWorldGold(),
+        fetchSheetA(),
+        fetchSheetB()
+    ]);
     return getGoldData();
 };
 
-const updateWorldStore = (bid: number, ask: number, prevClose: number, timestamp?: number) => {
-    const worldIndex = currentDataStore.findIndex(p => p.group === 'world');
-    if (worldIndex !== -1) {
-        currentDataStore[worldIndex].today.buy = bid;
-        currentDataStore[worldIndex].today.sell = ask;
-        
-        if (!isNaN(prevClose) && prevClose > 0) {
-            // Giá hôm qua: Bán = Đóng cửa, Mua = Đóng cửa - Spread hiện tại
-            const currentSpread = ask - bid;
-            currentDataStore[worldIndex].yesterday.sell = prevClose;
-            currentDataStore[worldIndex].yesterday.buy = prevClose - currentSpread; 
-        }
-
-        if (timestamp) {
-                currentDataStore[worldIndex].updatedAt = getFormattedTime(new Date(timestamp * 1000));
-        } else {
-                currentDataStore[worldIndex].updatedAt = getFormattedTime();
-        }
-    }
-};
-
-const simulateLivePrice = () => {
-    const worldIndex = currentDataStore.findIndex(p => p.group === 'world');
-    if (worldIndex !== -1) {
-        const currentAsk = currentDataStore[worldIndex].today.sell;
-        // Biến động random nhỏ để tạo cảm giác live nếu API lỗi
-        const change = (Math.random() * 1.5) - 0.75;
-        
-        const newAsk = parseFloat((currentAsk + change).toFixed(2));
-        const newBid = parseFloat((newAsk - 0.8).toFixed(2)); 
-
-        currentDataStore[worldIndex].today.buy = newBid;
-        currentDataStore[worldIndex].today.sell = newAsk;
-        currentDataStore[worldIndex].updatedAt = getFormattedTime();
-    }
-};
+export const fetchWorldGoldPrice = fetchAllGoldPrices;
 
 export const getHistoryData = (): HistoryPoint[] => {
   const history: HistoryPoint[] = [];
@@ -236,9 +335,7 @@ export const getHistoryData = (): HistoryPoint[] => {
       let basePrice = p.today.sell;
       let historyPrice = basePrice + wave + longTrend;
 
-      if (i === 0) {
-        historyPrice = p.today.sell;
-      }
+      if (i === 0) historyPrice = p.today.sell;
 
       const currentSpread = p.today.sell - p.today.buy;
 
@@ -253,9 +350,6 @@ export const getHistoryData = (): HistoryPoint[] => {
   return history;
 };
 
-/**
- * Cung cấp 24 điểm dữ liệu cho bộ lọc 24h
- */
 export const getHourlyData = (): HistoryPoint[] => {
   const hourly: HistoryPoint[] = [];
   const now = new Date();
@@ -275,7 +369,6 @@ export const getHourlyData = (): HistoryPoint[] => {
 
     INITIAL_DATA.forEach(p => {
       const pHash = p.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      // Biến động nhẹ theo giờ
       const wave = Math.sin((i + pHash) * 0.5) * 0.3; 
       
       let historyPrice = p.today.sell + wave;
@@ -292,4 +385,24 @@ export const getHourlyData = (): HistoryPoint[] => {
   }
   
   return hourly;
+};
+
+// --- FORMATTER HELPER ---
+export const formatGoldPrice = (price: number, group: string) => {
+  if (price === 0) return "0";
+  
+  if (group === 'jewelry') {
+    // Jewelry: Always 3 decimals (e.g., 170,233)
+    return price.toLocaleString('vi-VN', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+  }
+  if (group === 'world') {
+    return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  
+  // SJC & Regional: Flexible (e.g., 178 or 181,2)
+  // Logic: Nếu là số nguyên thì không hiện số 0 thập phân. Nếu có lẻ thì hiện tối đa 2 số.
+  return price.toLocaleString('vi-VN', { 
+    minimumFractionDigits: 0, 
+    maximumFractionDigits: 2 
+  });
 };

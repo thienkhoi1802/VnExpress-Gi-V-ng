@@ -4,6 +4,7 @@ import { ComputedGoldProduct, HistoryPoint } from '../types';
 import { ArrowUp, ArrowDown, Globe, ChevronRight, ChevronDown, Check, X, ZoomIn, Clock, Loader2, Info } from 'lucide-react';
 import { AdvancedRealTimeChart } from './TradingViewWidgets';
 import { Sparkline } from './Sparkline';
+import { formatGoldPrice } from '../services/goldData';
 
 interface Props {
   data: ComputedGoldProduct[];
@@ -80,7 +81,7 @@ const DomesticItem = ({
       onClick={() => onProductClick(product)}
       className={`bg-white hover:bg-gray-50/80 transition-all cursor-pointer group relative flex flex-col h-full ${className}`}
     >
-      <div className="px-3 sm:px-5 md:px-8 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
+      <div className="px-3 sm:px-5 md:px-5 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
           <h3 className="font-bold tracking-tight text-gray-900 text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               {label}
           </h3>
@@ -91,7 +92,7 @@ const DomesticItem = ({
           <div className="col-span-4 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Bán ra</span>
              <span className="font-black text-vne-green text-[30px] leading-none tracking-tighter tabular-nums">
-                {product.today.sell.toLocaleString('vi-VN')}
+                {formatGoldPrice(product.today.sell, product.group)}
              </span>
              <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-0.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
@@ -105,7 +106,7 @@ const DomesticItem = ({
           <div className="col-span-4 flex flex-col border-r border-gray-100 px-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Mua vào</span>
              <span className="font-black text-gray-900 text-[30px] leading-none tracking-tighter tabular-nums">
-                {product.today.buy.toLocaleString('vi-VN')}
+                {formatGoldPrice(product.today.buy, product.group)}
              </span>
              <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-0.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
@@ -127,12 +128,12 @@ const DomesticItem = ({
           </div>
       </div>
 
-      <div className="hidden sm:flex items-center px-5 md:px-8 pb-1">
+      <div className="hidden sm:flex items-center px-5 md:px-5 pb-1">
           <div className="flex-grow grid grid-cols-2 gap-4 items-start font-sans">
               <div className="flex flex-col border-r border-gray-100 pr-2 min-w-0">
                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
                   <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[50px]">
-                    {product.today.sell.toLocaleString('vi-VN')}
+                    {formatGoldPrice(product.today.sell, product.group)}
                   </span>
                   <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
                       {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
@@ -146,7 +147,7 @@ const DomesticItem = ({
               <div className="flex flex-col pl-2 min-w-0">
                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Mua vào</span>
                   <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[50px]">
-                    {product.today.buy.toLocaleString('vi-VN')}
+                    {formatGoldPrice(product.today.buy, product.group)}
                   </span>
                   <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
                       {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
@@ -160,7 +161,7 @@ const DomesticItem = ({
       </div>
 
       {diffTextValue && (
-        <div className="px-3 sm:px-5 md:px-8 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
+        <div className="px-3 sm:px-5 md:px-5 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
              <div className="flex items-center justify-between text-[12px] sm:text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-1.5 sm:pt-2">
                   <span>Cao hơn thế giới (quy đổi):</span>
                   <span className="font-bold text-gray-900 tabular-nums">
@@ -198,7 +199,7 @@ const WorldGoldInGrid = ({
       onClick={() => onProductClick(product)}
       className={`bg-white hover:bg-gray-50/80 transition-all cursor-pointer group relative flex flex-col h-full ${className}`}
     >
-      <div className="px-3 sm:px-5 md:px-8 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
+      <div className="px-3 sm:px-5 md:px-5 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
           <h3 className="font-bold tracking-tight text-[#9f224e] text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               Vàng thế giới
           </h3>
@@ -231,7 +232,7 @@ const WorldGoldInGrid = ({
           </div>
       </div>
 
-      <div className="hidden sm:flex items-center px-5 md:px-8 pb-1 gap-4">
+      <div className="hidden sm:flex items-center px-5 md:px-5 pb-1 gap-4">
           <div className="flex-grow flex flex-col min-w-0">
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Giá Bán (Ask)</span>
               <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[50px]">
@@ -254,7 +255,7 @@ const WorldGoldInGrid = ({
           </div>
       </div>
 
-      <div className="px-3 sm:px-5 md:px-8 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
+      <div className="px-3 sm:px-5 md:px-5 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
              <div className="flex items-center justify-between text-[12px] sm:text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-1.5 sm:pt-2">
                   <span>Quy đổi giá VNĐ:</span>
                   <span className="font-bold text-gray-900 tabular-nums">
@@ -287,8 +288,11 @@ const WorldDetailTab = ({
   const ask = world.today.sell * currentRate; 
   const change = world.changeSell * currentRate;
   const percent = world.percentSell;
+  
   // Quy đổi giá Bán sang VNĐ/Ounce (để tham khảo)
   const vndPerOunce = world.today.sell * USD_VND_EXCHANGE_RATE;
+  // Quy đổi sang triệu đồng và làm tròn 1 chữ số thập phân
+  const vndPerOunceMillion = vndPerOunce / 1000000;
   
   const dayLow = bid - (Math.random() * 5 + 10); 
   const dayHigh = ask + (Math.random() * 5 + 5);
@@ -337,7 +341,7 @@ const WorldDetailTab = ({
             </div>
           )}
 
-          <div className="bg-white border-x border-b border-gray-200 shadow-sm flex flex-col font-sans rounded-b-sm overflow-hidden p-3 sm:p-5 md:px-8 md:py-6">
+          <div className="bg-white border-x border-b border-gray-200 shadow-sm flex flex-col font-sans rounded-b-sm overflow-hidden p-3 sm:p-5 md:px-5 md:py-5">
               <div className="flex justify-between items-start mb-4 border-b border-gray-100 pb-3">
                   <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
@@ -434,7 +438,7 @@ const WorldDetailTab = ({
 
                   <div className="mt-2 bg-[#f0f9ff] border border-blue-50 p-4 rounded-sm">
                       <p className="text-[18px] text-[#1e293b] leading-snug font-sans text-left">
-                          Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">{vndPerOunce.toLocaleString('vi-VN')} VNĐ/Ounce</span>, giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
+                          Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">{vndPerOunceMillion.toLocaleString('vi-VN', {minimumFractionDigits: 1, maximumFractionDigits: 1})} Triệu VNĐ/Ounce</span>, giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
                       </p>
                   </div>
 
