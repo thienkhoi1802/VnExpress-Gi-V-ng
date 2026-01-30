@@ -110,7 +110,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
 
   return (
     <div className="bg-white border border-gray-200 shadow-sm flex flex-col font-sans rounded-none w-full overflow-hidden">
-      <div className="p-3 sm:p-4 md:px-5 md:py-5 border-b border-gray-100 flex items-center justify-between">
+      <div className="p-3 sm:p-3 md:px-5 md:py-4 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
           <h2 className="text-base sm:text-lg font-serif font-bold text-gray-900 whitespace-nowrap">
             Bảng giá vàng
@@ -125,42 +125,42 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
         <table className="w-full text-left border-collapse min-w-[320px]">
           <thead>
             {/* Tầng 1: Tiêu đề chính */}
-            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[14px] sm:text-[15px] text-gray-600 font-bold">
+            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[14px] sm:text-[14px] text-gray-600 font-bold">
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('name')}
-                className="p-2 sm:p-3 md:pl-5 border-r border-gray-200 w-[40%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
+                className="p-2 sm:p-2 md:pl-5 border-r border-gray-200 w-[40%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
               >
                  <div className="flex items-center gap-1.5">
                     Loại <ChevronsUpDown size={15} strokeWidth={2.5} className={sortConfig.key === 'name' ? 'text-[#9f224e] opacity-100 scale-110' : 'opacity-40 group-hover:opacity-80'} />
                  </div>
               </th>
               
-              <th colSpan={2} className="p-1 sm:p-2 text-center border-r border-gray-200 bg-white/50">
+              <th colSpan={2} className="p-1 sm:p-1.5 text-center border-r border-gray-200 bg-white/50">
                 <div className="flex flex-col items-center">
                     <span className="text-[#9f224e] font-black">Hôm nay</span>
-                    <span className="text-[11px] sm:text-[13px] font-medium text-gray-500 mt-0.5">({todayStr})</span>
+                    <span className="text-[11px] sm:text-[12px] font-medium text-gray-500 mt-0.5">({todayStr})</span>
                 </div>
               </th>
 
-              <th colSpan={2} className="hidden md:table-cell p-1 sm:p-2 text-center border-r border-gray-200">
+              <th colSpan={2} className="hidden md:table-cell p-1 sm:p-1.5 text-center border-r border-gray-200">
                 <div className="flex flex-col items-center">
                     <span className="text-gray-700">Hôm qua</span>
-                    <span className="text-[11px] sm:text-[13px] font-medium text-gray-400 mt-0.5">({yesterdayStr})</span>
+                    <span className="text-[11px] sm:text-[12px] font-medium text-gray-400 mt-0.5">({yesterdayStr})</span>
                 </div>
               </th>
 
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('change30d')}
-                className="p-2 sm:p-3 md:pr-5 text-center w-[20%] sm:w-[150px] cursor-pointer group hover:bg-gray-100/50"
+                className="p-2 sm:p-2 md:pr-5 text-center w-[20%] sm:w-[150px] cursor-pointer group hover:bg-gray-100/50"
               >
                 <div className="flex flex-col items-center">
                     <div className="flex items-center gap-1.5">
                         <span className="text-gray-800">Xu hướng</span>
                         <ChevronsUpDown size={15} strokeWidth={2.5} className={sortConfig.key === 'change30d' ? 'text-[#9f224e] opacity-100 scale-110' : 'opacity-40 group-hover:opacity-80'} />
                     </div>
-                    <span className="text-[10px] sm:text-[12px] font-medium text-gray-400 mt-0.5 whitespace-nowrap">
+                    <span className="text-[10px] sm:text-[11px] font-medium text-gray-400 mt-0.5 whitespace-nowrap">
                         <span className="sm:inline hidden">(Trong 30 ngày)</span>
                         <span className="sm:hidden inline">30 ngày</span>
                     </span>
@@ -169,40 +169,40 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
             </tr>
 
             {/* Tầng 2: Mua/Bán */}
-            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[13px] sm:text-[13px] text-gray-500 font-bold">
-              <SortHeader label="Mua" sortKey="todayBuy" className="p-1.5 sm:p-2 border-r border-gray-100" />
-              <SortHeader label="Bán" sortKey="todaySell" className="p-1.5 sm:p-2 border-r border-gray-100" />
+            <tr className="bg-[#f8f9fb] border-b border-gray-200 text-[13px] sm:text-[12px] text-gray-500 font-bold">
+              <SortHeader label="Mua" sortKey="todayBuy" className="p-1.5 sm:p-1.5 border-r border-gray-100" />
+              <SortHeader label="Bán" sortKey="todaySell" className="p-1.5 sm:p-1.5 border-r border-gray-100" />
               
-              <SortHeader label="Mua" sortKey="yesterdayBuy" className="hidden md:table-cell p-1.5 sm:p-2 border-r border-gray-100" />
-              <SortHeader label="Bán" sortKey="yesterdaySell" className="hidden md:table-cell p-1.5 sm:p-2 border-r border-gray-100" />
+              <SortHeader label="Mua" sortKey="yesterdayBuy" className="hidden md:table-cell p-1.5 sm:p-1.5 border-r border-gray-100" />
+              <SortHeader label="Bán" sortKey="yesterdaySell" className="hidden md:table-cell p-1.5 sm:p-1.5 border-r border-gray-100" />
             </tr>
           </thead>
 
-          <tbody className="text-[15px] sm:text-[16px]">
+          <tbody className="text-[15px] sm:text-[15px]">
             {sortedData.map((product, index) => (
               <tr 
                 key={product.id} 
                 onClick={() => onRowClick(product)}
                 className={`border-b border-gray-50 hover:bg-[#fff9fa] transition-colors cursor-pointer group ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/10'}`}
               >
-                <td className="px-2 sm:px-4 md:pl-5 py-3 sm:py-2.5 border-r border-gray-100">
+                <td className="px-2 sm:px-4 md:pl-5 py-3 sm:py-1.5 border-r border-gray-100">
                   <div className="font-bold text-gray-900 leading-tight whitespace-normal text-[15px] sm:text-[15px]">
                     {product.name}
                   </div>
                 </td>
                 
                 {/* Hôm nay */}
-                <td className="px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-50">
+                <td className="px-1 sm:px-3 py-2.5 sm:py-1 text-right border-r border-gray-50">
                   <div className="flex flex-col items-end">
-                      <div className={`font-bold tabular-nums text-[16px] sm:text-[16px] ${sortConfig.key === 'todayBuy' ? 'text-gray-900' : 'text-gray-600'}`}>
+                      <div className={`font-bold tabular-nums text-[16px] sm:text-[15px] ${sortConfig.key === 'todayBuy' ? 'text-gray-900' : 'text-gray-600'}`}>
                         {formatGoldPrice(product.today.buy, product.group)}
                       </div>
                       <ChangeIndicator value={product.changeBuy} />
                   </div>
                 </td>
-                <td className="px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-200 bg-vne-green/5">
+                <td className="px-1 sm:px-3 py-2.5 sm:py-1 text-right border-r border-gray-200 bg-vne-green/5">
                   <div className="flex flex-col items-end">
-                      <div className={`font-black tabular-nums text-[16px] sm:text-[16px] ${sortConfig.key === 'todaySell' ? 'text-vne-green' : 'text-vne-green/90'}`}>
+                      <div className={`font-black tabular-nums text-[16px] sm:text-[15px] ${sortConfig.key === 'todaySell' ? 'text-vne-green' : 'text-vne-green/90'}`}>
                         {formatGoldPrice(product.today.sell, product.group)}
                       </div>
                       <ChangeIndicator value={product.changeSell} />
@@ -210,24 +210,24 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                 </td>
 
                 {/* Hôm qua (Chỉ Desktop) */}
-                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-50 bg-gray-50/30 text-gray-400">
-                  <div className="font-semibold tabular-nums text-[15px]">
+                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-1 text-right border-r border-gray-50 bg-gray-50/30 text-gray-400">
+                  <div className="font-semibold tabular-nums text-[14px]">
                     {formatGoldPrice(product.yesterday.buy, product.group)}
                   </div>
                 </td>
-                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-2 text-right border-r border-gray-200 bg-gray-50/30 text-gray-400">
-                  <div className="font-semibold tabular-nums text-[15px]">
+                <td className="hidden md:table-cell px-1 sm:px-3 py-2.5 sm:py-1 text-right border-r border-gray-200 bg-gray-50/30 text-gray-400">
+                  <div className="font-semibold tabular-nums text-[14px]">
                     {formatGoldPrice(product.yesterday.sell, product.group)}
                   </div>
                 </td>
 
                 {/* Xu hướng */}
-                <td className="px-1 sm:px-3 md:pr-5 py-2.5 sm:py-2">
+                <td className="px-1 sm:px-3 md:pr-5 py-2.5 sm:py-1">
                   <div className="flex flex-col items-center justify-center gap-1">
-                      <div className={`font-black text-[11px] sm:text-[13px] tabular-nums whitespace-nowrap ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
+                      <div className={`font-black text-[11px] sm:text-[12px] tabular-nums whitespace-nowrap ${product.change30d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
                           {product.change30d > 0 ? '+' : ''}{product.change30d.toFixed(1)}%
                       </div>
-                      <div className="w-full h-[16px] sm:h-[24px]">
+                      <div className="w-full h-[16px] sm:h-[18px]">
                           <Sparkline 
                               data={historyData} 
                               dataKey={product.id} 
@@ -242,8 +242,8 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
         </table>
       </div>
 
-      <div className="bg-white p-2.5 sm:p-3 md:px-5 md:py-5 border-t border-gray-100 font-sans">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[13px] sm:text-xs text-gray-500">
+      <div className="bg-white p-2.5 sm:p-2 md:px-5 md:py-3 border-t border-gray-100 font-sans">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[13px] sm:text-[12px] text-gray-500">
             <div className="flex items-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-1.5 font-bold text-gray-700 tracking-tight">
                     <TrendingUp size={14} className="text-[#007f3f]" /> <span>Tăng</span>

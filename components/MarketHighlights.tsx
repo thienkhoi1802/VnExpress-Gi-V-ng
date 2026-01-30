@@ -188,9 +188,7 @@ const WorldGoldInGrid = ({
   if (!product) return null;
 
   // HIỂN THỊ CHÍNH XÁC: Hiển thị giá USD/Ounce gốc để tránh nhầm lẫn
-  // product.today.sell đã là giá Spot Ask (USD/Oz) từ API
   const worldPriceUSD = product.today.sell; 
-  // Tính giá quy đổi VNĐ để tham chiếu (USD/Oz * 1.20565 * Tỷ giá)
   const worldPricePerTaelVND = (worldPriceUSD * TAEL_TO_OZ * USD_VND_EXCHANGE_RATE) / 1000000;
   const isUp = product.percentSell >= 0;
 
@@ -206,23 +204,24 @@ const WorldGoldInGrid = ({
           <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">USD / OUNCE</span>
       </div>
 
+      {/* Mobile-optimized inline layout for price and change */}
       <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
-          <div className="col-span-8 flex flex-col border-r border-gray-100 pr-1">
+          <div className="col-span-9 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Giá Bán (Ask)</span>
-             <span className="font-black text-gray-900 text-[30px] leading-none tracking-tighter tabular-nums">
-                {worldPriceUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-             </span>
-             <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-0.5 ${isUp ? 'text-vne-green' : 'text-trend-down'}`}>
-                <div className="flex items-center gap-0.5">
-                   {isUp ? <ArrowUp size={11}/> : <ArrowDown size={11}/>}
-                   <span>{Math.abs(product.changeSell).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
+             <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="font-black text-gray-900 text-[30px] leading-none tracking-tighter tabular-nums">
+                    {worldPriceUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                </span>
+                <div className={`flex items-center gap-0.5 text-[14px] font-bold ${isUp ? 'text-vne-green' : 'text-trend-down'}`}>
+                    {isUp ? <ArrowUp size={11}/> : <ArrowDown size={11}/>}
+                    <span>{Math.abs(product.changeSell).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
+                    <span className="text-[12px] opacity-80 font-normal ml-0.5">({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
                 </div>
-                <span className="text-[12px] opacity-80 font-normal">({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
              </div>
           </div>
           
-          <div className="col-span-4 pl-1 h-[60px] flex items-center justify-center">
-            <div className="w-full h-[45px]">
+          <div className="col-span-3 pl-1 h-[50px] flex items-center justify-center self-center">
+            <div className="w-full h-[40px]">
                 <Sparkline 
                     data={historyData} 
                     dataKey={product.id} 

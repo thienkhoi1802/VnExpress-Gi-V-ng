@@ -162,7 +162,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
        <div className="flex flex-col md:flex-row">
           {/* LEFT PANEL: Input Form */}
           <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-100">
-            <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <div className="p-3 sm:p-4 md:h-[56px] border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-2">
                  <h2 className="text-[16px] font-serif font-bold text-gray-900">
                    Nhập tài sản
@@ -217,11 +217,11 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
             </div>
           </div>
 
-          {/* RIGHT PANEL: Portfolio List */}
-          <div className="flex-1 bg-[#fffcfc] flex flex-col md:min-h-[300px]">
-            <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-white">
+          {/* RIGHT PANEL: Portfolio List - Optimized min-height */}
+          <div className="flex-1 bg-[#fffcfc] flex flex-col md:min-h-[240px]">
+            <div className="p-3 sm:p-4 md:h-[56px] border-b border-gray-100 flex items-center justify-between bg-white">
               <div className="flex items-center gap-2">
-                 <h2 className="text-[18px] sm:text-[20px] font-serif font-bold text-gray-900">
+                 <h2 className="text-[16px] font-serif font-bold text-gray-900">
                    Danh mục
                  </h2>
                  {items.length > 0 && (
@@ -255,7 +255,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
 
             <div className={`flex-1 p-0 overflow-y-auto max-h-[300px] no-scrollbar ${isPortfolioCollapsed ? 'hidden md:block' : 'block'}`}>
               {assets.length === 0 ? (
-                <div className="flex flex-col items-center justify-center text-gray-400 py-6 sm:py-10 px-6 opacity-60">
+                <div className="flex flex-col items-center justify-center text-gray-400 py-6 sm:py-8 md:py-10 px-6 opacity-60">
                    <p className="text-[15px] font-bold text-gray-500 text-center">Chưa có tài sản nào</p>
                    <p className="text-[13px] text-center mt-1 leading-tight">
                      Hãy thêm loại vàng bạn đang sở hữu từ bảng <span className="md:hidden">phía trên</span><span className="hidden md:inline">bên trái</span>
@@ -290,26 +290,26 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
               )}
             </div>
 
-            {/* Footer Total */}
-            <div className={`p-4 bg-white border-t border-gray-100 ${isPortfolioCollapsed && assets.length > 0 ? 'hidden md:block' : 'block'}`}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[12px] font-bold text-gray-500 uppercase tracking-tight">Tổng giá trị ước tính</span>
+            {/* Footer Total - Optimized for Mobile and Desktop space */}
+            <div className={`p-3 md:py-3 md:px-4 bg-white border-t border-gray-100 ${isPortfolioCollapsed && assets.length > 0 ? 'hidden md:block' : 'block'}`}>
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-[11px] md:text-[11px] font-bold text-gray-500 uppercase tracking-tight">Tổng giá trị ước tính</span>
                   {assets.length > 0 && (
                     <button 
                         onClick={handleReset}
-                        className="text-[12px] text-[#9f224e] font-bold hover:underline active:opacity-70 transition-opacity"
+                        className="text-[11px] md:text-[11px] text-[#9f224e] font-bold hover:underline active:opacity-70 transition-opacity"
                     >
                         Xóa toàn bộ
                     </button>
                   )}
                 </div>
-                <div className="flex items-baseline justify-end gap-1.5 text-[#9f224e]">
-                   <span className="text-[32px] sm:text-[36px] font-black tabular-nums tracking-tighter leading-none">
+                <div className="flex items-baseline justify-end gap-1 text-[#9f224e]">
+                   <span className="text-[26px] md:text-[30px] font-black tabular-nums tracking-tighter leading-none">
                      {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})}
                    </span>
-                   <span className="text-[14px] font-bold uppercase">VNĐ</span>
+                   <span className="text-[12px] md:text-[13px] font-bold uppercase">VNĐ</span>
                 </div>
-                <div className="mt-1.5 text-[10px] text-gray-400 text-right italic">
+                <div className="mt-0.5 text-[9px] md:text-[9px] text-gray-400 text-right italic">
                   *Giá trị được tính theo giá bán ra hiện tại
                 </div>
             </div>
