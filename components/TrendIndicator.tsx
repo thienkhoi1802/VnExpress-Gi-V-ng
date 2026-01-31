@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
+import { Minus } from 'lucide-react';
 import { Trend } from '../types';
 
 interface TrendIndicatorProps {
@@ -8,13 +9,25 @@ interface TrendIndicatorProps {
   showValue?: boolean;
 }
 
+const TriangleUp = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 0L10 8H0L5 0Z" />
+  </svg>
+);
+
+const TriangleDown = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 8L0 0H10L5 8Z" />
+  </svg>
+);
+
 export const TrendIndicator: React.FC<TrendIndicatorProps> = ({ trend, value, showValue = true }) => {
   const formatVal = (v: number) => Math.abs(v).toFixed(2);
 
   if (trend === Trend.UP) {
     return (
       <div className="flex items-center text-trend-up text-xs font-semibold tabular-nums">
-        <ArrowUp className="w-3 h-3 mr-1" />
+        <TriangleUp size={10} className="mr-1" />
         {showValue && <span>+{formatVal(value)}</span>}
       </div>
     );
@@ -23,7 +36,7 @@ export const TrendIndicator: React.FC<TrendIndicatorProps> = ({ trend, value, sh
   if (trend === Trend.DOWN) {
     return (
       <div className="flex items-center text-trend-down text-xs font-semibold tabular-nums">
-        <ArrowDown className="w-3 h-3 mr-1" />
+        <TriangleDown size={10} className="mr-1" />
         {showValue && <span>-{formatVal(value)}</span>}
       </div>
     );

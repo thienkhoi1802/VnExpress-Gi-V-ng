@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { ComputedGoldProduct, HistoryPoint } from '../types';
-import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, ChevronsUpDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, ChevronsUpDown } from 'lucide-react';
 import { Sparkline } from './Sparkline';
 import { formatGoldPrice } from '../services/goldData';
 
@@ -18,6 +18,18 @@ interface SortConfig {
   key: SortKey;
   direction: SortDirection;
 }
+
+const TriangleUp = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 0L10 8H0L5 0Z" />
+  </svg>
+);
+
+const TriangleDown = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 8L0 0H10L5 8Z" />
+  </svg>
+);
 
 export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowClick }) => {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'todaySell', direction: 'desc' });
@@ -86,8 +98,8 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
     const colorClass = isUp ? 'text-[#007f3f]' : 'text-[#d60000]';
     return (
       <div className={`flex items-center justify-end text-[10px] sm:text-[11px] font-bold ${colorClass} tabular-nums mt-0.5`}>
-        {isUp ? <ArrowUp size={9} strokeWidth={3} /> : <ArrowDown size={9} strokeWidth={3} />}
-        <span>{Math.abs(value).toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</span>
+        {isUp ? <TriangleUp size={8} /> : <TriangleDown size={8} />}
+        <span className="ml-1">{Math.abs(value).toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</span>
       </div>
     );
   };

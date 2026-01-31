@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ComputedGoldProduct, HistoryPoint } from '../types';
-import { ArrowUp, ArrowDown, Globe, ChevronRight, ChevronDown, Check, X, ZoomIn, Clock, Loader2, Info } from 'lucide-react';
+import { Globe, ChevronDown, Check, X, ZoomIn, Clock, Loader2, Info } from 'lucide-react';
 import { AdvancedRealTimeChart } from './TradingViewWidgets';
 import { Sparkline } from './Sparkline';
 import { formatGoldPrice } from '../services/goldData';
@@ -28,6 +28,18 @@ const CURRENCIES = [
 const USD_VND_EXCHANGE_RATE = 25450; 
 // 1 Tael (Lượng) = 1.20565 Troy Ounce
 const TAEL_TO_OZ = 1.20565;
+
+const TriangleUp = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 0L10 8H0L5 0Z" />
+  </svg>
+);
+
+const TriangleDown = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 8L0 0H10L5 8Z" />
+  </svg>
+);
 
 const VietnamFlag = () => (
   <svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-sm ring-1 ring-black/5">
@@ -70,9 +82,8 @@ const DomesticItem = ({
 
   let diffTextValue = null;
   if (worldProduct) {
-     // Đồng bộ: Sử dụng giá BÁN (today.sell) của thế giới để tính chênh lệch
-     const worldVnd = (worldProduct.today.sell * TAEL_TO_OZ * USD_VND_EXCHANGE_RATE) / 1000000;
-     const diff = product.today.sell - worldVnd;
+     const worldVndPerOunce = (worldProduct.today.sell * USD_VND_EXCHANGE_RATE) / 1000000;
+     const diff = product.today.sell - worldVndPerOunce;
      diffTextValue = `${diff > 0 ? '+' : ''}${diff.toLocaleString('vi-VN', {maximumFractionDigits: 2})}`;
   }
 
@@ -85,18 +96,18 @@ const DomesticItem = ({
           <h3 className="font-bold tracking-tight text-gray-900 text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               {label}
           </h3>
-          <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">Triệu / lượng</span>
+          <span className="text-[10px] text-gray-400 font-bold shrink-0 whitespace-nowrap uppercase tracking-wider">TRIỆU / LƯỢNG</span>
       </div>
 
       <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
           <div className="col-span-4 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Bán ra</span>
-             <span className="font-black text-vne-green text-[30px] leading-none tracking-tighter tabular-nums">
+             <span className="font-black text-vne-green text-[42px] leading-none tracking-tighter tabular-nums">
                 {formatGoldPrice(product.today.sell, product.group)}
              </span>
-             <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-0.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
-                   {product.changeSell >= 0 ? <ArrowUp size={11}/> : <ArrowDown size={11}/>}
+                   {product.changeSell >= 0 ? <TriangleUp size={9}/> : <TriangleDown size={9}/>}
                    <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
                 <span className="text-[12px] opacity-80 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
@@ -105,19 +116,19 @@ const DomesticItem = ({
           
           <div className="col-span-4 flex flex-col border-r border-gray-100 px-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Mua vào</span>
-             <span className="font-black text-gray-900 text-[30px] leading-none tracking-tighter tabular-nums">
+             <span className="font-black text-gray-900 text-[42px] leading-none tracking-tighter tabular-nums">
                 {formatGoldPrice(product.today.buy, product.group)}
              </span>
-             <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-0.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
-                   {product.changeBuy >= 0 ? <ArrowUp size={11}/> : <ArrowDown size={11}/>}
+                   {product.changeBuy >= 0 ? <TriangleUp size={9}/> : <TriangleDown size={9}/>}
                    <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
                 <span className="text-[12px] opacity-80 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
              </div>
           </div>
           
-          <div className="col-span-4 pl-1 h-[60px] flex items-center justify-center">
+          <div className="col-span-4 pl-1 h-[60px] flex items-center justify-center pt-2">
             <div className="w-full h-[45px]">
                 <Sparkline 
                     data={historyData} 
@@ -129,32 +140,40 @@ const DomesticItem = ({
       </div>
 
       <div className="hidden sm:flex items-center px-5 md:px-5 pb-1">
-          <div className="flex-grow grid grid-cols-2 gap-4 items-start font-sans">
-              <div className="flex flex-col border-r border-gray-100 pr-2 min-w-0">
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Bán ra</span>
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[50px]">
-                    {formatGoldPrice(product.today.sell, product.group)}
-                  </span>
-                  <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                      {product.changeSell >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                      <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                      <span className="text-[11px] font-bold ml-1 opacity-90">
-                          ({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)
+          <div className="flex-grow grid grid-cols-2 gap-0 items-start font-sans">
+              <div className="flex flex-col border-r border-gray-200 pr-5 min-w-0">
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">BÁN RA</span>
+                  <div className="flex items-end gap-3 mr-2">
+                      <span className="font-black tabular-nums leading-none tracking-tighter text-vne-green text-[52px]">
+                        {formatGoldPrice(product.today.sell, product.group)}
                       </span>
+                      <div className={`flex flex-col mb-2 whitespace-nowrap ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+                          <div className="flex items-center gap-1.5 text-[15px] font-black">
+                            {product.changeSell >= 0 ? <TriangleUp size={12}/> : <TriangleDown size={12}/>}
+                            <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                          </div>
+                          <div className="text-[13px] font-bold opacity-85 leading-none">
+                              ({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)
+                          </div>
+                      </div>
                   </div>
               </div>
 
-              <div className="flex flex-col pl-2 min-w-0">
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Mua vào</span>
-                  <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[50px]">
-                    {formatGoldPrice(product.today.buy, product.group)}
-                  </span>
-                  <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                      {product.changeBuy >= 0 ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                      <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
-                      <span className="text-[11px] font-bold ml-1 opacity-90">
-                          ({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)
+              <div className="flex flex-col pl-5 min-w-0">
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">MUA VÀO</span>
+                  <div className="flex items-end gap-3">
+                      <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[52px]">
+                        {formatGoldPrice(product.today.buy, product.group)}
                       </span>
+                      <div className={`flex flex-col mb-2 whitespace-nowrap ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+                          <div className="flex items-center gap-1.5 text-[15px] font-black">
+                            {product.changeBuy >= 0 ? <TriangleUp size={12}/> : <TriangleDown size={12}/>}
+                            <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
+                          </div>
+                          <div className="text-[13px] font-bold opacity-85 leading-none">
+                              ({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)
+                          </div>
+                      </div>
                   </div>
               </div>
           </div>
@@ -165,7 +184,7 @@ const DomesticItem = ({
              <div className="flex items-center justify-between text-[12px] sm:text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-1.5 sm:pt-2">
                   <span>Cao hơn thế giới (quy đổi):</span>
                   <span className="font-bold text-gray-900 tabular-nums">
-                      {diffTextValue} <span className="text-[10px] sm:text-[11px] text-gray-500 font-bold uppercase">Triệu</span>
+                      {diffTextValue} <span className="text-[10px] sm:text-[11px] text-gray-400 font-bold uppercase tracking-wide ml-0.5">TRIỆU / LƯỢNG</span>
                   </span>
              </div>
         </div>
@@ -187,9 +206,8 @@ const WorldGoldInGrid = ({
 }) => {
   if (!product) return null;
 
-  // HIỂN THỊ CHÍNH XÁC: Hiển thị giá USD/Ounce gốc để tránh nhầm lẫn
   const worldPriceUSD = product.today.sell; 
-  const worldPricePerTaelVND = (worldPriceUSD * TAEL_TO_OZ * USD_VND_EXCHANGE_RATE) / 1000000;
+  const worldPricePerOunceVND = (worldPriceUSD * USD_VND_EXCHANGE_RATE) / 1000000;
   const isUp = product.percentSell >= 0;
 
   return (
@@ -201,26 +219,25 @@ const WorldGoldInGrid = ({
           <h3 className="font-bold tracking-tight text-[#9f224e] text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               Vàng thế giới
           </h3>
-          <span className="text-[11px] text-gray-400 font-medium shrink-0 whitespace-nowrap uppercase">USD / OUNCE</span>
+          <span className="text-[11px] text-gray-400 font-bold shrink-0 whitespace-nowrap uppercase tracking-wider">USD / OUNCE</span>
       </div>
 
-      {/* Mobile-optimized inline layout for price and change */}
       <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
           <div className="col-span-9 flex flex-col border-r border-gray-100 pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Giá Bán (Ask)</span>
              <div className="flex items-baseline gap-2 flex-wrap">
-                <span className="font-black text-gray-900 text-[30px] leading-none tracking-tighter tabular-nums">
+                <span className="font-black text-gray-900 text-[32px] leading-none tracking-tighter tabular-nums">
                     {worldPriceUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                 </span>
-                <div className={`flex items-center gap-0.5 text-[14px] font-bold ${isUp ? 'text-vne-green' : 'text-trend-down'}`}>
-                    {isUp ? <ArrowUp size={11}/> : <ArrowDown size={11}/>}
+                <div className={`flex items-center gap-0.5 text-[14px] font-bold mt-1 ${isUp ? 'text-vne-green' : 'text-trend-down'}`}>
+                    {isUp ? <TriangleUp size={9}/> : <TriangleDown size={9}/>}
                     <span>{Math.abs(product.changeSell).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
                     <span className="text-[12px] opacity-80 font-normal ml-0.5">({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
                 </div>
              </div>
           </div>
           
-          <div className="col-span-3 pl-1 h-[50px] flex items-center justify-center self-center">
+          <div className="col-span-3 pl-1 h-[50px] flex items-center justify-center self-center pt-2">
             <div className="w-full h-[40px]">
                 <Sparkline 
                     data={historyData} 
@@ -233,19 +250,23 @@ const WorldGoldInGrid = ({
 
       <div className="hidden sm:flex items-center px-5 md:px-5 pb-1 gap-4">
           <div className="flex-grow flex flex-col min-w-0">
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Giá Bán (Ask)</span>
-              <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[50px]">
-                {worldPriceUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-              </span>
-              <div className={`flex items-center gap-0.5 text-[13px] font-black mt-1 ${isUp ? 'text-vne-green' : 'text-trend-down'} tabular-nums whitespace-nowrap`}>
-                  {isUp ? <ArrowUp size={12}/> : <ArrowDown size={12}/>}
-                  <span>{Math.abs(product.changeSell).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
-                  <span className="text-[11px] font-bold ml-1 opacity-90">
-                      ({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)
+              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">GIÁ BÁN (ASK)</span>
+              <div className="flex items-end gap-3">
+                  <span className="font-black tabular-nums leading-none tracking-tighter text-gray-900 text-[52px]">
+                    {worldPriceUSD.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                   </span>
+                  <div className={`flex flex-col mb-2 whitespace-nowrap ${isUp ? 'text-vne-green' : 'text-trend-down'}`}>
+                      <div className="flex items-center gap-1.5 text-[15px] font-black">
+                        {isUp ? <TriangleUp size={12}/> : <TriangleDown size={12}/>}
+                        <span>{Math.abs(product.changeSell).toLocaleString(undefined, { minimumFractionDigits: 1 })}</span>
+                      </div>
+                      <div className="text-[13px] font-bold opacity-85 leading-none">
+                          ({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)
+                      </div>
+                  </div>
               </div>
           </div>
-          <div className="w-1/3 h-[70px] flex items-center justify-center border-l border-gray-100 pl-4">
+          <div className="w-[100px] h-[70px] flex items-center justify-center border-l border-gray-100 pl-4">
                <Sparkline 
                   data={historyData} 
                   dataKey={product.id} 
@@ -256,9 +277,9 @@ const WorldGoldInGrid = ({
 
       <div className="px-3 sm:px-5 md:px-5 pb-1.5 sm:pb-3 pt-1 sm:pt-2 mt-auto">
              <div className="flex items-center justify-between text-[12px] sm:text-[13px] text-gray-500 font-sans border-t border-gray-100 pt-1.5 sm:pt-2">
-                  <span>Quy đổi giá VNĐ:</span>
+                  <span>Quy đổi giá VND:</span>
                   <span className="font-bold text-gray-900 tabular-nums">
-                      {worldPricePerTaelVND.toLocaleString('vi-VN', {maximumFractionDigits: 2})} <span className="text-[10px] sm:text-[11px] text-gray-500 font-bold uppercase">Triệu / lượng</span>
+                      {worldPricePerOunceVND.toLocaleString('vi-VN', {maximumFractionDigits: 1})} <span className="text-[10px] sm:text-[11px] text-gray-400 font-bold uppercase tracking-wide ml-0.5">TRIỆU VND / OUNCE</span>
                   </span>
              </div>
       </div>
@@ -282,15 +303,12 @@ const WorldDetailTab = ({
   if (!world) return null;
 
   const currentRate = selectedCurrency.rate;
-  // world.today.sell chính là Ask (Giá Bán) từ API goldprice.org
   const bid = world.today.buy * currentRate; 
   const ask = world.today.sell * currentRate; 
   const change = world.changeSell * currentRate;
   const percent = world.percentSell;
   
-  // Quy đổi giá Bán sang VNĐ/Ounce (để tham khảo)
   const vndPerOunce = world.today.sell * USD_VND_EXCHANGE_RATE;
-  // Quy đổi sang triệu đồng và làm tròn 1 chữ số thập phân
   const vndPerOunceMillion = vndPerOunce / 1000000;
   
   const dayLow = bid - (Math.random() * 5 + 10); 
@@ -437,7 +455,7 @@ const WorldDetailTab = ({
 
                   <div className="mt-2 bg-[#f0f9ff] border border-blue-50 p-4 rounded-sm">
                       <p className="text-[18px] text-[#1e293b] leading-snug font-sans text-left">
-                          Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">{vndPerOunceMillion.toLocaleString('vi-VN', {minimumFractionDigits: 1, maximumFractionDigits: 1})} Triệu VNĐ/Ounce</span>, giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
+                          Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">{vndPerOunceMillion.toLocaleString('vi-VN', {minimumFractionDigits: 1, maximumFractionDigits: 1})} Triệu VND/Ounce</span>, giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
                       </p>
                   </div>
 
@@ -462,7 +480,6 @@ const WorldDetailTab = ({
                       <h2 className="text-[16px] sm:text-[18px] font-serif font-bold text-gray-900">Lịch sử giá vàng</h2>
                   </div>
                   <div className="p-3 sm:p-5 space-y-4">
-                      {/* Stick Guidance to Chart 1 (24h Spot Gold) */}
                       <div className="flex flex-col -space-y-px">
                           <ChartImage 
                               src="https://www.kitco.com/chart-images/images/live/gold.gif" 

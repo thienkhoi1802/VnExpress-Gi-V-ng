@@ -210,7 +210,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                 </button>
                 {currentPreviewValue > 0 && (
                    <div className="mt-2 text-center text-[12px] text-gray-500 font-medium">
-                      Tạm tính: <span className="font-bold text-[#9f224e]">{currentPreviewValue.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VNĐ</span>
+                      Tạm tính: <span className="font-bold text-[#9f224e]">{currentPreviewValue.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VND</span>
                    </div>
                 )}
               </div>
@@ -307,7 +307,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                    <span className="text-[26px] md:text-[30px] font-black tabular-nums tracking-tighter leading-none">
                      {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})}
                    </span>
-                   <span className="text-[12px] md:text-[13px] font-bold uppercase">VNĐ</span>
+                   <span className="text-[12px] md:text-[13px] font-bold uppercase">VND</span>
                 </div>
                 <div className="mt-0.5 text-[9px] md:text-[9px] text-gray-400 text-right italic">
                   *Giá trị được tính theo giá bán ra hiện tại
@@ -320,7 +320,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-tight">Tổng cộng:</span>
                  <div className="flex items-center gap-1.5">
                    <span className="text-[18px] font-black text-[#9f224e] tabular-nums">
-                     {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VNĐ
+                     {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VND
                    </span>
                    <ChevronUp size={14} className="text-gray-400" />
                  </div>

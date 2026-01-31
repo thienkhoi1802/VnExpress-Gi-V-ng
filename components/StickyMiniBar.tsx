@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ComputedGoldProduct, Trend } from '../types';
-import { ArrowUp, ArrowDown, BellRing, Bell } from 'lucide-react';
+import { BellRing, Bell } from 'lucide-react';
 import { formatGoldPrice } from '../services/goldData';
 
 interface Props {
@@ -11,6 +11,18 @@ interface Props {
   onOpenAlerts: () => void;
   hasActiveAlerts: boolean;
 }
+
+const TriangleUp = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 0L10 8H0L5 0Z" />
+  </svg>
+);
+
+const TriangleDown = ({ size = 10, className = "" }) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 10 8" fill="currentColor" className={className}>
+    <path d="M5 8L0 0H10L5 8Z" />
+  </svg>
+);
 
 export const StickyMiniBar: React.FC<Props> = ({ sjc, world, updatedAt, onOpenAlerts, hasActiveAlerts }) => {
   const [visible, setVisible] = useState(false);
@@ -33,7 +45,6 @@ export const StickyMiniBar: React.FC<Props> = ({ sjc, world, updatedAt, onOpenAl
   const PriceItem = ({ label, product }: { label: string, product?: ComputedGoldProduct }) => {
     if (!product) return null;
     const isUp = product.trendSell === Trend.UP;
-    const ColorIcon = isUp ? ArrowUp : product.trendSell === Trend.DOWN ? ArrowDown : null;
     const colorClass = isUp ? 'text-trend-up' : product.trendSell === Trend.DOWN ? 'text-trend-down' : 'text-gray-500';
 
     return (
@@ -42,7 +53,7 @@ export const StickyMiniBar: React.FC<Props> = ({ sjc, world, updatedAt, onOpenAl
         <span className={`font-bold tabular-nums ${colorClass}`}>
           {formatGoldPrice(product.today.sell, product.group)}
         </span>
-        {ColorIcon && <ColorIcon size={12} className={colorClass} />}
+        {isUp ? <TriangleUp size={9} className={colorClass} /> : product.trendSell === Trend.DOWN ? <TriangleDown size={9} className={colorClass} /> : null}
       </div>
     );
   };
