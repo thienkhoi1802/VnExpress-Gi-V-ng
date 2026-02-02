@@ -48,11 +48,10 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
   const [phan, setPhan] = useState<string>('');
   const [selectedProductId, setSelectedProductId] = useState<string>('sjc_1l');
   
-  // Main Collapse State - Persist in LocalStorage
+  // Main Collapse State - Persist in LocalStorage, default to Expanded (false)
   const [isMainCollapsed, setIsMainCollapsed] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('vne_gold_portfolio_main_collapsed');
-      // Default to false (expanded) if not found
       return saved !== null ? JSON.parse(saved) : false;
     } catch (e) {
       return false;
@@ -62,7 +61,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
   // Portfolio Details Collapse State (Mobile focus)
   const [isPortfolioCollapsed, setIsPortfolioCollapsed] = useState(true);
   
-  // Portfolio State - Strictly use LocalStorage
+  // Portfolio State
   const [items, setItems] = useState<PortfolioItem[]>(() => {
     try {
       const saved = localStorage.getItem('vne_gold_portfolio');
@@ -96,26 +95,18 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
     return totalLuong * currentProduct.today.sell * 1000000;
   }, [luong, chi, phan, currentProduct]);
 
-  // Derived Assets with Live Prices
+  // Derived Assets
   const assets = useMemo(() => {
     return items.map(item => {
       const product = products.find(p => p.id === item.productId);
       const price = product ? product.today.sell : 0;
       const productName = product ? product.name : 'Sản phẩm không tồn tại';
-      
       const totalLuong = item.qtyLuong + (item.qtyChi / 10) + (item.qtyPhan / 100);
       const totalValue = totalLuong * price * 1000000;
-
-      return {
-        ...item,
-        productName,
-        price,
-        totalValue
-      };
+      return { ...item, productName, price, totalValue };
     });
   }, [items, products]);
 
-  // Total Portfolio Value
   const grandTotal = useMemo(() => {
     return assets.reduce((sum, asset) => sum + asset.totalValue, 0);
   }, [assets]);
@@ -124,7 +115,6 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
     const l = parseFloat(luong) || 0;
     const c = parseFloat(chi) || 0;
     const p = parseFloat(phan) || 0;
-
     if (l === 0 && c === 0 && p === 0) return;
 
     const newItem: PortfolioItem = {
@@ -136,10 +126,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
     };
 
     setItems(prev => [newItem, ...prev]);
-    setLuong('');
-    setChi('');
-    setPhan('');
-    // Expand portfolio list if it was collapsed when adding
+    setLuong(''); setChi(''); setPhan('');
     setIsPortfolioCollapsed(false);
   };
 
@@ -152,9 +139,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ danh mục?')) {
         setItems([]);
         localStorage.removeItem('vne_gold_portfolio');
-        setLuong('');
-        setChi('');
-        setPhan('');
+        setLuong(''); setChi(''); setPhan('');
     }
   };
 
@@ -230,8 +215,8 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                 <button 
                   onClick={handleAddAsset}
                   disabled={currentPreviewValue === 0}
-                  style={{ fontSize: '12pt', fontFamily: 'Arial, sans-serif' }}
-                  className={`w-full h-10 flex items-center justify-center gap-2 font-bold rounded-sm shadow-sm transition-all ${
+                  style={{ fontFamily: 'Arial, sans-serif' }}
+                  className={`w-full h-10 flex items-center justify-center gap-2 font-bold rounded-sm shadow-sm transition-all text-[14px] ${
                     currentPreviewValue > 0 
                     ? 'bg-gray-900 text-white hover:bg-gray-800 active:scale-95' 
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -240,7 +225,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                   <Plus size={18} /> Thêm vào danh mục
                 </button>
                 {currentPreviewValue > 0 && (
-                   <div className="mt-2 text-center text-[12px] text-gray-500 font-medium animate-in fade-in slide-in-from-top-1">
+                   <div className="mt-2 text-center text-[11px] text-gray-500 font-medium animate-in fade-in slide-in-from-top-1">
                       Tạm tính: <span className="font-bold text-[#9f224e]">{currentPreviewValue.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VND</span>
                    </div>
                 )}
@@ -335,4 +320,30 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                   )}
                 </div>
                 <div className="flex items-baseline justify-end gap-1 text-[#9f224e]">
-                   <span className="text-[26px] md:text
+                   <span className="text-[26px] md:text-[30px] font-black tabular-nums tracking-tighter leading-none">
+                     {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})}
+                   </span>
+                   <span className="text-[12px] md:text-[13px] font-bold uppercase">VND</span>
+                </div>
+                <div className="mt-0.5 text-[9px] md:text-[9px] text-gray-400 text-right italic">
+                  *Giá trị được tính theo giá bán ra hiện tại
+                </div>
+            </div>
+            
+            {/* Show summary when collapsed on mobile */}
+            {isPortfolioCollapsed && assets.length > 0 && (
+              <div className="md:hidden p-3 bg-white border-t border-gray-100 flex items-center justify-between animate-in fade-in cursor-pointer" onClick={() => setIsPortfolioCollapsed(false)}>
+                 <span className="text-[11px] font-bold text-gray-400 uppercase tracking-tight">Tổng cộng:</span>
+                 <div className="flex items-center gap-1.5">
+                   <span className="text-[18px] font-black text-[#9f224e] tabular-nums">
+                     {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VND
+                   </span>
+                   <ChevronUp size={14} className="text-gray-400" />
+                 </div>
+              </div>
+            )}
+          </div>
+       </div>
+    </div>
+  );
+};
