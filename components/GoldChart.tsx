@@ -286,7 +286,7 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 dataKey="date" 
                 tickLine={false}
                 axisLine={false}
-                minTickGap={timeRange === '24h' ? 20 : 40}
+                minTickGap={timeRange === '24h' ? 40 : 40} /* Increased Gap due to more points */
                 tick={{ fill: '#64748b', fontSize: 10, dy: 10, fontFamily: 'Arial' }}
               />
               
@@ -325,11 +325,11 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                           {showSell && (
                               <Line
                                   yAxisId={yAxisId}
-                                  type="monotone"
+                                  type="linear" /* Changed to linear for sharper look */
                                   dataKey={`${cat.productId}_sell`}
                                   name={`${cat.label} (Bán)`}
                                   stroke={cat.color}
-                                  strokeWidth={2.5}
+                                  strokeWidth={2}
                                   dot={false}
                                   activeDot={{ r: 4, strokeWidth: 2, stroke: '#fff', fill: cat.color }}
                                   isAnimationActive={true}
@@ -338,11 +338,11 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                           {showBuy && (
                               <Line
                                   yAxisId={yAxisId}
-                                  type="monotone"
+                                  type="linear" /* Changed to linear for sharper look */
                                   dataKey={`${cat.productId}_buy`}
                                   name={`${cat.label} (Mua)`}
                                   stroke={cat.color}
-                                  strokeWidth={2}
+                                  strokeWidth={1.5}
                                   strokeOpacity={0.4}
                                   strokeDasharray="3 3"
                                   dot={false}

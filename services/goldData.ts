@@ -8,7 +8,6 @@ const getFormattedTime = (date: Date = new Date()) => {
 
 // --- DATA SOURCE CONFIGURATION ---
 const SHEET_A_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTFknfHc1PzpA2BwTh4XtiKCl91VkeOf8ZIwp4BGaurggUAFk8jYDVazTmWWn0oseC1TVpPxhY1Axl1/pub?gid=1051355078&single=true&output=tsv";
-// Updated SHEET_B to the new GID for Regional data (date-based rows)
 const SHEET_B_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTFknfHc1PzpA2BwTh4XtiKCl91VkeOf8ZIwp4BGaurggUAFk8jYDVazTmWWn0oseC1TVpPxhY1Axl1/pub?gid=1664628255&single=true&output=tsv";
 
 // Initial Mock Data (Reflecting 2026 Price Levels)
@@ -307,12 +306,42 @@ export const fetchAllGoldPrices = async (): Promise<ComputedGoldProduct[]> => {
 
 export const fetchWorldGoldPrice = fetchAllGoldPrices;
 
+// --- REALISTIC RANDOM WALK GENERATION ---
+
+// Helper to generate a realistic random walk series backwards from today
+// volatility is the max percentage change per step
+const generateWalk = (startPrice: number, steps: number, volatility: number, trendBias: number = 0): number[] => {
+    const series = [startPrice];
+    let currentPrice = startPrice;
+
+    for (let i = 0; i < steps; i++) {
+        // Random change between -volatility and +volatility
+        const changePercent = (Math.random() - 0.5) * 2 * volatility;
+        // Add a small trend bias (e.g., slight drift downwards as we go back in time implies upward trend)
+        const totalChange = changePercent - trendBias; 
+        
+        currentPrice = currentPrice * (1 - totalChange); // Reverse calculation: prev = current / (1+change) roughly approx to current * (1-change)
+        series.push(currentPrice);
+    }
+    return series; // series[0] is today, series[1] is -1 step, etc.
+};
+
 export const getHistoryData = (): HistoryPoint[] => {
   const history: HistoryPoint[] = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const daySeed = today.getTime() / 100000;
+  // Pre-calculate price series for each product
+  const productSeries: Record<string, number[]> = {};
+  
+  INITIAL_DATA.forEach(p => {
+    // Determine volatility based on product type
+    const isWorld = p.group === 'world';
+    const vol = isWorld ? 0.015 : 0.008; // World gold is more volatile (1.5%), SJC less (0.8%)
+    const trend = isWorld ? 0.0005 : 0.0008; // SJC has had a stronger upward trend over the year
+    
+    productSeries[p.id] = generateWalk(p.today.sell, 365, vol, trend);
+  });
 
   for (let i = 365; i >= 0; i--) {
     const date = new Date(today);
@@ -328,20 +357,16 @@ export const getHistoryData = (): HistoryPoint[] => {
     };
 
     INITIAL_DATA.forEach(p => {
-      const pHash = p.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const wave = Math.sin((i + pHash + daySeed) * 0.2) * 1.5; 
-      const longTrend = Math.sin((i + pHash) * 0.05) * 5.0; 
-      
-      let basePrice = p.today.sell;
-      let historyPrice = basePrice + wave + longTrend;
-
-      if (i === 0) historyPrice = p.today.sell;
-
+      // Index in our generated series is 'i' because we generated backwards but loop 365 -> 0
+      // Actually, generateWalk returns series[0] = today.
+      // So if i=0 (today), we need series[0]. If i=365 (year ago), we need series[365].
+      const price = productSeries[p.id][i];
       const currentSpread = p.today.sell - p.today.buy;
 
-      dataPoint[p.id] = parseFloat(historyPrice.toFixed(2));
-      dataPoint[`${p.id}_sell`] = parseFloat(historyPrice.toFixed(2));
-      dataPoint[`${p.id}_buy`] = parseFloat((historyPrice - currentSpread).toFixed(2));
+      dataPoint[p.id] = parseFloat(price.toFixed(2));
+      dataPoint[`${p.id}_sell`] = parseFloat(price.toFixed(2));
+      // Assume spread stays roughly proportional or constant
+      dataPoint[`${p.id}_buy`] = parseFloat((price - currentSpread).toFixed(2));
     });
 
     history.push(dataPoint);
@@ -353,12 +378,29 @@ export const getHistoryData = (): HistoryPoint[] => {
 export const getHourlyData = (): HistoryPoint[] => {
   const hourly: HistoryPoint[] = [];
   const now = new Date();
-  
-  for (let i = 23; i >= 0; i--) {
+  // Align to nearest 30 min
+  const minutes = now.getMinutes();
+  const roundedMinutes = minutes >= 30 ? 30 : 0;
+  now.setMinutes(roundedMinutes, 0, 0);
+
+  // Generate 48 points (24 hours * 2 points per hour)
+  const POINTS = 48;
+  const productSeries: Record<string, number[]> = {};
+
+  INITIAL_DATA.forEach(p => {
+    const isWorld = p.group === 'world';
+    // Hourly volatility is much lower
+    const vol = isWorld ? 0.002 : 0.001; 
+    productSeries[p.id] = generateWalk(p.today.sell, POINTS, vol, 0);
+  });
+
+  for (let i = POINTS - 1; i >= 0; i--) {
     const date = new Date(now);
-    date.setHours(now.getHours() - i, 0, 0, 0);
+    date.setMinutes(now.getMinutes() - (i * 30));
     
-    const hourStr = `${date.getHours().toString().padStart(2, '0')}:00`;
+    const hours = date.getHours().toString().padStart(2, '0');
+    const mins = date.getMinutes().toString().padStart(2, '0');
+    const hourStr = `${hours}:${mins}`;
     const fullDateStr = date.toISOString();
 
     const dataPoint: HistoryPoint = {
@@ -368,17 +410,12 @@ export const getHourlyData = (): HistoryPoint[] => {
     };
 
     INITIAL_DATA.forEach(p => {
-      const pHash = p.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const wave = Math.sin((i + pHash) * 0.5) * 0.3; 
-      
-      let historyPrice = p.today.sell + wave;
-      if (i === 0) historyPrice = p.today.sell;
-
+      const price = productSeries[p.id][i];
       const currentSpread = p.today.sell - p.today.buy;
 
-      dataPoint[p.id] = parseFloat(historyPrice.toFixed(2));
-      dataPoint[`${p.id}_sell`] = parseFloat(historyPrice.toFixed(2));
-      dataPoint[`${p.id}_buy`] = parseFloat((historyPrice - currentSpread).toFixed(2));
+      dataPoint[p.id] = parseFloat(price.toFixed(2));
+      dataPoint[`${p.id}_sell`] = parseFloat(price.toFixed(2));
+      dataPoint[`${p.id}_buy`] = parseFloat((price - currentSpread).toFixed(2));
     });
 
     hourly.push(dataPoint);
