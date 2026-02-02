@@ -103,29 +103,29 @@ const DomesticItem = ({
       <div className="sm:hidden px-3 pb-3 grid grid-cols-12 gap-0 font-sans items-start">
           <div className="col-span-4 flex flex-col border-r border-gray-100 pr-2">
              <span className="text-[10px] text-gray-400 font-bold uppercase mb-0.5 tracking-tight">Bán ra</span>
-             <span className="font-black text-vne-green text-[36px] leading-none tracking-tighter tabular-nums">
+             <span className="font-black text-vne-green text-[42px] leading-none tracking-tighter tabular-nums">
                 {formatGoldPrice(product.today.sell, product.group)}
              </span>
-             <div className={`flex flex-wrap items-center gap-x-1 text-[11px] font-bold mt-1.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-wrap items-center gap-x-1 text-[16px] font-bold mt-1.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
-                   {product.changeSell >= 0 ? <TriangleUp size={8}/> : <TriangleDown size={8}/>}
+                   {product.changeSell >= 0 ? <TriangleUp size={12}/> : <TriangleDown size={12}/>}
                    <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
-                <span className="text-[10px] opacity-70 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
+                <span className="text-[14px] opacity-70 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
              </div>
           </div>
           
           <div className="col-span-5 flex flex-col border-r border-gray-100 pl-2 pr-1">
              <span className="text-[10px] text-gray-400 font-bold uppercase mb-0.5 tracking-tight">Mua vào</span>
-             <span className="font-black text-gray-900 text-[36px] leading-none tracking-tighter tabular-nums">
+             <span className="font-black text-gray-900 text-[42px] leading-none tracking-tighter tabular-nums">
                 {formatGoldPrice(product.today.buy, product.group)}
              </span>
-             <div className={`flex flex-wrap items-center gap-x-1 text-[11px] font-bold mt-1.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-wrap items-center gap-x-1 text-[16px] font-bold mt-1.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
-                   {product.changeBuy >= 0 ? <TriangleUp size={8}/> : <TriangleDown size={8}/>}
+                   {product.changeBuy >= 0 ? <TriangleUp size={12}/> : <TriangleDown size={12}/>}
                    <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
-                <span className="text-[10px] opacity-70 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
+                <span className="text-[14px] opacity-70 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
              </div>
           </div>
           
@@ -600,7 +600,7 @@ export const MarketHighlights: React.FC<Props> = ({
 
         <div>
             {activeTab === 'vn' ? (
-                <div className="animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col bg-white border border-gray-200 border-t-0 shadow-sm rounded-b-sm pt-4 sm:pt-0">
+                <div className="animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col bg-white border border-gray-200 border-t-0 shadow-sm rounded-b-sm pt-0">
                     <div className="flex flex-col md:flex-row">
                         {/* Adjusted Proportions: 60% Width for SJC */}
                         <div className="w-full md:w-[60%] border-b md:border-b-0 md:border-r border-gray-200">
