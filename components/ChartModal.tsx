@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Bell, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
 import { GoldChart } from './GoldChart';
-import { ComputedGoldProduct, HistoryPoint, PriceAlert } from '../types';
+import { ComputedGoldProduct, HistoryPoint, PriceAlert, TimeRange } from '../types';
 
 interface ChartModalProps {
   product: ComputedGoldProduct | null;
@@ -14,6 +14,14 @@ interface ChartModalProps {
   onRemoveAlert: (id: string) => void;
   onClose: () => void;
 }
+
+const TIME_RANGES: { key: TimeRange; label: string }[] = [
+  { key: '24h', label: '24h' },
+  { key: '1w', label: '1 tuần' },
+  { key: '1m', label: '1 tháng' },
+  { key: '6m', label: '6 tháng' },
+  { key: '1y', label: '1 năm' },
+];
 
 export const ChartModal: React.FC<ChartModalProps> = ({ 
   product, 
@@ -29,6 +37,7 @@ export const ChartModal: React.FC<ChartModalProps> = ({
   const [alertType, setAlertType] = useState<'above' | 'below'>('above');
   const [priceType, setPriceType] = useState<'sell' | 'buy'>('sell');
   const [targetPrice, setTargetPrice] = useState<string>('');
+  const [timeRange, setTimeRange] = useState<TimeRange>('24h');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -49,9 +58,6 @@ export const ChartModal: React.FC<ChartModalProps> = ({
   if (!product) return null;
 
   const productsToShow = [product];
-  if (worldProduct && product.id !== worldProduct.id) {
-    productsToShow.push(worldProduct);
-  }
 
   const updateDate = product.updatedAt.includes(' ') 
     ? product.updatedAt.split(' ')[1] 
@@ -84,30 +90,68 @@ export const ChartModal: React.FC<ChartModalProps> = ({
         className="bg-white w-full max-w-4xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header matched to screenshot style */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3">
-              <h3 className="font-serif font-bold text-gray-900 text-[22px] sm:text-[24px] truncate">{product.name}</h3>
-              <button 
-                onClick={() => setShowQuickAlert(!showQuickAlert)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all border ${activeAlertForProduct || showQuickAlert ? 'bg-vne-red text-white border-vne-red' : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'}`}
-              >
-                <Bell size={18} className={activeAlertForProduct ? "animate-pulse" : ""} />
-                <span className="text-[12px] font-bold uppercase hidden sm:inline">Cảnh báo giá</span>
-              </button>
-            </div>
-            <p className="text-[13px] text-gray-500 mt-1 font-sans">Cập nhật: {updateDate}</p>
+        {/* Header Section */}
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-100 bg-white">
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+            <h3 className="font-serif font-bold text-gray-900 text-[18px] sm:text-[24px] truncate leading-tight">
+              {product.name}
+            </h3>
+            <button 
+              onClick={() => setShowQuickAlert(!showQuickAlert)}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full transition-all border shrink-0 ${activeAlertForProduct || showQuickAlert ? 'bg-vne-red text-white border-vne-red' : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'}`}
+            >
+              <Bell size={16} className={activeAlertForProduct ? "animate-pulse" : ""} />
+              <span className="text-[10px] font-bold uppercase hidden md:inline">Cảnh báo giá</span>
+            </button>
           </div>
-          <button 
-            onClick={onClose}
-            className="ml-4 p-2 bg-white rounded-none hover:bg-gray-100 transition-colors border border-gray-200"
-          >
-            <X size={20} className="text-gray-500" />
-          </button>
+
+          <div className="flex items-center gap-2 sm:gap-4 ml-2">
+            {/* Time Range Filter - Desktop Position (MATCH TO REQUESTED STYLE) */}
+            <div className="hidden sm:flex items-center border border-gray-200 rounded-sm overflow-hidden h-8 sm:h-9 bg-white">
+                {TIME_RANGES.map((range) => (
+                    <button
+                        key={range.key}
+                        onClick={() => setTimeRange(range.key)}
+                        className={`h-full px-4 text-[12px] font-bold transition-all whitespace-nowrap border-r border-gray-200 last:border-r-0 ${
+                            timeRange === range.key 
+                            ? 'bg-[#9f224e] text-white border-[#9f224e]' 
+                            : 'text-[#666] hover:bg-gray-50 active:bg-gray-100'
+                        }`}
+                    >
+                        {range.label}
+                    </button>
+                ))}
+            </div>
+
+            <button 
+              onClick={onClose}
+              className="p-1.5 sm:p-2 bg-white rounded-none hover:bg-gray-100 transition-colors border border-gray-200 shrink-0"
+            >
+              <X size={20} className="text-gray-500" />
+            </button>
+          </div>
         </div>
 
-        {/* Improved Alert Setup UI */}
+        {/* Mobile-only Time Range Filter (Also Updated with Border) */}
+        <div className="sm:hidden flex items-center justify-center p-2 bg-gray-50 border-b border-gray-100">
+            <div className="flex items-center border border-gray-200 bg-white rounded-sm w-full overflow-hidden h-10">
+                {TIME_RANGES.map((range) => (
+                    <button
+                        key={range.key}
+                        onClick={() => setTimeRange(range.key)}
+                        className={`flex-1 h-full text-[11px] font-bold transition-all border-r border-gray-200 last:border-r-0 ${
+                            timeRange === range.key 
+                            ? 'bg-[#9f224e] text-white border-[#9f224e]' 
+                            : 'text-[#666] active:bg-gray-50'
+                        }`}
+                    >
+                        {range.label}
+                    </button>
+                ))}
+            </div>
+        </div>
+
+        {/* Quick Alert Setup UI */}
         {showQuickAlert && (
           <div className="relative p-4 sm:p-6 bg-[#fff9fa] border-b border-vne-red/10 animate-in slide-in-from-top-2 font-sans">
             <button 
@@ -123,7 +167,6 @@ export const ChartModal: React.FC<ChartModalProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-              {/* Buy/Sell Selector */}
               <div className="md:col-span-3">
                 <label className="block text-[11px] font-bold text-gray-500 uppercase mb-1.5">Kiểu giá</label>
                 <div className="flex border border-gray-300 bg-white h-10 rounded-sm overflow-hidden">
@@ -138,26 +181,26 @@ export const ChartModal: React.FC<ChartModalProps> = ({
                 </div>
               </div>
 
-              {/* Condition Selector */}
               <div className="md:col-span-3">
                 <label className="block text-[11px] font-bold text-gray-500 uppercase mb-1.5">Điều kiện</label>
                 <div className="flex border border-gray-300 bg-white h-10 rounded-sm overflow-hidden">
+                    {/* Fixed 'setType' to 'setAlertType' */}
                     <button 
                       onClick={() => setAlertType('above')}
                       className={`flex-1 flex items-center justify-center text-[13px] font-bold whitespace-nowrap transition-all ${alertType === 'above' ? 'bg-green-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      Tăng <span className="hidden sm:inline">lên</span>
+                      Tăng lên
                     </button>
+                    {/* Fixed 'setType' to 'setAlertType' */}
                     <button 
                       onClick={() => setAlertType('below')}
                       className={`flex-1 flex items-center justify-center text-[13px] font-bold border-l border-gray-300 whitespace-nowrap transition-all ${alertType === 'below' ? 'bg-red-600 text-white' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
                     >
-                      Giảm <span className="hidden sm:inline">xuống</span>
+                      Giảm xuống
                     </button>
                 </div>
               </div>
 
-              {/* Target Price Input */}
               <div className="md:col-span-4">
                 <label className="block text-[11px] font-bold text-gray-500 uppercase mb-1.5">Giá mục tiêu (Triệu đồng)</label>
                 <input 
@@ -170,7 +213,6 @@ export const ChartModal: React.FC<ChartModalProps> = ({
                 />
               </div>
 
-              {/* Actions */}
               <div className="md:col-span-2 flex gap-2">
                  <button onClick={handleAddQuickAlert} className="flex-1 h-10 bg-vne-red text-white text-[13px] font-bold shadow-md active:scale-95 transition-all">Thiết lập</button>
               </div>
@@ -192,13 +234,18 @@ export const ChartModal: React.FC<ChartModalProps> = ({
           </div>
         )}
         
-        <div className="p-4 bg-white flex-1 overflow-y-auto no-scrollbar">
+        {/* Modal Main Content */}
+        <div className="bg-white flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 md:p-8">
           <GoldChart 
             products={productsToShow} 
             historyData={historyData} 
             hourlyData={hourlyData}
             title={product.name}
             showInternalTitle={false}
+            externalTimeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+            showTimeRanges={false}
+            footerNote={`Dữ liệu cập nhật: ${updateDate}`}
           />
         </div>
       </div>

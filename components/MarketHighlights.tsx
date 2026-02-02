@@ -99,37 +99,41 @@ const DomesticItem = ({
           <span className="text-[10px] text-gray-400 font-bold shrink-0 whitespace-nowrap uppercase tracking-wider">TRIỆU / LƯỢNG</span>
       </div>
 
-      <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
-          <div className="col-span-4 flex flex-col border-r border-gray-100 pr-1">
-             <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Bán ra</span>
-             <span className="font-black text-vne-green text-[42px] leading-none tracking-tighter tabular-nums">
+      {/* MOBILE VIEW: Optimized 4-5-3 layout with balanced padding */}
+      <div className="sm:hidden px-3 pb-3 grid grid-cols-12 gap-0 font-sans items-start">
+          {/* Bán ra: Chiếm 4/12 (~33.3%) - Line sát bên trái hơn */}
+          <div className="col-span-4 flex flex-col border-r border-gray-100 pr-2">
+             <span className="text-[10px] text-gray-400 font-bold uppercase mb-0.5 tracking-tight">Bán ra</span>
+             <span className="font-black text-vne-green text-[36px] leading-none tracking-tighter tabular-nums">
                 {formatGoldPrice(product.today.sell, product.group)}
              </span>
-             <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-1 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-wrap items-center gap-x-1 text-[11px] font-bold mt-1.5 ${product.changeSell >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
-                   {product.changeSell >= 0 ? <TriangleUp size={9}/> : <TriangleDown size={9}/>}
+                   {product.changeSell >= 0 ? <TriangleUp size={8}/> : <TriangleDown size={8}/>}
                    <span>{Math.abs(product.changeSell).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
-                <span className="text-[12px] opacity-80 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
+                <span className="text-[10px] opacity-70 font-normal">({product.percentSell >= 0 ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
              </div>
           </div>
           
-          <div className="col-span-4 flex flex-col border-r border-gray-100 px-1">
-             <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Mua vào</span>
-             <span className="font-black text-gray-900 text-[42px] leading-none tracking-tighter tabular-nums">
+          {/* Mua vào: Chiếm 5/12 (~41.7%) - Cân bằng padding pl-2 */}
+          <div className="col-span-5 flex flex-col border-r border-gray-100 pl-2 pr-1">
+             <span className="text-[10px] text-gray-400 font-bold uppercase mb-0.5 tracking-tight">Mua vào</span>
+             <span className="font-black text-gray-900 text-[36px] leading-none tracking-tighter tabular-nums">
                 {formatGoldPrice(product.today.buy, product.group)}
              </span>
-             <div className={`flex flex-wrap items-center gap-x-1 text-[13px] font-bold mt-1 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
+             <div className={`flex flex-wrap items-center gap-x-1 text-[11px] font-bold mt-1.5 ${product.changeBuy >= 0 ? 'text-vne-green' : 'text-trend-down'}`}>
                 <div className="flex items-center gap-0.5">
-                   {product.changeBuy >= 0 ? <TriangleUp size={9}/> : <TriangleDown size={9}/>}
+                   {product.changeBuy >= 0 ? <TriangleUp size={8}/> : <TriangleDown size={8}/>}
                    <span>{Math.abs(product.changeBuy).toLocaleString('vi-VN', { minimumFractionDigits: 1 })}</span>
                 </div>
-                <span className="text-[12px] opacity-80 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
+                <span className="text-[10px] opacity-70 font-normal">({product.percentBuy >= 0 ? '+' : ''}{product.percentBuy.toFixed(2)}%)</span>
              </div>
           </div>
           
-          <div className="col-span-4 pl-1 h-[60px] flex items-center justify-center pt-2">
-            <div className="w-full h-[45px]">
+          {/* Sparkline: Chiếm 3/12 (25%) */}
+          <div className="col-span-3 pl-2 h-[60px] flex items-center justify-center pt-2">
+            <div className="w-full h-[40px]">
                 <Sparkline 
                     data={historyData} 
                     dataKey={product.id} 
@@ -195,12 +199,10 @@ const DomesticItem = ({
 
 const WorldGoldInGrid = ({ 
     product, 
-    historyData, 
     onProductClick,
     className = ""
 }: { 
     product?: ComputedGoldProduct,
-    historyData: HistoryPoint[],
     onProductClick: (p: ComputedGoldProduct) => void,
     className?: string
 }) => {
@@ -223,7 +225,7 @@ const WorldGoldInGrid = ({
       </div>
 
       <div className="sm:hidden px-3 pb-2 grid grid-cols-12 gap-1 font-sans items-start">
-          <div className="col-span-9 flex flex-col border-r border-gray-100 pr-1">
+          <div className="col-span-12 flex flex-col pr-1">
              <span className="text-[10px] text-gray-500 font-bold uppercase mb-0.5">Giá Bán (Ask)</span>
              <div className="flex items-baseline gap-2 flex-wrap">
                 <span className="font-black text-gray-900 text-[32px] leading-none tracking-tighter tabular-nums">
@@ -235,16 +237,6 @@ const WorldGoldInGrid = ({
                     <span className="text-[12px] opacity-80 font-normal ml-0.5">({isUp ? '+' : ''}{product.percentSell.toFixed(2)}%)</span>
                 </div>
              </div>
-          </div>
-          
-          <div className="col-span-3 pl-1 h-[50px] flex items-center justify-center self-center pt-2">
-            <div className="w-full h-[40px]">
-                <Sparkline 
-                    data={historyData} 
-                    dataKey={product.id} 
-                    trend={isUp ? 'up' : 'down'}
-                />
-            </div>
           </div>
       </div>
 
@@ -265,13 +257,6 @@ const WorldGoldInGrid = ({
                       </div>
                   </div>
               </div>
-          </div>
-          <div className="w-[100px] h-[70px] flex items-center justify-center border-l border-gray-100 pl-4">
-               <Sparkline 
-                  data={historyData} 
-                  dataKey={product.id} 
-                  trend={isUp ? 'up' : 'down'}
-               />
           </div>
       </div>
 
@@ -588,20 +573,29 @@ export const MarketHighlights: React.FC<Props> = ({
 
   return (
     <div className="flex flex-col">
-        <div className="flex border border-gray-200 font-serif bg-white shadow-sm rounded-t-sm z-10 relative">
+        {/* Tab Navigation - Enhanced UI for Clickability */}
+        <div className="flex border border-gray-200 font-serif bg-[#f7f7f7] shadow-sm rounded-t-sm z-10 relative overflow-hidden">
             <button 
                 onClick={() => setActiveTab('vn')}
-                className={`flex-1 py-3 sm:py-4 px-2 sm:px-6 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg font-bold transition-all relative outline-none ${activeTab === 'vn' ? 'text-[#9f224e] bg-white' : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+                className={`flex-1 py-3 sm:py-4 px-2 sm:px-6 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg font-bold transition-all relative outline-none border-r border-gray-200 group ${
+                  activeTab === 'vn' 
+                    ? 'text-[#9f224e] bg-white' 
+                    : 'text-gray-500 hover:bg-white/80 hover:text-gray-700'
+                }`}
             >
-                <div className={`transition-transform duration-300 ${activeTab === 'vn' ? 'scale-110 sm:scale-125' : 'grayscale opacity-70'}`}><VietnamFlag /></div>
+                <div className={`transition-transform duration-300 ${activeTab === 'vn' ? 'scale-110 sm:scale-125' : 'grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'}`}><VietnamFlag /></div>
                 <span>Việt Nam</span>
                 {activeTab === 'vn' && <div className="absolute bottom-0 left-0 w-full h-[4px] bg-[#9f224e]"></div>}
             </button>
             <button 
                 onClick={() => setActiveTab('world')}
-                className={`flex-1 py-3 sm:py-4 px-2 sm:px-6 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg font-bold transition-all relative outline-none ${activeTab === 'world' ? 'text-[#9f224e] bg-white' : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+                className={`flex-1 py-3 sm:py-4 px-2 sm:px-6 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg font-bold transition-all relative outline-none group ${
+                  activeTab === 'world' 
+                    ? 'text-[#9f224e] bg-white' 
+                    : 'text-gray-500 hover:bg-white/80 hover:text-gray-700'
+                }`}
             >
-                <Globe size={22} className={`${activeTab === 'world' ? 'text-[#9f224e]' : 'text-gray-400'}`} />
+                <Globe size={22} className={`${activeTab === 'world' ? 'text-[#9f224e]' : 'text-gray-400 group-hover:text-gray-600'}`} />
                 <span>Thế giới</span>
                 {activeTab === 'world' && <div className="absolute bottom-0 left-0 w-full h-[4px] bg-[#9f224e]"></div>}
             </button>
@@ -610,8 +604,9 @@ export const MarketHighlights: React.FC<Props> = ({
         <div>
             {activeTab === 'vn' ? (
                 <div className="animate-in fade-in slide-in-from-left-2 duration-300 flex flex-col bg-white border border-gray-200 border-t-0 shadow-sm rounded-b-sm pt-4 sm:pt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2">
-                        <div className="border-b md:border-b-0 md:border-r border-gray-200">
+                    <div className="flex flex-col md:flex-row">
+                        {/* Adjusted Proportions: 60% Width for SJC */}
+                        <div className="w-full md:w-[60%] border-b md:border-b-0 md:border-r border-gray-200">
                              <DomesticItem 
                                 product={sjc} 
                                 worldProduct={world} 
@@ -620,11 +615,11 @@ export const MarketHighlights: React.FC<Props> = ({
                                 onProductClick={onProductClick} 
                             />
                         </div>
-                        <div className="border-b md:border-b-0 border-gray-200">
+                        {/* Adjusted Proportions: 40% Width for World Gold - Acts as link to World tab */}
+                        <div className="w-full md:w-[40%] border-b md:border-b-0 border-gray-200">
                              <WorldGoldInGrid 
                                 product={world} 
-                                historyData={historyData} 
-                                onProductClick={onProductClick} 
+                                onProductClick={() => setActiveTab('world')} 
                             />
                         </div>
                     </div>

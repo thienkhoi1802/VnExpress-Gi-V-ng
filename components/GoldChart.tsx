@@ -17,6 +17,10 @@ interface GoldChartProps {
   hourlyData?: HistoryPoint[];
   title?: string;
   showInternalTitle?: boolean;
+  externalTimeRange?: TimeRange;
+  onTimeRangeChange?: (tr: TimeRange) => void;
+  showTimeRanges?: boolean;
+  footerNote?: string;
 }
 
 const TIME_RANGES: { key: TimeRange; label: string }[] = [
@@ -30,7 +34,6 @@ const TIME_RANGES: { key: TimeRange; label: string }[] = [
 const CATEGORIES_CONFIG = [
   { key: 'sjc', label: 'Vàng SJC', productId: 'sjc_1l', color: '#9f224e' },
   { key: 'jewelry', label: 'Nữ trang', productId: 'jewelry_9999', color: '#db2777' },
-  { key: 'world', label: 'Thế giới', productId: 'world_gold', color: '#64748b' },
 ];
 
 export const GoldChart: React.FC<GoldChartProps> = ({ 
@@ -38,13 +41,21 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   historyData,
   hourlyData = [],
   title,
-  showInternalTitle = true
+  showInternalTitle = true,
+  externalTimeRange,
+  onTimeRangeChange,
+  showTimeRanges = true,
+  footerNote
 }) => {
-  const [timeRange, setTimeRange] = useState<TimeRange>('1m');
+  const [internalTimeRange, setInternalTimeRange] = useState<TimeRange>('24h');
   const [activeKeys, setActiveKeys] = useState<string[]>(['sjc']);
   const [showSell, setShowSell] = useState(true);
   const [showBuy, setShowBuy] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Use external timeRange if provided, otherwise fallback to internal
+  const timeRange = externalTimeRange || internalTimeRange;
+  const setTimeRange = onTimeRangeChange || setInternalTimeRange;
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -112,7 +123,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
 
   const isWorldActive = activeKeys.some(k => k === 'world' || k === 'world_gold');
   
-  // Logic to optimize mobile layout for single World Gold chart
   const isWorldOnly = activeKeys.length === 1 && (activeKeys[0] === 'world' || activeKeys[0] === 'world_gold');
   const shouldOptimizeLayout = isMobile && isWorldOnly;
 
@@ -222,11 +232,10 @@ export const GoldChart: React.FC<GoldChartProps> = ({
   );
 
   return (
-    <div className="bg-white rounded-none border border-gray-200 p-3 sm:py-3 sm:px-4 md:px-5 md:py-5 flex flex-col font-sans">
-      <div className="flex flex-col gap-4 sm:gap-2 mb-4 sm:mb-2 border-b border-gray-100 pb-3 sm:pb-2">
-        {/* Row Header */}
+    <div className={`bg-white rounded-none border-gray-200 flex flex-col font-sans ${showInternalTitle ? 'p-3 sm:py-3 sm:px-4 md:px-5 md:py-5 border' : ''}`}>
+      <div className={`flex flex-col gap-4 sm:gap-2 mb-4 sm:mb-2 border-gray-100 ${showInternalTitle ? 'border-b pb-3 sm:pb-2' : ''}`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {showInternalTitle ? (
+          {showInternalTitle && (
             <div className="flex flex-wrap items-baseline gap-2 mb-1">
                 <h2 className="text-lg font-serif font-bold text-gray-900">
                   {title || 'Biểu đồ giá vàng'}
@@ -235,41 +244,43 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                   Cập nhật: {updateTime}
                 </span>
             </div>
-          ) : (
-            /* Desktop categories in modal header area - Moved here for MD screen */
+          )}
+
+          {!showInternalTitle && categories.length > 1 && (
             <CategoryToggles className="hidden md:flex border border-gray-100 p-0.5" />
           )}
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
-              <div className="flex border border-gray-200 bg-gray-50/50 p-0.5 w-full sm:w-auto">
-                  {TIME_RANGES.map((range) => (
-                      <button
-                          key={range.key}
-                          onClick={() => setTimeRange(range.key)}
-                          className={`flex-1 sm:flex-none px-2 sm:px-4 py-1.5 text-xs font-medium transition-all whitespace-nowrap font-sans ${
-                              timeRange === range.key 
-                              ? 'bg-[#9f224e] text-white shadow-md font-bold' 
-                              : 'text-gray-500 hover:text-gray-800'
-                          }`}
-                      >
-                          {range.label}
-                      </button>
-                  ))}
-              </div>
-          </div>
+          {showTimeRanges && (
+            <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+                <div className="flex border border-gray-200 bg-gray-50/50 p-0.5 w-full sm:w-auto">
+                    {TIME_RANGES.map((range) => (
+                        <button
+                            key={range.key}
+                            onClick={() => setTimeRange(range.key)}
+                            className={`flex-1 sm:flex-none px-2 sm:px-4 py-1.5 text-xs font-medium transition-all whitespace-nowrap font-sans ${
+                                timeRange === range.key 
+                                ? 'bg-[#9f224e] text-white shadow-md font-bold' 
+                                : 'text-gray-500 hover:text-gray-800'
+                            }`}
+                        >
+                            {range.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+          )}
         </div>
 
-        {/* Categories for Mobile - ONLY show when not in modal or hidden on Desktop */}
-        {/* Hide if only 1 category exists (e.g. World Gold popup on mobile) */}
         {categories.length > 1 && (
             <CategoryToggles className={`${!showInternalTitle ? 'md:hidden' : ''} mb-1`} />
         )}
       </div>
 
-      <div className="relative h-[240px] sm:h-[180px] w-full text-[10px]">
+      <div className={`relative w-full text-[10px] ${showInternalTitle ? 'h-[240px] sm:h-[180px]' : 'h-[320px] sm:h-[280px]'}`}>
          {filteredData.length > 0 ? (
            <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={filteredData} margin={{ top: 5, right: shouldOptimizeLayout ? 0 : 10, bottom: 0, left: 0 }}>
+            {/* Added margin right: 25 to prevent last labels like "11:00" from touching the container edge */}
+            <LineChart data={filteredData} margin={{ top: 10, right: shouldOptimizeLayout ? 5 : 25, bottom: 5, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis 
                 dataKey="date" 
@@ -279,7 +290,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 tick={{ fill: '#64748b', fontSize: 10, dy: 10, fontFamily: 'Arial' }}
               />
               
-              {/* VND Axis - Hidden on mobile world-only view to save space */}
               <YAxis 
                 yAxisId="vnd"
                 domain={vndDomain} 
@@ -291,7 +301,6 @@ export const GoldChart: React.FC<GoldChartProps> = ({
                 hide={shouldOptimizeLayout}
               />
 
-              {/* USD Axis - Moved to left on mobile world-only view */}
               <YAxis 
                 yAxisId="usd"
                 orientation={shouldOptimizeLayout ? "left" : "right"}
@@ -353,28 +362,36 @@ export const GoldChart: React.FC<GoldChartProps> = ({
          )}
       </div>
 
-      <div className="mt-2 sm:mt-1 flex items-center justify-center gap-8 border-t border-gray-50 pt-3 sm:pt-2 pb-1 select-none">
-            <button 
-                onClick={() => setShowSell(!showSell)}
-                className={`flex items-center gap-2 text-sm transition-all font-sans ${showSell ? 'text-gray-900 font-bold' : 'text-gray-400 opacity-60'}`}
-            >
-                <div className="flex items-center justify-center relative">
-                     <span className={`w-2 h-2 ${showSell ? 'bg-black' : 'bg-gray-300'}`}></span>
-                     <span className={`absolute h-0.5 w-6 ${showSell ? 'bg-black' : 'hidden'}`}></span>
-                </div>
-                Giá bán
-            </button>
+      <div className="mt-4 sm:mt-2 flex flex-col sm:flex-row items-center border-t border-gray-50 pt-4 sm:pt-3 pb-1 select-none relative">
+            {footerNote && (
+              <div className="sm:absolute sm:left-0 text-[12px] text-gray-400 font-medium italic mb-3 sm:mb-0">
+                {footerNote}
+              </div>
+            )}
 
-            <button 
-                onClick={() => setShowBuy(!showBuy)}
-                className={`flex items-center gap-2 text-sm transition-all font-sans ${showBuy ? 'text-gray-900 font-bold' : 'text-gray-400 opacity-60'}`}
-            >
-                <div className="flex items-center justify-center relative">
-                     <span className={`w-2 h-2 ${showBuy ? 'bg-gray-400' : 'bg-gray-300'}`}></span>
-                     <span className={`absolute h-0.5 w-6 ${showBuy ? 'bg-gray-400' : 'hidden'} border-t border-dashed border-gray-400 w-full top-1/2`}></span>
-                </div>
-                Giá mua
-            </button>
+            <div className="flex items-center justify-center gap-8 w-full">
+                <button 
+                    onClick={() => setShowSell(!showSell)}
+                    className={`flex items-center gap-2 text-sm transition-all font-sans ${showSell ? 'text-gray-900 font-bold' : 'text-gray-400 opacity-60'}`}
+                >
+                    <div className="flex items-center justify-center relative">
+                         <span className={`w-2 h-2 ${showSell ? 'bg-black' : 'bg-gray-300'}`}></span>
+                         <span className={`absolute h-0.5 w-6 ${showSell ? 'bg-black' : 'hidden'}`}></span>
+                    </div>
+                    Giá bán
+                </button>
+
+                <button 
+                    onClick={() => setShowBuy(!showBuy)}
+                    className={`flex items-center gap-2 text-sm transition-all font-sans ${showBuy ? 'text-gray-900 font-bold' : 'text-gray-400 opacity-60'}`}
+                >
+                    <div className="flex items-center justify-center relative">
+                         <span className={`w-2 h-2 ${showBuy ? 'bg-gray-400' : 'bg-gray-300'}`}></span>
+                         <span className={`absolute h-0.5 w-6 ${showBuy ? 'bg-gray-400' : 'hidden'} border-t border-dashed border-gray-400 w-full top-1/2`}></span>
+                    </div>
+                    Giá mua
+                </button>
+            </div>
       </div>
     </div>
   );
