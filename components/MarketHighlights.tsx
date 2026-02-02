@@ -215,7 +215,7 @@ const WorldGoldInGrid = ({
       className={`bg-white hover:bg-gray-50/80 transition-all cursor-pointer group relative flex flex-col h-full ${className}`}
     >
       <div className="px-3 sm:px-5 md:px-5 pt-4 pb-2 sm:py-2.5 flex justify-between items-center">
-          <h3 className="font-bold tracking-tight text-[#9f224e] text-[18px] sm:text-[20px] leading-tight font-serif truncate">
+          <h3 className="font-bold tracking-tight text-gray-900 text-[18px] sm:text-[20px] leading-tight font-serif truncate">
               Vàng thế giới
           </h3>
           <span className="text-[11px] text-gray-400 font-bold shrink-0 whitespace-nowrap uppercase tracking-wider">USD / OUNCE</span>
@@ -576,25 +576,23 @@ export const MarketHighlights: React.FC<Props> = ({
                 onClick={() => setActiveTab('vn')}
                 className={`flex-1 py-3 sm:py-4 px-2 sm:px-6 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg font-bold transition-all relative outline-none border-r border-gray-200 group ${
                   activeTab === 'vn' 
-                    ? 'text-[#9f224e] bg-white' 
-                    : 'text-gray-500 hover:bg-white/80 hover:text-gray-700'
+                    ? 'bg-[#9f224e] text-white border-b-[#9f224e]' 
+                    : 'bg-[#f7f7f7] text-gray-500 hover:bg-gray-100 hover:text-gray-700'
                 }`}
             >
-                <div className={`transition-transform duration-300 ${activeTab === 'vn' ? 'scale-110 sm:scale-125' : 'grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'}`}><VietnamFlag /></div>
+                <div className={`transition-transform duration-300 ${activeTab === 'vn' ? 'scale-110 sm:scale-125 ring-1 ring-white/30 rounded-[1px]' : 'grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'}`}><VietnamFlag /></div>
                 <span>Việt Nam</span>
-                {activeTab === 'vn' && <div className="absolute bottom-0 left-0 w-full h-[4px] bg-[#9f224e]"></div>}
             </button>
             <button 
                 onClick={() => setActiveTab('world')}
                 className={`flex-1 py-3 sm:py-4 px-2 sm:px-6 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg font-bold transition-all relative outline-none group ${
                   activeTab === 'world' 
-                    ? 'text-[#9f224e] bg-white' 
-                    : 'text-gray-500 hover:bg-white/80 hover:text-gray-700'
+                    ? 'bg-[#9f224e] text-white border-b-[#9f224e]' 
+                    : 'bg-[#f7f7f7] text-gray-500 hover:bg-gray-100 hover:text-gray-700'
                 }`}
             >
-                <Globe size={22} className={`${activeTab === 'world' ? 'text-[#9f224e]' : 'text-gray-400 group-hover:text-gray-600'}`} />
+                <Globe size={22} className={`${activeTab === 'world' ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}`} />
                 <span>Thế giới</span>
-                {activeTab === 'world' && <div className="absolute bottom-0 left-0 w-full h-[4px] bg-[#9f224e]"></div>}
             </button>
         </div>
 
