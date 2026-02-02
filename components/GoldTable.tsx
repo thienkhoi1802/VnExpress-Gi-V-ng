@@ -141,7 +141,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
               <th 
                 rowSpan={2} 
                 onClick={() => handleSort('name')}
-                className="p-2 sm:p-2 md:pl-5 border-r border-gray-200 w-[40%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
+                className="p-2 sm:p-2 md:pl-5 border-r border-gray-200 w-[33%] sm:w-[28%] text-gray-800 cursor-pointer group hover:bg-gray-100/50"
               >
                  <div className="flex items-center gap-1.5">
                     Loại <ChevronsUpDown size={15} strokeWidth={2.5} className={sortConfig.key === 'name' ? 'text-[#9f224e] opacity-100 scale-110' : 'opacity-40 group-hover:opacity-80'} />
@@ -264,4 +264,16 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                     <span>Giảm <span className="hidden sm:inline">so với ngày trước</span></span>
                 </div>
                 {/* Chú thích riêng cho Mobile: So với ngày trước nằm ngang */}
-                <div className="sm
+                <div className="sm:hidden text-gray-400 font-medium border-l border-gray-200 pl-3">
+                    So với ngày trước
+                </div>
+            </div>
+            {/* Ẩn dòng chữ Tự động cập nhật hoàn toàn trên Mobile */}
+            <div className="italic text-[12px] sm:text-[11px] text-gray-400 font-medium ml-auto hidden sm:block">
+                Tự động cập nhật: 5 phút/lần
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+};
