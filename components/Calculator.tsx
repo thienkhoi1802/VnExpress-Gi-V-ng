@@ -47,7 +47,19 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
   const [chi, setChi] = useState<string>('');
   const [phan, setPhan] = useState<string>('');
   const [selectedProductId, setSelectedProductId] = useState<string>('sjc_1l');
-  // Default to collapsed for mobile view
+  
+  // Main Collapse State - Persist in LocalStorage
+  const [isMainCollapsed, setIsMainCollapsed] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('vne_gold_portfolio_main_collapsed');
+      // Default to false (expanded) if not found
+      return saved !== null ? JSON.parse(saved) : false;
+    } catch (e) {
+      return false;
+    }
+  });
+
+  // Portfolio Details Collapse State (Mobile focus)
   const [isPortfolioCollapsed, setIsPortfolioCollapsed] = useState(true);
   
   // Portfolio State - Strictly use LocalStorage
@@ -61,7 +73,12 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
     }
   });
 
-  // Save to LocalStorage whenever items change
+  // Save Main Collapse State to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('vne_gold_portfolio_main_collapsed', JSON.stringify(isMainCollapsed));
+  }, [isMainCollapsed]);
+
+  // Save Portfolio Items to LocalStorage
   useEffect(() => {
     localStorage.setItem('vne_gold_portfolio', JSON.stringify(items));
   }, [items]);
@@ -122,7 +139,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
     setLuong('');
     setChi('');
     setPhan('');
-    // Expand portfolio if it was collapsed when adding
+    // Expand portfolio list if it was collapsed when adding
     setIsPortfolioCollapsed(false);
   };
 
@@ -152,14 +169,28 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
   return (
     <div className="bg-white border border-gray-200 font-sans rounded-none shadow-sm max-w-full overflow-hidden flex flex-col relative">
        
-       {/* Main Title Header */}
-       <div className="p-3 sm:p-4 md:px-5 md:py-4 border-b border-gray-100 bg-white">
-          <h2 className="text-lg font-serif font-bold text-gray-900 flex items-center gap-2">
-            Quản lý danh mục tài sản
-          </h2>
-       </div>
+       {/* Main Title Header with Persisted Collapse Toggle */}
+       <button 
+         onClick={() => setIsMainCollapsed(!isMainCollapsed)}
+         className="w-full flex items-center justify-between p-3 sm:p-4 md:px-5 md:py-4 border-b border-gray-100 bg-white hover:bg-gray-50/50 transition-all group outline-none"
+         aria-expanded={!isMainCollapsed}
+       >
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-serif font-bold text-gray-900">
+              Quản lý danh mục tài sản
+            </h2>
+            {isMainCollapsed && assets.length > 0 && (
+              <span className="text-[11px] font-bold text-vne-red bg-vne-red/5 px-1.5 py-0.5 rounded-sm ml-1">
+                {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VND
+              </span>
+            )}
+          </div>
+          <div className={`transition-transform duration-300 text-gray-400 group-hover:text-[#9f224e] ${isMainCollapsed ? 'rotate-0' : 'rotate-180'}`}>
+            <ChevronDown size={22} strokeWidth={2.5} />
+          </div>
+       </button>
 
-       <div className="flex flex-col md:flex-row">
+       <div className={`flex flex-col md:flex-row overflow-hidden transition-all duration-300 ease-in-out ${isMainCollapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'}`}>
           {/* LEFT PANEL: Input Form */}
           <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-100">
             <div className="p-3 sm:p-4 md:h-[56px] border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
@@ -209,7 +240,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                   <Plus size={18} /> Thêm vào danh mục
                 </button>
                 {currentPreviewValue > 0 && (
-                   <div className="mt-2 text-center text-[12px] text-gray-500 font-medium">
+                   <div className="mt-2 text-center text-[12px] text-gray-500 font-medium animate-in fade-in slide-in-from-top-1">
                       Tạm tính: <span className="font-bold text-[#9f224e]">{currentPreviewValue.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VND</span>
                    </div>
                 )}
@@ -217,7 +248,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
             </div>
           </div>
 
-          {/* RIGHT PANEL: Portfolio List - Optimized min-height */}
+          {/* RIGHT PANEL: Portfolio List */}
           <div className="flex-1 bg-[#fffcfc] flex flex-col md:min-h-[240px]">
             <div className="p-3 sm:p-4 md:h-[56px] border-b border-gray-100 flex items-center justify-between bg-white">
               <div className="flex items-center gap-2">
@@ -239,10 +270,10 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                       <Trash2 size={13} /> Xóa toàn bộ
                   </button>
                 )}
-                {/* Collapse/Expand Toggle for Mobile */}
+                {/* Collapse/Expand Toggle for Mobile Portfolio Details */}
                 <button 
                   onClick={() => setIsPortfolioCollapsed(!isPortfolioCollapsed)}
-                  className="md:hidden flex items-center gap-1 text-[12px] text-gray-600 font-bold border border-gray-200 px-3 py-1.5 rounded-sm bg-white active:bg-gray-50 transition-colors"
+                  className="md:hidden flex items-center gap-1 text-[12px] text-gray-600 font-bold border border-gray-200 px-3 py-1.5 rounded-sm bg-white active:bg-gray-50 transition-colors shadow-sm"
                 >
                   {isPortfolioCollapsed ? (
                     <><ChevronDown size={14} /> Mở rộng</>
@@ -290,7 +321,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
               )}
             </div>
 
-            {/* Footer Total - Optimized for Mobile and Desktop space */}
+            {/* Footer Total */}
             <div className={`p-3 md:py-3 md:px-4 bg-white border-t border-gray-100 ${isPortfolioCollapsed && assets.length > 0 ? 'hidden md:block' : 'block'}`}>
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="text-[11px] md:text-[11px] font-bold text-gray-500 uppercase tracking-tight">Tổng giá trị ước tính</span>
@@ -304,30 +335,4 @@ export const Calculator: React.FC<CalculatorProps> = ({ products }) => {
                   )}
                 </div>
                 <div className="flex items-baseline justify-end gap-1 text-[#9f224e]">
-                   <span className="text-[26px] md:text-[30px] font-black tabular-nums tracking-tighter leading-none">
-                     {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})}
-                   </span>
-                   <span className="text-[12px] md:text-[13px] font-bold uppercase">VND</span>
-                </div>
-                <div className="mt-0.5 text-[9px] md:text-[9px] text-gray-400 text-right italic">
-                  *Giá trị được tính theo giá bán ra hiện tại
-                </div>
-            </div>
-            
-            {/* Show summary when collapsed on mobile */}
-            {isPortfolioCollapsed && assets.length > 0 && (
-              <div className="md:hidden p-3 bg-white border-t border-gray-100 flex items-center justify-between animate-in fade-in cursor-pointer" onClick={() => setIsPortfolioCollapsed(false)}>
-                 <span className="text-[11px] font-bold text-gray-400 uppercase tracking-tight">Tổng cộng:</span>
-                 <div className="flex items-center gap-1.5">
-                   <span className="text-[18px] font-black text-[#9f224e] tabular-nums">
-                     {grandTotal.toLocaleString('vi-VN', {maximumFractionDigits: 0})} VND
-                   </span>
-                   <ChevronUp size={14} className="text-gray-400" />
-                 </div>
-              </div>
-            )}
-          </div>
-       </div>
-    </div>
-  );
-};
+                   <span className="text-[26px] md:text

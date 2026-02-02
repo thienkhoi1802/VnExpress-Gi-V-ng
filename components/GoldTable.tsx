@@ -233,7 +233,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
 
                 <td className="px-1 sm:px-3 md:pr-5 py-2.5 sm:py-1">
                   <div className="flex flex-col items-center justify-center gap-1">
-                      <div className={`text-[13px] sm:text-[14px] tabular-nums whitespace-nowrap ${product.change7d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
+                      <div className={`text-[13px] sm:text-[14px] font-normal tabular-nums whitespace-nowrap ${product.change7d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
                           {product.change7d > 0 ? '+' : ''}{product.change7d.toFixed(1)}%
                       </div>
                       <div className="w-full h-[16px] sm:h-[18px]">
@@ -251,21 +251,14 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
         </table>
       </div>
 
-      {/* Footer Bảng giá vàng */}
+      {/* Footer Bảng giá vàng tối giản */}
       <div className="bg-white p-2.5 sm:p-2 md:px-5 md:py-3 border-t border-gray-100 font-sans">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] sm:text-[12px] text-gray-600">
-            <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
-                <div className="flex items-center gap-1.5 font-bold tracking-tight">
+            <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
+                <div className="flex items-center gap-1 font-bold tracking-tight">
                     <TriangleUp size={10} className="text-[#007f3f]" /> 
-                    <span>Tăng <span className="hidden sm:inline">so với ngày trước</span></span>
-                </div>
-                <div className="flex items-center gap-1.5 font-bold tracking-tight">
                     <TriangleDown size={10} className="text-[#d60000]" /> 
-                    <span>Giảm <span className="hidden sm:inline">so với ngày trước</span></span>
-                </div>
-                {/* Chú thích riêng cho Mobile: So với ngày trước nằm ngang */}
-                <div className="sm:hidden text-gray-400 font-medium border-l border-gray-200 pl-3">
-                    So với ngày trước
+                    <span className="ml-0.5">so với ngày trước</span>
                 </div>
             </div>
             {/* Ẩn dòng chữ Tự động cập nhật hoàn toàn trên Mobile */}

@@ -48,17 +48,18 @@ const VietnamFlag = () => (
   </svg>
 );
 
-const TrendInline = ({ value, percent }: { value: number, percent?: number }) => {
-  const isUp = value > 0;
-  const isDown = value < 0;
-  const color = isUp ? 'text-[#0f7d4b]' : isDown ? 'text-[#bd0000]' : 'text-gray-500';
-
+// Define TrendInline component used in WorldDetailTab
+const TrendInline = ({ value, percent }: { value: number, percent: number }) => {
+  const isUp = percent >= 0;
+  const colorClass = isUp ? 'text-vne-green' : 'text-trend-down';
+  
   return (
-    <div className={`flex items-center gap-1 text-[13px] sm:text-[15px] font-bold ${color} tabular-nums whitespace-nowrap`}>
-      <span>{isUp ? '+' : ''}{value.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-      {percent !== undefined && (
-        <span>({isUp ? '+' : ''}{percent.toFixed(2)}%)</span>
-      )}
+    <div className={`flex items-center gap-1.5 font-bold ${colorClass} text-[15px]`}>
+      {isUp ? <TriangleUp size={12} /> : <TriangleDown size={12} />}
+      <span>{Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</span>
+      <span className="text-[13px] opacity-85 font-bold">
+        ({isUp ? '+' : ''}{percent.toFixed(2)}%)
+      </span>
     </div>
   );
 };
@@ -99,9 +100,7 @@ const DomesticItem = ({
           <span className="text-[10px] text-gray-400 font-bold shrink-0 whitespace-nowrap uppercase tracking-wider">TRIỆU / LƯỢNG</span>
       </div>
 
-      {/* MOBILE VIEW: Optimized 4-5-3 layout with balanced padding */}
       <div className="sm:hidden px-3 pb-3 grid grid-cols-12 gap-0 font-sans items-start">
-          {/* Bán ra: Chiếm 4/12 (~33.3%) - Line sát bên trái hơn */}
           <div className="col-span-4 flex flex-col border-r border-gray-100 pr-2">
              <span className="text-[10px] text-gray-400 font-bold uppercase mb-0.5 tracking-tight">Bán ra</span>
              <span className="font-black text-vne-green text-[36px] leading-none tracking-tighter tabular-nums">
@@ -116,7 +115,6 @@ const DomesticItem = ({
              </div>
           </div>
           
-          {/* Mua vào: Chiếm 5/12 (~41.7%) - Cân bằng padding pl-2 */}
           <div className="col-span-5 flex flex-col border-r border-gray-100 pl-2 pr-1">
              <span className="text-[10px] text-gray-400 font-bold uppercase mb-0.5 tracking-tight">Mua vào</span>
              <span className="font-black text-gray-900 text-[36px] leading-none tracking-tighter tabular-nums">
@@ -131,7 +129,6 @@ const DomesticItem = ({
              </div>
           </div>
           
-          {/* Sparkline: Chiếm 3/12 (25%) */}
           <div className="col-span-3 pl-2 h-[60px] flex items-center justify-center pt-2">
             <div className="w-full h-[40px]">
                 <Sparkline 
@@ -439,7 +436,7 @@ const WorldDetailTab = ({
                   </div>
 
                   <div className="mt-2 bg-[#f0f9ff] border border-blue-50 p-4 rounded-sm">
-                      <p className="text-[18px] text-[#1e293b] leading-snug font-sans text-left">
+                      <p className="text-[15px] sm:text-[18px] text-[#1e293b] leading-snug font-sans text-left">
                           Giá thế giới quy đổi: <span className="font-black text-[#0f172a]">{vndPerOunceMillion.toLocaleString('vi-VN', {minimumFractionDigits: 1, maximumFractionDigits: 1})} Triệu VND/Ounce</span>, giá vàng thế giới {percent >= 0 ? 'tăng' : 'giảm'} <span className={`font-black ${percent >= 0 ? 'text-[#0f7d4b]' : 'text-[#bd0000]'}`}>{Math.abs(percent).toFixed(2)}%</span> trong 24 giờ qua.
                       </p>
                   </div>
