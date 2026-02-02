@@ -233,7 +233,7 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
 
                 <td className="px-1 sm:px-3 md:pr-5 py-2.5 sm:py-1">
                   <div className="flex flex-col items-center justify-center gap-1">
-                      <div className={`font-black text-[13px] sm:text-[14px] tabular-nums whitespace-nowrap ${product.change7d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
+                      <div className={`text-[13px] sm:text-[14px] tabular-nums whitespace-nowrap ${product.change7d >= 0 ? 'text-[#007f3f]' : 'text-[#d60000]'}`}>
                           {product.change7d > 0 ? '+' : ''}{product.change7d.toFixed(1)}%
                       </div>
                       <div className="w-full h-[16px] sm:h-[18px]">
@@ -264,10 +264,4 @@ export const GoldTable: React.FC<GoldTableProps> = ({ data, historyData, onRowCl
                     <span>Giảm <span className="hidden sm:inline">so với ngày trước</span></span>
                 </div>
                 {/* Chú thích riêng cho Mobile: So với ngày trước nằm ngang */}
-                <div className="sm:hidden text-gray-400 font-medium border-l border-gray-200 pl-3">
-                    So với ngày trước
-                </div>
-            </div>
-            {/* Ẩn dòng chữ Tự động cập nhật hoàn toàn trên Mobile */}
-            <div className="italic text-[12px] sm:text-[11px] text-gray-400 font-medium ml-auto hidden sm:block">
-                Tự động
+                <div className="sm
